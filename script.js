@@ -5,23 +5,26 @@ function settask (val) {
 }
 
 function roundscale (num,thing) {
-//	var str = new String(num);
-//	var l = str.length
-//	switch (thing) {
-//		case "milisec":
-//		case "seconds":
-//		case "minutes":
-//		case "hours":
-//		case "days":
-//		case "weeks":
-//		case "months":
-//		case "years":
-//			var diff = 20-l;
-//			var addzero = new String("");
-//			
-//		default: return "err"	
-return num
-	}
+	var str = new String(num);
+	var l = str.length
+	switch (thing) {
+		case "milisec":
+			return num
+		case "seconds":
+			var secstr = new String((Math.round(num*10)/10))
+			if (secstr.includes("."))
+				return secstr
+			else return (secstr += ".0")
+		case "minutes":
+		case "hours":
+		case "days":
+		case "weeks":
+		case "months":
+		case "years":
+			var diff = 20-l;
+			var addzero = new String("");
+		default: return "err"
+	}}
 
 function howlong(){
 	var deadline = new Date("mar 15, 2020 18:00:00").getTime();
