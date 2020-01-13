@@ -8,10 +8,40 @@
     
     <body onload="howlong()">
 
-<h1>My First Heading</h1>
-
-<p>My first paragraph.</p>
-
-</body>
-</html>
+        <div class="textdiv">
+            <p id="heading">Time</p>
+            <p><span id="time">time</span><span id="aftertext"> mw</span></p>
+        </div>
+        <div id="buttons">
+            <button type="button" class="btn btn-primary" onclick="settask(1)">
+                Years
+            </button>
+            <button type="button" class="btn btn-primary" onclick="settask(2)">
+                Months
+            </button>
+            <button type="button" class="btn btn-primary" onclick="settask(3)">
+                Weeks
+            </button>
+            <button type="button" class="btn btn-primary" onclick="settask(4)">
+                Days
+            </button>
+            <button type="button" class="btn btn-primary" onclick="settask(5)">
+                Hours
+            </button>
+            <button type="button" class="btn btn-primary" onclick="settask(6)">
+                Minutes
+            </button>
+            <button type="button" class="btn btn-primary" onclick="settask(7)">
+                Seconds
+            </button>
+            <button type="button" class="btn btn-primary" onclick="settask(0)">
+                Miliseconds
+            </button>
+        </div>
+    </body>
+   
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</html>
