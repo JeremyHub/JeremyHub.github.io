@@ -1,0 +1,39 @@
+body{
+	background-color: #131313;
+}
+
+@keyframes fadein{
+	0%{
+		opacity: 0;
+	}
+	100%{
+		opacity: 100;
+	}
+}
+
+.textdiv{
+	display: block;
+	color: white;
+	font-family: 'Muli', sans-serif;
+	text-align: center;
+	font-size: 35px;
+	text-align: center;
+	margin-top: 15%;
+	animation: fadein 1.5s ease-in;
+}
+
+#heading{
+	font-size: 45px;
+	animation: fadein 0.8s ease-in;
+}
+
+#buttons{
+	display: block;
+	color: white;
+	font-family: 'Muli', sans-serif;
+	text-align: center;
+	font-size: 35px;
+	text-align: center;
+	margin-top: 5%;
+	animation: fadein 0.8s ease-in;
+}
