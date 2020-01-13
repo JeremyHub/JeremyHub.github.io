@@ -26,7 +26,7 @@ function roundscale (num,thing) {
 	}
 
 function howlong(){
-	var deadline = new Date("mar 15, 2020 18:00:00").getTime();
+	var deadline = new Date("mar 14, 2020 18:00:00").getTime();
 	var now = new Date().getTime();
 	var howlongtill = deadline-now;
 	var years = roundscale(howlongtill/(1000*60*60*24*7*30*12),"years");
