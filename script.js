@@ -1,5 +1,9 @@
 var currentask;
 
+window.setTimeout(function setcurrentask() {
+	currentask = 4;
+},20)
+
 function settask (val) {
 	currentask = val;
 }
@@ -32,34 +36,39 @@ function howlong(){
 	var hours = roundscale(howlongtill/(1000*60*60),"hours");
 	var minutes = roundscale(howlongtill/(1000*60),"minutes");
 	var seconds = roundscale(howlongtill/(1000),"seconds");
-	var milisec = roundscale(howlongtill,"milisec");
+	var milisec = howlongtill;
 	
 	if (currentask == 0) {
 		document.getElementById("time").innerHTML = milisec;
+		document.getElementById("mw").innerHTML = "Miliseconds";
 	}
 	else if (currentask == 1) {
 		document.getElementById("time").innerHTML = years;
+		document.getElementById("mw").innerHTML = "Years";
 	}
 	else if (currentask == 2) {
 		document.getElementById("time").innerHTML = months;
+		document.getElementById("mw").innerHTML = "Months";
 	}
 	else if (currentask == 3) {
 		document.getElementById("time").innerHTML = weeks;
+		document.getElementById("mw").innerHTML = "Weeks";
 	}
 	else if (currentask == 4) {
 		document.getElementById("time").innerHTML = days;
+		document.getElementById("mw").innerHTML = "Days";
 	}
 	else if (currentask == 5) {
 		document.getElementById("time").innerHTML = hours;
+		document.getElementById("mw").innerHTML = "Hours";
 	}
 	else if (currentask == 6) {
 		document.getElementById("time").innerHTML = minutes;
+		document.getElementById("mw").innerHTML = "Minutes";
 	}
 	else if (currentask == 7) {
 		document.getElementById("time").innerHTML = seconds;
-	}
-		else if (currentask == 7) {
-		document.getElementById("time").innerHTML = seconds;
+		document.getElementById("mw").innerHTML = "Seconds";
 	}
 	else {
 	console.log("ERROR");
