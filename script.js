@@ -12,7 +12,6 @@ function roundscale (num,thing) {
 		var whole = split[0];
 		var decimal = new String(split[1]);
 		var decimalwanted = decimal.substr(0,2);
-		console.log(decimal);
 		if (decimal.length >= 2) {
 			return (whole + "." + decimalwanted)}
 		if (decimal.length == 1) {
