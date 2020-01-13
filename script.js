@@ -7,24 +7,19 @@ function settask (val) {
 function roundscale (num,thing) {
 	var str = new String(num);
 	var l = str.length
-	switch (thing) {
-		case "milisec":
-			return num
-		case "seconds":
-			var secstr = new String((Math.round(num*10)/10))
-			if (secstr.includes("."))
-				return secstr
-			else return (secstr += ".0")
-		case "minutes":
-		case "hours":
-		case "days":
-		case "weeks":
-		case "months":
-		case "years":
-			var diff = 20-l;
-			var addzero = new String("");
-		default: return "err"
-	}}
+	if (str.includes(".")) {
+		var split = str.split(".");
+		var whole = split[0];
+		var decimal = new String(split[1]);
+		var decimalwanted = decimal.substr(0,2);
+		if (decimal.length > 2) {
+			return (whole + "." + decimalwanted)}
+		if (decimal.length == 1) {
+			return (whole + "." + decimalwanted + "0")}
+		else return "err"
+	}
+	else return (num += ".00")
+	}
 
 function howlong(){
 	var deadline = new Date("mar 15, 2020 18:00:00").getTime();
@@ -63,6 +58,9 @@ function howlong(){
 	else if (currentask == 7) {
 		document.getElementById("time").innerHTML = seconds;
 	}
+		else if (currentask == 7) {
+		document.getElementById("time").innerHTML = seconds;
+	}
 	else {
 	console.log("ERROR");
 
@@ -70,6 +68,11 @@ function howlong(){
 		howlong();
 		}, 100);
 	}}
+
+//	var secstr = new String((Math.round(num*10)/10))
+//	if (secstr.includes("."))
+//		return secstr
+//	else return (secstr += ".0")
 
 	//function normal(){
 //	document.getElementById("time").innerHTML = "normal";
@@ -115,3 +118,16 @@ function howlong(){
 //else if (l == 10)
 //return (num += "0000000000")
 //else return "err"
+
+//switch (thing) {
+//	case "milisec":
+//		return num
+//	case "seconds":
+//		return num
+//	case "minutes":
+//	case "hours":
+//	case "days":
+//	case "weeks":
+//	case "months":
+//	case "years":
+//	default: return "err"
