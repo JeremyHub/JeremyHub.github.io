@@ -97,6 +97,6 @@ function howlong(){
 
 	window.setInterval(function(){
 		howlong();
-		}, 57);
+		}, 121);
 	}
 }
