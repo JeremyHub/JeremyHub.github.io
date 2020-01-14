@@ -13,7 +13,7 @@ function howlong(){
 	var deadline = new Date("mar 14, 2020 18:00:00").getTime();
 	var now = new Date().getTime();
 	var howlongtill = deadline-now;
-	var years = roundscale(howlongtill/(1000*60*60*24*7*30*12),"years");
+	var years = roundscale(howlongtill/(1000*60*60*24*7*365),"years");
 	var months = roundscale(howlongtill/(1000*60*60*24*7*30),"months");
 	var weeks = roundscale(howlongtill/(1000*60*60*24*7),"weeks");
 	var days = roundscale(howlongtill/(1000*60*60*24),"days");
