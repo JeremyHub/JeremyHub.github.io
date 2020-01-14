@@ -6,6 +6,7 @@ window.setTimeout(function setcurrentask() {
 
 function settask (val) {
 	currentask = val;
+	howlong();
 }
 
 function roundscale (num,thing) {
