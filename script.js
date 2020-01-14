@@ -9,22 +9,43 @@ function settask (val) {
 	howlong();
 }
 
-function roundscale (num,thing) {
+function addlength(num,n){
 	var str = new String(num);
-	var l = str.length
+	var split = str.split(".");
+	var whole = split[0];
+	var decimal = new String(split[1]);
 	if (str.includes(".")) {
-		var split = str.split(".");
-		var whole = split[0];
-		var decimal = new String(split[1]);
-		var decimalwanted = decimal.substr(0,2);
-		if (decimal.length >= 2) {
-			return (whole + "." + decimalwanted)}
-		if (decimal.length == 1) {
-			return (whole + "." + decimalwanted + "0")}
-		else return "err"
+		decimal = decimal
 	}
-	else return (num += ".00")
+	else decimal = new String;
+	while (decimal.length < n+1) {
+		decimal += "0"
+	};
+	var decimalwanted = decimal.substr(0,n);
+	return (whole + "." + decimalwanted)
+}
+
+function roundscale (num,thing) {
+	switch (thing) {
+		case "milisec":
+			return addlength(num,0)
+		case "seconds":
+			return addlength(num,2)
+		case "minutes":
+			return addlength(num,3)
+		case "hours":
+			return addlength(num,5)
+		case "days":
+			return addlength(num,6)
+		case "weeks":
+			return addlength(num,7)
+		case "months":
+			return addlength(num,9)
+		case "years":
+			return addlength(num,10)
+		default: return "err"
 	}
+}
 
 function howlong(){
 	var deadline = new Date("mar 14, 2020 18:00:00").getTime();
@@ -76,18 +97,6 @@ function howlong(){
 
 	window.setInterval(function(){
 		howlong();
-		}, 100);
-	}}
-
-//switch (thing) {
-//	case "milisec":
-//		return num
-//	case "seconds":
-//		return num
-//	case "minutes":
-//	case "hours":
-//	case "days":
-//	case "weeks":
-//	case "months":
-//	case "years":
-//	default: return "err"
+		}, 57);
+	}
+}
