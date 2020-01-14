@@ -78,31 +78,6 @@ function howlong(){
 		}, 100);
 	}}
 
-//	var secstr = new String((Math.round(num*10)/10))
-//	if (secstr.includes("."))
-//		return secstr
-//	else return (secstr += ".0")
-
-//else if (l == 18)
-//return (num += "00")
-//else if (l == 17)
-//return (num += "000")
-//else if (l == 16)
-//return (num += "0000")
-//else if (l == 15)
-//return (num += "00000")
-//else if (l == 14)
-//return (num += "000000")
-//else if (l == 13)
-//return (num += "0000000")
-//else if (l == 12)
-//return (num += "00000000")
-//else if (l == 11)
-//return (num += "000000000")
-//else if (l == 10)
-//return (num += "0000000000")
-//else return "err"
-
 //switch (thing) {
 //	case "milisec":
 //		return num
