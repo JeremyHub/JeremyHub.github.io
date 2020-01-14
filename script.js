@@ -59,7 +59,7 @@ function howlong(){
 
 	window.setInterval(function(){
 		howlong();
-		}, 111);
+		}, 50);
 	}
 }
 
