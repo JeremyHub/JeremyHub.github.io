@@ -83,31 +83,6 @@ function howlong(){
 //		return secstr
 //	else return (secstr += ".0")
 
-	//function normal(){
-//	document.getElementById("time").innerHTML = "normal";
-//}
-//function years(){
-//	document.getElementById("time").innerHTML = "years";
-//}
-//function months(){
-//	document.getElementById("time").innerHTML = "month";
-//}
-//function weeks(){
-//	document.getElementById("time").innerHTML = "weeks";
-//}
-//function days(){
-//	document.getElementById("time").innerHTML = "day";
-//}
-//function hours(){
-//	document.getElementById("time").innerHTML = "hr";
-//}
-//function minutes(){
-//	document.getElementById("time").innerHTML = "min";
-//}
-//function seconds(){
-//	document.getElementById("time").innerHTML = "sec";
-//}
-
 //else if (l == 18)
 //return (num += "00")
 //else if (l == 17)
