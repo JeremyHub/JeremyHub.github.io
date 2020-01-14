@@ -9,44 +9,6 @@ function settask (val) {
 	howlong();
 }
 
-function addlength(num,n){
-	var str = new String(num);
-	var split = str.split(".");
-	var whole = split[0];
-	var decimal = new String(split[1]);
-	if (str.includes(".")) {
-		decimal = decimal
-	}
-	else decimal = new String;
-	while (decimal.length < n+1) {
-		decimal += "0"
-	};
-	var decimalwanted = decimal.substr(0,n);
-	return (whole + "." + decimalwanted)
-}
-
-function roundscale (num,thing) {
-	switch (thing) {
-		case "milisec":
-			return addlength(num,0)
-		case "seconds":
-			return addlength(num,2)
-		case "minutes":
-			return addlength(num,3)
-		case "hours":
-			return addlength(num,5)
-		case "days":
-			return addlength(num,6)
-		case "weeks":
-			return addlength(num,7)
-		case "months":
-			return addlength(num,9)
-		case "years":
-			return addlength(num,10)
-		default: return "err"
-	}
-}
-
 function howlong(){
 	var deadline = new Date("mar 14, 2020 18:00:00").getTime();
 	var now = new Date().getTime();
@@ -99,4 +61,42 @@ function howlong(){
 		howlong();
 		}, 121);
 	}
+}
+
+function roundscale (num,thing) {
+	switch (thing) {
+		case "milisec":
+			return addlength(num,0)
+		case "seconds":
+			return addlength(num,2)
+		case "minutes":
+			return addlength(num,3)
+		case "hours":
+			return addlength(num,5)
+		case "days":
+			return addlength(num,6)
+		case "weeks":
+			return addlength(num,7)
+		case "months":
+			return addlength(num,9)
+		case "years":
+			return addlength(num,10)
+		default: return "err"
+	}
+}
+
+function addlength(num,n){
+	var str = new String(num);
+	var split = str.split(".");
+	var whole = split[0];
+	var decimal = new String(split[1]);
+	if (str.includes(".")) {
+		decimal = decimal
+	}
+	else decimal = new String;
+	while (decimal.length < n+1) {
+		decimal += "0"
+	};
+	var decimalwanted = decimal.substr(0,n);
+	return (whole + "." + decimalwanted)
 }
