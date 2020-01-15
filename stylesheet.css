@@ -36,3 +36,8 @@ body{
 	text-align: center;
 	animation: fadein 0.8s ease-in;
 }
+
+#booton{
+	background-color: purple;
+	border-color: blueviolet;
+}
