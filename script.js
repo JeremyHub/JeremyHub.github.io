@@ -90,7 +90,7 @@ function howlong() {
 
 	window.setInterval(function(){
 		howlong();
-		}, 140);
+		}, 100);
 	}
 }
 
