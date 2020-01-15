@@ -18,7 +18,7 @@ function changedate (whichdate) {
 	switchdate(datenow);
 }
 
-function switchdate (datewanted) {	
+function switchdate (datewanted) {
 	if (datewanted == 1) {
 			date = "mar 14, 2020 18:00:00";
 			titlemw = "to Spring Break";
@@ -90,7 +90,7 @@ function howlong() {
 
 	window.setInterval(function(){
 		howlong();
-		}, 180);
+		}, 140);
 	}
 }
 
