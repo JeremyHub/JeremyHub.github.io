@@ -38,7 +38,7 @@ function switchdate (datewanted) {
 function howlong() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
-	var howlongtill = sign*(deadline-now);
+	var howlongtill = deadline-now;
 	var years = roundscale(howlongtill/(1000*60*60*24*7*365),"years");
 	var months = roundscale(howlongtill/(1000*60*60*24*7*30),"months");
 	var weeks = roundscale(howlongtill/(1000*60*60*24*7),"weeks");
@@ -47,7 +47,6 @@ function howlong() {
 	var minutes = roundscale(howlongtill/(1000*60),"minutes");
 	var seconds = roundscale(howlongtill/(1000),"seconds");
 	var milisec = howlongtill;
-	document.getElementById("titlemw").innerHTML = titlemw;
 	
 	if (currentask == 0) {
 		document.getElementById("time").innerHTML = milisec;
@@ -82,7 +81,7 @@ function howlong() {
 		document.getElementById("mw").innerHTML = "Seconds";
 	}
 	else {
-	console.log("Currentask not 0-7");
+	console.log("ERROR");
 
 	window.setInterval(howlong(), 100);
 	}
