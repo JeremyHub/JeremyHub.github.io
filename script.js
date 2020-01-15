@@ -1,12 +1,8 @@
-var currentask;
+var currentask = 4;
 var date = "mar 14, 2020 18:00:00";
 var sign = 1;
 var titlemw = "to Spring Break";
 var datenow = 1;
-
-window.setTimeout(function setcurrentask() {
-	currentask = 4;
-},20)
 
 function settask (val) {
 	currentask = val;
@@ -88,9 +84,7 @@ function howlong() {
 	else {
 	console.log("Currentask not 0-7");
 
-	window.setInterval(function(){
-		howlong();
-		}, 100);
+	window.setInterval(howlong(), 100);
 	}
 }
 
