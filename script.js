@@ -88,9 +88,9 @@ function howlong() {
 	else {
 	console.log("Currentask not 0-7");
 
-	window.setTimeout(function(){
+	window.setInterval(function(){
 		howlong();
-		}, 120);
+		}, 100);
 	}
 }
 
