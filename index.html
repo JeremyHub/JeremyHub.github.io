@@ -9,10 +9,10 @@
     <body onload="howlong()">
 
         <div class="textdiv">
-            <p id="heading">Time to Spring Break <3</p>
+            <p id="heading">Time <span id="titlemw"></span> <3</p>
             <p><span id="time"></span> <span id="mw"></span></p>
         </div>
-        <div id="buttons">
+        <div class="buttons">
             <button type="button" class="btn btn-primary" onclick="settask(1)">
                 Years
             </button>
@@ -36,6 +36,18 @@
             </button>
             <button type="button" class="btn btn-primary" onclick="settask(0)">
                 Miliseconds
+            </button>
+        </div>
+        <p></p>
+        <div class="buttons">
+            <button class="btn btn-warning" onclick="changedate(1)">
+                To Spring Break
+            </button>
+            <button class="btn btn-warning" onclick="changedate(2)">
+                Since First Date
+            </button>
+            <button class="btn btn-warning" onclick="changedate(3)">
+                To Summer Break
             </button>
         </div>
     </body>
