@@ -4,20 +4,22 @@ var sign = 1;
 var titlemw = "to Spring Break";
 var datenow = 1;
 
+window.setInterval(howling(),120);
+
 window.setTimeout(function setcurrentask() {
 	currentask = 4;
-},20)
+},20);
 
 function settask (val) {
 	currentask = val;
 	howlong();
-}
+};
 
 function changedate (whichdate) {
 	datenow = whichdate;
 	switchdate(datenow);
 	howlong();
-}
+};
 
 function switchdate (datewanted) {	
 	if (datewanted == 1) {
@@ -38,7 +40,7 @@ function switchdate (datewanted) {
 	else {
 		console.log("datenow not 1-3");
 	}
-}
+};
 
 function howlong() {
 	var deadline = new Date(date).getTime();
@@ -93,7 +95,7 @@ function howlong() {
 		howlong();
 		}, 180);
 	}
-}
+};
 
 function roundscale (num,thing) {
 	switch (thing) {
@@ -115,7 +117,7 @@ function roundscale (num,thing) {
 			return addlength(num,10)
 		default: return "err"
 	}
-}
+};
 
 function addlength(num,n){
 	var str = new String(num);
@@ -131,4 +133,4 @@ function addlength(num,n){
 	};
 	var decimalwanted = decimal.substr(0,n);
 	return (whole + "." + decimalwanted)
-}
+};
