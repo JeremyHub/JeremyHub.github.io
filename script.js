@@ -4,10 +4,11 @@ var sign = 1;
 var titlemw = "to Spring Break";
 var datenow = 1;
 
-window.setInterval(howling(),120);
+window.setInterval(howlong(),120);
 
 window.setTimeout(function setcurrentask() {
 	currentask = 4;
+	howlong();
 },20);
 
 function settask (val) {
@@ -46,8 +47,8 @@ function howlong() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
 	var howlongtill = sign*(deadline-now);
-	var years = roundscale(howlongtill/(1000*60*60*24*7*365),"years");
-	var months = roundscale(howlongtill/(1000*60*60*24*7*30),"months");
+	var years = roundscale(howlongtill/(1000*60*60*24*365),"years");
+	var months = roundscale(howlongtill/(1000*60*60*24*30.42),"months");
 	var weeks = roundscale(howlongtill/(1000*60*60*24*7),"weeks");
 	var days = roundscale(howlongtill/(1000*60*60*24),"days");
 	var hours = roundscale(howlongtill/(1000*60*60),"hours");
