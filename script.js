@@ -16,6 +16,7 @@ function settask (val) {
 function changedate (whichdate) {
 	datenow = whichdate;
 	switchdate(datenow);
+	howlong();
 }
 
 function switchdate (datewanted) {	
