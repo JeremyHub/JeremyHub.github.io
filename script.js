@@ -47,8 +47,8 @@ function howlong() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
 	var howlongtill = sign*(deadline-now);
-	var years = roundscale(howlongtill/(1000*60*60*24*365),"years");
-	var months = roundscale(howlongtill/(1000*60*60*24*30.42),"months");
+	var years = roundscale(howlongtill/(1000*60*60*24*365.25),"years");
+	var months = roundscale(howlongtill/(1000*60*60*24*30.4375),"months");
 	var weeks = roundscale(howlongtill/(1000*60*60*24*7),"weeks");
 	var days = roundscale(howlongtill/(1000*60*60*24),"days");
 	var hours = roundscale(howlongtill/(1000*60*60),"hours");
