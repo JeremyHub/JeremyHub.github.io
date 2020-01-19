@@ -3,6 +3,16 @@ var date = "mar 14, 2020 18:00:00";
 var sign = 1;
 var titlemw = "to Spring Break";
 var datenow = 1;
+var deadline;
+var now;
+var howlongtill;
+var years;
+var months;
+var weeks;
+var days;
+var hours;
+var minutes;
+var seconds;
 
 window.setInterval(howlong(),120);
 
@@ -43,6 +53,35 @@ function switchdate (datewanted) {
 	}
 };
 
+function split(timetosplit) {
+	str = new String(timetosplit);
+	var split = str.split(".");
+	return split
+};
+
+function defualtview() {
+	var deadline = new Date(date).getTime();
+	var now = new Date().getTime();
+	var howlongtill = sign*(deadline-now);
+	var dyears = split(howlongtill/(1000*60*60*24*365.25));
+	var dmonths = split(dyears[1]/(Math.pow(10,dyears[1].length))*12);
+	var dweeks = split(dmonths[1]/(Math.pow(10,dmonths[1].length))*4.3482142857);
+	var ddays = split(dweeks[1]/(Math.pow(10,dweeks[1].length))*7);
+	var dhours = split(ddays[1]/(Math.pow(10,ddays[1].length))*24);
+	var dminutes = split(dhours[1]/(Math.pow(10,dhours[1].length))*60);
+	var dseconds = split(dminutes[1]/(Math.pow(10,dminutes[1].length))*60);
+	var dmilisec = roundscale(dseconds[1]/(Math.pow(10,dseconds[1].length))*1000,"milisec");
+	var yearword = (dyears[0] += " Years ");
+	var monthword = (dmonths[0] += " Months ");
+	var weekword = (dweeks[0] += " Weeks ");
+	var dayword = (ddays[0] += " Days ");
+	var hourword = (dhours[0] += " Hours ");
+	var minuteword = (dminutes[0] += " Minutes ");
+	var secondword = (dseconds[0] += " Seconds ");
+	var milisecword = (dmilisec[0] += " Miliseconds");
+	return(yearword += monthword += weekword += dayword += hourword += minuteword += secondword += milisecword)
+};
+
 function howlong() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
@@ -56,6 +95,7 @@ function howlong() {
 	var seconds = roundscale(howlongtill/(1000),"seconds");
 	var milisec = howlongtill;
 	document.getElementById("titlemw").innerHTML = titlemw;
+	defualtview();
 	
 	if (currentask == 0) {
 		document.getElementById("time").innerHTML = milisec;
@@ -88,6 +128,10 @@ function howlong() {
 	else if (currentask == 7) {
 		document.getElementById("time").innerHTML = seconds;
 		document.getElementById("mw").innerHTML = "Seconds";
+	}
+	else if (currentask == 8) {
+		document.getElementById("time").innerHTML = defualtview();
+		document.getElementById("mw").innerHTML = "";
 	}
 	else {
 	console.log("Currentask not 0-7");
