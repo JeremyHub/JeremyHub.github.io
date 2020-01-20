@@ -22,7 +22,7 @@ var signinput;
 window.setInterval(howlong(),120);
 
 window.setTimeout(function setcurrentask() {
-	currentask = 4;
+	currentask = 8;
 	howlong();
 },20);
 
