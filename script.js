@@ -54,7 +54,7 @@ function switchdate (datewanted) {
 		sign = 1;
 	}
 	else if (datewanted == 4) {
-		if (document.getElementById('customdateyear').value.length == 4) {
+		if (document.getElementById('customdateyear').value.length > 0) {
 			date = custom();
 			titlemw = document.getElementById('sign').value + " " + date;
 			signinput = document.getElementById('sign').value;
