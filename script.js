@@ -96,6 +96,15 @@ function split(timetosplit) {
 	return split
 };
 
+function adds(inputnum,inputword) {
+	if (inputnum == 1) {
+		return (inputnum += inputword += " ");
+	}
+	else {
+		return (inputnum += inputword += "s ");
+	}
+};
+
 function defualtview() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
@@ -107,13 +116,13 @@ function defualtview() {
 	var dhours = split(ddays[1]/(Math.pow(10,ddays[1].length))*24);
 	var dminutes = split(dhours[1]/(Math.pow(10,dhours[1].length))*60);
 	var dseconds = split(dminutes[1]/(Math.pow(10,dminutes[1].length))*60);
-	var yearword = (dyears[0] += " Years ");
-	var monthword = (dmonths[0] += " Months ");
-	var weekword = (dweeks[0] += " Weeks ");
-	var dayword = (ddays[0] += " Days ");
-	var hourword = (dhours[0] += " Hours ");
-	var minuteword = (dminutes[0] += " Minutes ");
-	var secondword = (dseconds[0] += " Seconds ");
+	var yearword = adds(dyears[0]," Year");
+	var monthword = adds(dmonths[0]," Month");
+	var weekword = adds(dweeks[0]," Week");
+	var dayword = adds(ddays[0]," Day");
+	var hourword = adds(dhours[0]," Hour");
+	var minuteword = adds(dminutes[0]," Minute");
+	var secondword = adds(dseconds[0]," Second");
 	return(yearword += monthword += weekword += dayword += hourword += minuteword += secondword)
 };
 
