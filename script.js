@@ -1,5 +1,5 @@
 var currentask;
-var date = "mar 14, 2020 18:00:00";
+var date = "mar 14 2020 18:00:00";
 var sign = 1;
 var titlemw = "to Spring Break";
 var datenow = 1;
@@ -13,6 +13,11 @@ var days;
 var hours;
 var minutes;
 var seconds;
+var inputdateyear;
+var inputdatemonth;
+var inputdateday;
+var inputdatetime;
+var signinput;
 
 window.setInterval(howlong(),120);
 
@@ -34,23 +39,55 @@ function changedate (whichdate) {
 
 function switchdate (datewanted) {	
 	if (datewanted == 1) {
-			date = "mar 14, 2020 18:00:00";
-			titlemw = "to Spring Break";
-			sign = 1;
+		date = "mar 14 2020 18:00:00";
+		titlemw = "to Spring Break";
+		sign = 1;
 	}
 	else if (datewanted == 2) {
-			date = "jan 17, 2019 00:00:00";
-			sign = -1;
-			titlemw = "Since First Date";
+		date = "jan 17 2019";
+		sign = -1;
+		titlemw = "Since First Date";
 	}
 	else if (datewanted == 3) {
-			date = "may 12, 2020 00:00:00";
-			titlemw = "to Summer Break";
-			sign = 1;
+		date = "may 12 2020";
+		titlemw = "to Summer Break";
+		sign = 1;
+	}
+	else if (datewanted == 4) {
+		if (document.getElementById('customdateyear').value.length == 4) {
+			date = custom();
+			titlemw = document.getElementById('sign').value + " " + date;
+			signinput = document.getElementById('sign').value;
+			if (signinput == "to") {
+				sign = 1
+			}
+			else if (signinput == "From") {
+				sign = -1
+			}
+			else {
+				console.log("signinput not to or from");
+			};
+			}
+		else {
+			console.log(document.getElementById('customdateyear').value)
+		}
 	}
 	else {
 		console.log("datenow not 1-3");
 	}
+};
+
+function custom() {
+	var inputdateyear = document.getElementById('customdateyear').value;
+	var inputdatemonth = document.getElementById('customdatemonth').value;
+	var inputdateday = document.getElementById('customdateday').value;
+	var inputdatetime = document.getElementById('customdatetime').value;
+	return (inputdatemonth + " " + inputdateday + " " + inputdateyear + " " + inputdatetime)
+};
+
+function strinput(input,n) {
+	var inputstr = new String(input);
+	return inputstr.substr(0,n);
 };
 
 function split(timetosplit) {
@@ -70,7 +107,6 @@ function defualtview() {
 	var dhours = split(ddays[1]/(Math.pow(10,ddays[1].length))*24);
 	var dminutes = split(dhours[1]/(Math.pow(10,dhours[1].length))*60);
 	var dseconds = split(dminutes[1]/(Math.pow(10,dminutes[1].length))*60);
-	var dmilisec = roundscale(dseconds[1]/(Math.pow(10,dseconds[1].length))*1000,"milisec");
 	var yearword = (dyears[0] += " Years ");
 	var monthword = (dmonths[0] += " Months ");
 	var weekword = (dweeks[0] += " Weeks ");
@@ -78,8 +114,7 @@ function defualtview() {
 	var hourword = (dhours[0] += " Hours ");
 	var minuteword = (dminutes[0] += " Minutes ");
 	var secondword = (dseconds[0] += " Seconds ");
-	var milisecword = (dmilisec[0] += " Miliseconds");
-	return(yearword += monthword += weekword += dayword += hourword += minuteword += secondword += milisecword)
+	return(yearword += monthword += weekword += dayword += hourword += minuteword += secondword)
 };
 
 function howlong() {
