@@ -1,5 +1,5 @@
 var currentask;
-var date = "mar 14 2020 18:00:00";
+var date = "mar 13 2020 21:00:00";
 var sign = 1;
 var titlemw = "to Spring Break";
 var datenow = 1;
@@ -39,7 +39,7 @@ function changedate (whichdate) {
 
 function switchdate (datewanted) {	
 	if (datewanted == 1) {
-		date = "mar 14 2020 18:00:00";
+		date = "mar 13 2020 21:00:00";
 		titlemw = "to Spring Break";
 		sign = 1;
 	}
