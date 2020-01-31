@@ -18,13 +18,28 @@ var inputdatemonth;
 var inputdateday;
 var inputdatetime;
 var signinput;
-
-window.setInterval(howlong(),120);
+var currentyear = date.split(' ')[2];
+// var monthofdatewanted;
+// var monthofdatenow;
+// var strofdatenow;
+// var strofdatewanted;
 
 window.setTimeout(function setcurrentask() {
 	currentask = 8;
 	howlong();
 },20);
+
+function daysinmonth (monthfordays) {
+	return new Date(currentyear, monthfordays, 0).getDate();
+};
+
+function getmonthnum(mon){
+	var d = Date.parse(mon + "1, " + currentyear);
+	// if(!isNaN(d)){
+	   return new Date(d).getMonth() + 1;
+// 	}
+// 	else {console.log("mon is NaN")};
+   }
 
 function settask (val) {
 	currentask = val;
@@ -105,24 +120,94 @@ function adds(inputnum,inputword) {
 	}
 };
 
+function month12(month12) {
+	if (month12 <= 12) {
+		return month12;
+	}
+	else  {
+		while (month12 > 12) {
+			month12 - 12;
+		}
+		return month12;
+	}
+};
+
 function defualtview() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
 	var howlongtill = sign*(deadline-now);
-	var dyears = split(howlongtill/(1000*60*60*24*365.25));
-	var dmonths = split(dyears[1]/(Math.pow(10,dyears[1].length))*12);
-	var dweeks = split(dmonths[1]/(Math.pow(10,dmonths[1].length))*4.3482142857);
-	var ddays = split(dweeks[1]/(Math.pow(10,dweeks[1].length))*7);
+	var daystill = howlongtill/(1000*60*60*24);
+	var yearstill = 0;
+	var monthstill = 0;
+	var strofdatenow = new String(new Date());
+	// dayofweek , month , day , year
+	var strofdatewanted = new String(date);
+	// month , day , year
+	var monthofdatewanted = getmonthnum(strofdatewanted.split(" ")[0]);
+	var monthofdatenow = getmonthnum(strofdatenow.split(" ")[1]);
+	var dayofdatewanted = Number(strofdatewanted.split(" ")[1]);
+	var dayofdatenow = Number(strofdatenow.split(" ")[2]);
+	var weekstill = 0;
+	
+	if (sign == 1) {
+		while (daystill >= 365) {
+			yearstill++;
+			daystill = daystill - 365;
+		};
+		var whichmonth = monthofdatenow
+		var nextmonthdays = daysinmonth(month12(whichmonth + 1));
+		while (true) {
+			if ((daystill - ((daysinmonth(monthofdatenow) - dayofdatenow) + dayofdatewanted)) >= nextmonthdays) {
+				daystill = daystill - nextmonthdays;
+				monthstill++;
+				whichmonth++;
+			}
+			else {
+				break;
+			}
+		};
+	}
+	else if (sign == -1) {
+		while (daystill >= 365) {
+			yearstill++;
+			daystill = daystill - 365;
+		};
+		var whichmonth = monthofdatewanted
+		var nextmonthdays = daysinmonth(month12(whichmonth + 1));
+		while (true) {
+			if ((daystill - ((daysinmonth(monthofdatewanted) - dayofdatewanted) + dayofdatenow)) >= nextmonthdays) {
+				daystill = daystill - nextmonthdays;
+				monthstill++;
+				whichmonth++;
+			}
+			else {
+				break;
+			}
+		}
+	}
+	else {console.log("sign is not 1 or -1 how tf")};
+
+	//var dyears = split(howlongtill/(1000*60*60*24*365.25));
+	//var dmonths = split(dyears[1]/(Math.pow(10,dyears[1].length))*12);
+	//var dweeks = split(dmonths[1]/(Math.pow(10,dmonths[1].length))*4.3482142857);
+	
+	while (daystill >= 7) {
+		weekstill++;
+		daystill = daystill - 7;
+	};
+
+	var ddays = split(daystill);
 	var dhours = split(ddays[1]/(Math.pow(10,ddays[1].length))*24);
 	var dminutes = split(dhours[1]/(Math.pow(10,dhours[1].length))*60);
 	var dseconds = split(dminutes[1]/(Math.pow(10,dminutes[1].length))*60);
-	var yearword = adds(dyears[0]," Year");
-	var monthword = adds(dmonths[0]," Month");
-	var weekword = adds(dweeks[0]," Week");
+	var yearword = adds(yearstill," Year");
+	var monthword = adds(monthstill," Month");
+	var weekword = adds(weekstill," Week");
 	var dayword = adds(ddays[0]," Day");
 	var hourword = adds(dhours[0]," Hour");
 	var minuteword = adds(dminutes[0]," Minute");
 	var secondword = adds(dseconds[0]," Second");
+	
 	return(yearword += monthword += weekword += dayword += hourword += minuteword += secondword)
 };
 
@@ -138,8 +223,8 @@ function howlong() {
 	var minutes = roundscale(howlongtill/(1000*60),"minutes");
 	var seconds = roundscale(howlongtill/(1000),"seconds");
 	var milisec = howlongtill;
+
 	document.getElementById("titlemw").innerHTML = titlemw;
-	defualtview();
 	
 	if (currentask == 0) {
 		document.getElementById("time").innerHTML = milisec;
@@ -177,13 +262,11 @@ function howlong() {
 		document.getElementById("time").innerHTML = defualtview();
 		document.getElementById("mw").innerHTML = "";
 	}
-	else {
-	console.log("Currentask not 0-7");
+	else {console.log("Currentask not 0-8")};
 
 	window.setInterval(function(){
 		howlong();
 		}, 180);
-	}
 };
 
 function roundscale (num,thing) {
@@ -204,7 +287,7 @@ function roundscale (num,thing) {
 			return addlength(num,9)
 		case "years":
 			return addlength(num,10)
-		default: return "err"
+		default: console.log("thing not recognized in roundscale");
 	}
 };
 
