@@ -19,10 +19,10 @@ var inputdateday;
 var inputdatetime;
 var signinput;
 var currentyear = date.split(' ')[2];
-// var monthofdatewanted;
-// var monthofdatenow;
-// var strofdatenow;
-// var strofdatewanted;
+var monthofdatewanted;
+var monthofdatenow;
+var strofdatenow;
+var strofdatewanted;
 
 window.setTimeout(function setcurrentask() {
 	currentask = 8;
@@ -35,10 +35,10 @@ function daysinmonth (monthfordays) {
 
 function getmonthnum(mon){
 	var d = Date.parse(mon + "1, " + currentyear);
-	// if(!isNaN(d)){
+	if(!isNaN(d)){
 	   return new Date(d).getMonth() + 1;
-// 	}
-// 	else {console.log("mon is NaN")};
+	}
+	else {console.log("mon is NaN")};
    }
 
 function settask (val) {
@@ -149,48 +149,30 @@ function defualtview() {
 	var dayofdatenow = Number(strofdatenow.split(" ")[2]);
 	var weekstill = 0;
 	
+	while (daystill >= 365) {
+		yearstill++;
+		daystill = daystill - 365;
+	};
+
 	if (sign == 1) {
-		while (daystill >= 365) {
-			yearstill++;
-			daystill = daystill - 365;
-		};
-		var whichmonth = monthofdatenow
-		var nextmonthdays = daysinmonth(month12(whichmonth + 1));
-		while (true) {
-			if ((daystill - ((daysinmonth(monthofdatenow) - dayofdatenow) + dayofdatewanted)) >= nextmonthdays) {
-				daystill = daystill - nextmonthdays;
-				monthstill++;
-				whichmonth++;
-			}
-			else {
-				break;
-			}
-		};
+		var whichmonth = monthofdatenow;
 	}
 	else if (sign == -1) {
-		while (daystill >= 365) {
-			yearstill++;
-			daystill = daystill - 365;
-		};
-		var whichmonth = monthofdatewanted
-		var nextmonthdays = daysinmonth(month12(whichmonth + 1));
-		while (true) {
-			if ((daystill - ((daysinmonth(monthofdatewanted) - dayofdatewanted) + dayofdatenow)) >= nextmonthdays) {
-				daystill = daystill - nextmonthdays;
-				monthstill++;
-				whichmonth++;
-			}
-			else {
-				break;
-			}
-		}
+		var whichmonth = monthofdatewanted;
 	}
 	else {console.log("sign is not 1 or -1 how tf")};
 
-	//var dyears = split(howlongtill/(1000*60*60*24*365.25));
-	//var dmonths = split(dyears[1]/(Math.pow(10,dyears[1].length))*12);
-	//var dweeks = split(dmonths[1]/(Math.pow(10,dmonths[1].length))*4.3482142857);
-	
+	while (true) {
+		if (daystill >= (daysinmonth(month12(whichmonth)))) {
+			whichmonth = whichmonth + 1;
+			monthstill++;
+			daystill = daystill - (daysinmonth(month12(whichmonth)));
+		}
+		else {
+			break;
+		}
+	};
+
 	while (daystill >= 7) {
 		weekstill++;
 		daystill = daystill - 7;
