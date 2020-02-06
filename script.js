@@ -136,7 +136,9 @@ function defualtview() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
 	var howlongtill = sign*(deadline-now);
-	var daystill = howlongtill/(1000*60*60*24);
+	var d = new Date(date);
+	var daystillnotimezone = howlongtill/(1000*60*24*60);
+	var daystill = daystillnotimezone + ((480 - (d.getTimezoneOffset()))/(60*24));
 	var yearstill = 0;
 	var monthstill = 0;
 	var strofdatenow = new String(new Date());
@@ -145,8 +147,8 @@ function defualtview() {
 	// month , day , year
 	var monthofdatewanted = getmonthnum(strofdatewanted.split(" ")[0]);
 	var monthofdatenow = getmonthnum(strofdatenow.split(" ")[1]);
-	var dayofdatewanted = Number(strofdatewanted.split(" ")[1]);
-	var dayofdatenow = Number(strofdatenow.split(" ")[2]);
+	// var dayofdatewanted = Number(strofdatewanted.split(" ")[1]);
+	// var dayofdatenow = Number(strofdatenow.split(" ")[2]);
 	var weekstill = 0;
 	
 	while (daystill >= 365) {
@@ -197,13 +199,16 @@ function howlong() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
 	var howlongtill = sign*(deadline-now);
-	var years = roundscale(howlongtill/(1000*60*60*24*365.25),"years");
-	var months = roundscale(howlongtill/(1000*60*60*24*30.4375),"months");
-	var weeks = roundscale(howlongtill/(1000*60*60*24*7),"weeks");
-	var days = roundscale(howlongtill/(1000*60*60*24),"days");
-	var hours = roundscale(howlongtill/(1000*60*60),"hours");
-	var minutes = roundscale(howlongtill/(1000*60),"minutes");
-	var seconds = roundscale(howlongtill/(1000),"seconds");
+	var d = new Date(date);
+	var daystillnotimezone = howlongtill/(1000*60*24*60);
+	var daystill = daystillnotimezone + ((480 - (d.getTimezoneOffset()))/(60*24));
+	var years = roundscale(daystill/(365.25),"years");
+	var months = roundscale(daystill/(30.4375),"months");
+	var weeks = roundscale(daystill/(7),"weeks");
+	var days = roundscale((daystill),"days");
+	var hours = roundscale((daystill*24),"hours");
+	var minutes = roundscale((daystill*60*24),"minutes");
+	var seconds = roundscale((daystill*1000*60*24),"seconds");
 	var milisec = howlongtill;
 
 	document.getElementById("titlemw").innerHTML = titlemw;
