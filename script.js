@@ -166,9 +166,9 @@ function defualtview() {
 
 	while (true) {
 		if (daystill >= (daysinmonth(month12(whichmonth)))) {
+			daystill = daystill - (daysinmonth(month12(whichmonth)));
 			whichmonth = whichmonth + 1;
 			monthstill++;
-			daystill = daystill - (daysinmonth(month12(whichmonth)));
 		}
 		else {
 			break;
