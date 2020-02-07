@@ -61,7 +61,7 @@ function switchdate (datewanted) {
 	else if (datewanted == 2) {
 		date = "jan 17 2019";
 		sign = -1;
-		titlemw = "Since First Date";
+		titlemw = "since First Date";
 	}
 	else if (datewanted == 3) {
 		date = "may 12 2020";
@@ -76,7 +76,7 @@ function switchdate (datewanted) {
 			if (signinput == "to") {
 				sign = 1
 			}
-			else if (signinput == "From") {
+			else if (signinput == "from") {
 				sign = -1
 			}
 			else {
@@ -126,7 +126,7 @@ function month12(month12) {
 	}
 	else  {
 		while (month12 > 12) {
-			month12 - 12;
+			month12 = month12 - 12;
 		}
 		return month12;
 	}
