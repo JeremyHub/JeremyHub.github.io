@@ -263,13 +263,13 @@ function roundscale (num,thing) {
 		case "seconds":
 			return addlength(num,2)
 		case "minutes":
-			return addlength(num,3)
+			return addlength(num,4)
 		case "hours":
-			return addlength(num,5)
-		case "days":
 			return addlength(num,6)
-		case "weeks":
+		case "days":
 			return addlength(num,7)
+		case "weeks":
+			return addlength(num,8)
 		case "months":
 			return addlength(num,9)
 		case "years":
