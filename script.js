@@ -1,4 +1,4 @@
-var currentask;
+var currentask = 8;
 var date = "mar 13 2020 21:00:00";
 var sign = 1;
 var titlemw = "to Spring Break";
@@ -18,27 +18,32 @@ var inputdatemonth;
 var inputdateday;
 var inputdatetime;
 var signinput;
-var currentyear = date.split(' ')[2];
+var currentyear = new Date().getFullYear();
 var monthofdatewanted;
 var monthofdatenow;
 var strofdatenow;
 var strofdatewanted;
 
-window.setTimeout(function setcurrentask() {
-	currentask = 8;
-	howlong();
-},20);
-
 function daysinmonth (monthfordays) {
-	return new Date(currentyear, monthfordays, 0).getDate();
+	if (((currentyear % 4 == 0) && (currentyear % 100 != 0)) || (currentyear % 400 == 0)) {
+		if (monthfordays == 2) {
+			return new Date(currentyear, monthfordays, 0).getDate() + 1;
+		}
+		else {
+			return new Date(currentyear, monthfordays, 0).getDate();
+		}
+	}
+	else {
+		return new Date(currentyear, monthfordays, 0).getDate();
+	}
 };
 
 function getmonthnum(mon){
-	var d = Date.parse(mon + "1, " + currentyear);
+	var d = Date.parse(mon + "1, " + "6969");
 	if(!isNaN(d)){
 	   return new Date(d).getMonth() + 1;
 	}
-	else {console.log("mon is NaN")};
+	else {console.log("mon is not a month in getmonthnum")};
    }
 
 function settask (val) {
@@ -127,10 +132,18 @@ function month12(month12) {
 	else  {
 		while (month12 > 12) {
 			month12 = month12 - 12;
+			console.log('yup');
 		}
 		return month12;
 	}
 };
+
+function isleap(input) {
+	if (((currentyear % 4 == 0) && (currentyear % 100 != 0)) || (currentyear % 400 == 0)) {
+		return input + 1;
+	}
+	else return input;
+}
 
 function defualtview() {
 	var deadline = new Date(date).getTime();
@@ -150,10 +163,10 @@ function defualtview() {
 	// var dayofdatewanted = Number(strofdatewanted.split(" ")[1]);
 	// var dayofdatenow = Number(strofdatenow.split(" ")[2]);
 	var weekstill = 0;
-	
-	while (daystill >= 365) {
+
+	while (daystill >= isleap(365)) {
 		yearstill++;
-		daystill = daystill - 365;
+		daystill = daystill - isleap(365);
 	};
 
 	if (sign == 1) {
