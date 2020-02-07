@@ -132,7 +132,6 @@ function month12(month12) {
 	else  {
 		while (month12 > 12) {
 			month12 = month12 - 12;
-			console.log('yup');
 		}
 		return month12;
 	}
