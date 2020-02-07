@@ -184,6 +184,7 @@ function defualtview() {
 	var dhours = split(ddays[1]/(Math.pow(10,ddays[1].length))*24);
 	var dminutes = split(dhours[1]/(Math.pow(10,dhours[1].length))*60);
 	var dseconds = split(dminutes[1]/(Math.pow(10,dminutes[1].length))*60);
+	
 	var yearword = adds(yearstill," Year");
 	var monthword = adds(monthstill," Month");
 	var weekword = adds(weekstill," Week");
