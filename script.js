@@ -18,7 +18,7 @@ var inputdatemonth;
 var inputdateday;
 var inputdatetime;
 var signinput;
-var currentyear = new Date().getFullYear();
+var currentyear;
 var monthofdatewanted;
 var monthofdatenow;
 var strofdatenow;
@@ -87,7 +87,7 @@ function switchdate (datewanted) {
 			else {
 				console.log("signinput not to or from");
 			};
-			}
+		}
 		else {
 			console.log(document.getElementById('customdateyear').value)
 		}
@@ -129,20 +129,13 @@ function month12(month12) {
 	if (month12 <= 12) {
 		return month12;
 	}
-	else  {
+	else {
 		while (month12 > 12) {
 			month12 = month12 - 12;
 		}
 		return month12;
 	}
 };
-
-function isleap(input) {
-	if (((currentyear % 4 == 0) && (currentyear % 100 != 0)) || (currentyear % 400 == 0)) {
-		return input + 1;
-	}
-	else return input;
-}
 
 function defualtview() {
 	var deadline = new Date(date).getTime();
@@ -157,24 +150,28 @@ function defualtview() {
 	// dayofweek , month , day , year
 	var strofdatewanted = new String(date);
 	// month , day , year
+	var yearofdatewanted = strofdatewanted[2];
 	var monthofdatewanted = getmonthnum(strofdatewanted.split(" ")[0]);
 	var monthofdatenow = getmonthnum(strofdatenow.split(" ")[1]);
 	// var dayofdatewanted = Number(strofdatewanted.split(" ")[1]);
 	// var dayofdatenow = Number(strofdatenow.split(" ")[2]);
 	var weekstill = 0;
 
-	while (daystill >= isleap(365)) {
-		yearstill++;
-		daystill = daystill - isleap(365);
-	};
-
 	if (sign == 1) {
 		var whichmonth = monthofdatenow;
+		currentyear = new Date().getFullYear();
 	}
 	else if (sign == -1) {
 		var whichmonth = monthofdatewanted;
+		currentyear = yearofdatewanted;
 	}
 	else {console.log("sign is not 1 or -1 how tf")};
+
+	while (daystill >= isleap(365)) {
+		yearstill++;
+		daystill = daystill - isleap(365);
+		currentyear = currentyear + 1;
+	};
 
 	while (true) {
 		if (daystill >= (daysinmonth(month12(whichmonth)))) {
@@ -208,6 +205,13 @@ function defualtview() {
 	return(yearword += monthword += weekword += dayword += hourword += minuteword += secondword)
 };
 
+function isleap(input) {
+	if (((currentyear % 4 == 0) && (currentyear % 100 != 0)) || (currentyear % 400 == 0)) {
+		return input + 1;
+	}
+	else return input;
+};
+
 function howlong() {
 	var deadline = new Date(date).getTime();
 	var now = new Date().getTime();
@@ -221,7 +225,7 @@ function howlong() {
 	var days = roundscale((daystill),"days");
 	var hours = roundscale((daystill*24),"hours");
 	var minutes = roundscale((daystill*60*24),"minutes");
-	var seconds = roundscale((daystill*1000*60*24),"seconds");
+	var seconds = roundscale((daystill*60*60*24),"seconds");
 	var milisec = howlongtill;
 
 	document.getElementById("titlemw").innerHTML = titlemw;
@@ -276,15 +280,15 @@ function roundscale (num,thing) {
 		case "seconds":
 			return addlength(num,2)
 		case "minutes":
-			return addlength(num,4)
+			return addlength(num,5)
 		case "hours":
 			return addlength(num,6)
 		case "days":
-			return addlength(num,7)
-		case "weeks":
 			return addlength(num,8)
-		case "months":
+		case "weeks":
 			return addlength(num,9)
+		case "months":
+			return addlength(num,10)
 		case "years":
 			return addlength(num,10)
 		default: console.log("thing not recognized in roundscale");
@@ -306,3 +310,38 @@ function addlength(num,n){
 	var decimalwanted = decimal.substr(0,n);
 	return (whole + "." + decimalwanted)
 };
+
+// var canvas = document.getElementById('canvas');
+// var ctx = canvas.getContext('2d');
+
+// var x = Math.random() * innerWidth;
+// var y = Math.random() * innerHeight;
+// var dx = (Math.random() - 0.5) * 8;
+// var dy = (Math.random() - 0.5) * 8;
+// var radius = 30;
+
+// function canvasstuff() {
+// 	window.addEventListener('resize', resizeCanvas, false);
+  
+// 	function resizeCanvas() {
+// 	  canvas.width = window.innerWidth;
+// 	  canvas.height = window.innerHeight;
+//   	  drawStuff(); 
+// 	}
+// 	resizeCanvas();
+  
+// 	function drawStuff() {
+// 	  ctx.strokeStyle = 'red';
+// 	  ctx.strokeRect(100,100,100,100);
+// 	  animate();
+// 	}
+// };
+
+// function animate() {
+// 	requestAnimationFrame(animate);
+// 	ctx.clearRect(0,0,innerWidth,innerHeight);
+// 	ctx.strokeStyle = 'red';
+// 	ctx.beginPath();
+// 	ctx.arc(x,y,radius,Math.PI * 2,false);
+// 	ctx.stroke();
+// };
