@@ -311,37 +311,47 @@ function addlength(num,n){
 	return (whole + "." + decimalwanted)
 };
 
-// var canvas = document.getElementById('canvas');
-// var ctx = canvas.getContext('2d');
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
 
-// var x = Math.random() * innerWidth;
-// var y = Math.random() * innerHeight;
-// var dx = (Math.random() - 0.5) * 8;
-// var dy = (Math.random() - 0.5) * 8;
-// var radius = 30;
+var x = Math.random() * innerWidth;
+var y = Math.random() * innerHeight;
+var dx = (Math.random() - 0.5) * 8;
+var dy = (Math.random() - 0.5) * 8;
+var radius = 30;
 
-// function canvasstuff() {
-// 	window.addEventListener('resize', resizeCanvas, false);
+function canvasstuff() {
+	window.addEventListener('resize', resizeCanvas, false);
   
-// 	function resizeCanvas() {
-// 	  canvas.width = window.innerWidth;
-// 	  canvas.height = window.innerHeight;
-//   	  drawStuff(); 
-// 	}
-// 	resizeCanvas();
+	function resizeCanvas() {
+	  canvas.width = window.innerWidth;
+	  canvas.height = window.innerHeight;
+  	  drawStuff(); 
+	}
+	resizeCanvas();
   
-// 	function drawStuff() {
-// 	  ctx.strokeStyle = 'red';
-// 	  ctx.strokeRect(100,100,100,100);
-// 	  animate();
-// 	}
-// };
+	function drawStuff() {
+	  ctx.strokeStyle = 'red';
+	  ctx.strokeRect(100,100,100,100);
+	  animate();
+	}
+};
 
-// function animate() {
-// 	requestAnimationFrame(animate);
-// 	ctx.clearRect(0,0,innerWidth,innerHeight);
-// 	ctx.strokeStyle = 'red';
-// 	ctx.beginPath();
-// 	ctx.arc(x,y,radius,Math.PI * 2,false);
-// 	ctx.stroke();
-// };
+function animate() {
+	requestAnimationFrame(animate);
+	ctx.clearRect(0,0,innerWidth,innerHeight);
+	ctx.strokeStyle = 'red';
+	ctx.beginPath();
+	ctx.arc(x,y,radius,Math.PI * 2,false);
+	ctx.stroke();
+	
+	if (x + radius > innerWidth || x - radius < 0) {
+		dx = -dx
+	};
+	if (y + radius > innerHeight || y - radius <0) {
+		dy = -dy
+	};
+
+	x += dx;
+	y += dy;
+};
