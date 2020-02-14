@@ -1,8 +1,10 @@
 var currentask = 8;
 var date = "mar 13 2020 21:00:00";
-var sign = 1;
+var defaultsign = 1;
+var sign = defaultsign;
 var titlemw = "to Spring Break";
-var datenow = 1;
+var defaultdatenow = 1;
+var datenow = defaultdatenow;
 var deadline;
 var now;
 var howlongtill;
@@ -13,6 +15,7 @@ var days;
 var hours;
 var minutes;
 var seconds;
+var milisec;
 var inputdateyear;
 var inputdatemonth;
 var inputdateday;
@@ -23,6 +26,7 @@ var monthofdatewanted;
 var monthofdatenow;
 var strofdatenow;
 var strofdatewanted;
+var timezoneoffset = 480;
 
 function daysinmonth (monthfordays) {
 	if (((currentyear % 4 == 0) && (currentyear % 100 != 0)) || (currentyear % 400 == 0)) {
@@ -43,7 +47,7 @@ function getmonthnum(mon){
 	if(!isNaN(d)){
 	   return new Date(d).getMonth() + 1;
 	}
-	else {console.log("mon is not a month in getmonthnum")};
+	else {return};
    }
 
 function settask (val) {
@@ -74,7 +78,14 @@ function switchdate (datewanted) {
 		sign = 1;
 	}
 	else if (datewanted == 4) {
-		if (document.getElementById('customdateyear').value.length > 0) {
+		if (document.getElementById('customdateyear').value == 'play') {
+			startplaying();
+			timezoneoffset = 365;
+			date = new Date();
+			titlemw = "to Play";
+			document.getElementById('canvas').style.zIndex = 1;
+		}
+		else if (document.getElementById('customdateyear').value.length > 0) {
 			date = custom();
 			titlemw = document.getElementById('sign').value + " " + date;
 			signinput = document.getElementById('sign').value;
@@ -138,12 +149,6 @@ function month12(month12) {
 };
 
 function defualtview() {
-	var deadline = new Date(date).getTime();
-	var now = new Date().getTime();
-	var howlongtill = sign*(deadline-now);
-	var d = new Date(date);
-	var daystillnotimezone = howlongtill/(1000*60*24*60);
-	var daystill = daystillnotimezone + ((480 - (d.getTimezoneOffset()))/(60*24));
 	var yearstill = 0;
 	var monthstill = 0;
 	var strofdatenow = new String(new Date());
@@ -213,20 +218,20 @@ function isleap(input) {
 };
 
 function howlong() {
-	var deadline = new Date(date).getTime();
-	var now = new Date().getTime();
-	var howlongtill = sign*(deadline-now);
-	var d = new Date(date);
-	var daystillnotimezone = howlongtill/(1000*60*24*60);
-	var daystill = daystillnotimezone + ((480 - (d.getTimezoneOffset()))/(60*24));
-	var years = roundscale(daystill/(365.25),"years");
-	var months = roundscale(daystill/(30.4375),"months");
-	var weeks = roundscale(daystill/(7),"weeks");
-	var days = roundscale((daystill),"days");
-	var hours = roundscale((daystill*24),"hours");
-	var minutes = roundscale((daystill*60*24),"minutes");
-	var seconds = roundscale((daystill*60*60*24),"seconds");
-	var milisec = howlongtill;
+	deadline = new Date(date).getTime();
+	now = new Date().getTime();
+	howlongtill = sign*(deadline-now);
+	d = new Date(date);
+	daystillnotimezone = howlongtill/(1000*60*24*60);
+	daystill = daystillnotimezone + ((timezoneoffset - (d.getTimezoneOffset()))/(60*24));
+	years = roundscale(daystill/(365.25),"years");
+	months = roundscale(daystill/(30.4375),"months");
+	weeks = roundscale(daystill/(7),"weeks");
+	days = roundscale((daystill),"days");
+	hours = roundscale((daystill*24),"hours");
+	minutes = roundscale((daystill*60*24),"minutes");
+	seconds = roundscale((daystill*60*60*24),"seconds");
+	milisec = roundscale((daystill*60*60*24*1000),'milisec');
 
 	document.getElementById("titlemw").innerHTML = titlemw;
 	
@@ -268,6 +273,11 @@ function howlong() {
 	}
 	else {console.log("Currentask not 0-8")};
 
+	//gamestuff
+	if (document.getElementById('customdateyear').value == 'play' && daystill <= 0) {
+		stopplaying();
+	};
+	
 	window.setInterval(function(){
 		howlong();
 		}, 180);
@@ -276,30 +286,33 @@ function howlong() {
 function roundscale (num,thing) {
 	switch (thing) {
 		case "milisec":
-			return addlength(num,0)
+			return addlength(num,1,true)
 		case "seconds":
-			return addlength(num,2)
+			return addlength(num,2,false)
 		case "minutes":
-			return addlength(num,5)
+			return addlength(num,5,false)
 		case "hours":
-			return addlength(num,6)
+			return addlength(num,6,false)
 		case "days":
-			return addlength(num,8)
+			return addlength(num,8,false)
 		case "weeks":
-			return addlength(num,9)
+			return addlength(num,9,false)
 		case "months":
-			return addlength(num,10)
+			return addlength(num,10,false)
 		case "years":
-			return addlength(num,10)
+			return addlength(num,10,false)
 		default: console.log("thing not recognized in roundscale");
 	}
 };
 
-function addlength(num,n){
+function addlength(num,n,ismilisec){
 	var str = new String(num);
 	var split = str.split(".");
 	var whole = split[0];
 	var decimal = new String(split[1]);
+	if (ismilisec) {
+		return whole;
+	}
 	if (str.includes(".")) {
 		decimal = decimal
 	}
@@ -311,14 +324,66 @@ function addlength(num,n){
 	return (whole + "." + decimalwanted)
 };
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-var x = Math.random() * innerWidth;
-var y = Math.random() * innerHeight;
-var dx = (Math.random() - 0.5) * 8;
-var dy = (Math.random() - 0.5) * 8;
-var radius = 30;
+var p1r = 30;
+var p1x = innerHeight/2;
+var p1y = innerHeight/2;
+var p1dx = 5;
+var p1dy = 5;
+var p1c = 'white';
+
+var bullets = [];
+var player;
+var enemies = [];
+var playing = false;
+var mousex;
+var mousey;
+var p1bulldirx;
+var p1bulldiry;
+
+function calcbulldir (){
+	p1bulldirx = -5 * ((player.x-mousex)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
+	p1bulldiry = -5 * ((player.y-mousey)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
+};
+
+function startplaying() {
+	if (!playing) {
+		player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
+	};
+	playing = true;
+};
+
+function stopplaying() {
+	playing = false;
+	bullets = [];
+	enemies = [];
+	player = undefined;
+	document.getElementById('canvas').style.zIndex = -1;
+	ctx.clearRect(0,0,innerWidth,innerHeight);
+	changedate(defaultdatenow);
+};
+
+window.addEventListener('click', function (event) {
+	mousex = event.x;
+	mousey = event.y;
+	attack();
+});
+
+function attack() {
+	if (playing) {
+		calcbulldir();
+		bullets.push(new GoodBullet(player.x,player.y,p1bulldirx,p1bulldiry,5,'white'));
+	}
+	else {return};
+};
+
+function spawnenemy() {
+	enemies.push(new Enemy(Math.random()*(innerWidth-40),Math.random()*(innerHeight-40),(Math.random() - 0.5) * 10,(Math.random() - 0.5) * 10,20,'red'));
+};
 
 function canvasstuff() {
 	window.addEventListener('resize', resizeCanvas, false);
@@ -326,32 +391,237 @@ function canvasstuff() {
 	function resizeCanvas() {
 	  canvas.width = window.innerWidth;
 	  canvas.height = window.innerHeight;
-  	  drawStuff(); 
+  	  drawStuff();
 	}
 	resizeCanvas();
   
 	function drawStuff() {
-	  ctx.strokeStyle = 'red';
-	  ctx.strokeRect(100,100,100,100);
 	  animate();
 	}
+};
+
+function Player (x,y,dx,dy,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+	this.mass = this.radius*3
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+	};
+
+	this.update = function() {
+		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+			this.dx = -this.dx
+		};
+		if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+			this.dy = -this.dy
+		};
+
+		this.x += this.dx;
+		this.y += this.dy;
+		
+		this.draw();
+	};
+};
+
+function Enemy (x,y,dx,dy,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+	this.shooting = true;
+	this.mass = this.radius*3;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+	};
+
+	this.shoot = function() {
+		this.bulldx = 2 * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
+		this.bulldy = 2 * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
+		if (this.shooting) {
+		bullets.push(new BadBullet(this.x,this.y,this.bulldx,this.bulldy,5,'red'));
+		};
+	};
+
+	this.update = function() {
+		if (this.shooting) {
+			if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+				this.dx = -this.dx;
+				if (this.x + this.radius > innerWidth) {
+					this.x -= this.x + this.radius - innerWidth;
+				};
+				if (this.x - this.radius < 0) {
+					this.x += this.radius - this.x;
+				};
+			};
+			if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+				this.dy = -this.dy
+				if (this.y + this.radius > innerHeight) {
+					this.y -= this.y + this.radius - innerHeight;
+				};
+				if (this.y - this.radius < 0) {
+					this.y += this.radius - this.y;
+				};
+			};
+		};
+		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
+			//bouncing off
+			this.distance = Math.sqrt(Math.pow((this.x-player.x),2)+Math.pow((this.y-player.y),2));
+			this.overlap = this.distance - this.radius - player.radius;
+			this.x -= this.overlap * (this.x - player.x) / this.distance;
+			this.y -= this.overlap * (this.y - player.y) / this.distance;
+			this.normalx = (player.x - this.x) / this.distance;
+			this.normaly = (player.y - this.y) / this.distance;
+			this.tangentialvx = -this.normaly;
+			this.tangentialvy = this.normalx;
+			this.tanvector = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+			this.tanvector2 = (player.dx * this.tangentialvx) + (player.dy * this.tangentialvy)
+			this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+			this.normaldot2 = (player.dx * this.normalx) + (player.dy * this.normaly);
+			this.m1 = (this.normaldot * (this.mass - player.mass) + 2 * player.mass * this.normaldot2) / (this.mass + player.mass);
+			this.m2 = (this.normaldot2 * (player.mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + player.mass);
+			this.dx = this.tangentialvx * this.tanvector + this.normalx * this.m1;
+			this.dy = this.tangentialvy * this.tanvector + this.normaly * this.m1;
+			player.dx = this.tangentialvx * this.tanvector2 + this.normalx * this.m2;
+			player.dy = this.tangentialvy * this.tanvector2 + this.normaly * this.m2;
+		};
+		
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
+};
+
+function GoodBullet(x,y,dx,dy,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+	};
+
+	this.update = function() {
+		if (this.x >= innerWidth || this.x <= 0) {
+			this.x = -100;
+			this.y = -100;
+			this.dx = 0;
+			this.dy = 0;
+		};
+		if (this.y >= innerHeight || this.y <= 0) {
+			this.x = -100;
+			this.y = -100;
+			this.dx = 0;
+			this.dy = 0;
+		};
+		for (var i = 0; i < enemies.length; i++) {
+			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
+				enemies[i].x = -20;
+				enemies[i].y = -20;
+				enemies[i].dx = 0;
+				enemies[i].dy = 0;
+				enemies[i].shooting = false;
+				timezoneoffset = timezoneoffset + 0.5;
+			};
+		};
+
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
+};
+
+function BadBullet(x,y,dx,dy,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+	};
+
+	this.update = function() {
+		if (this.x >= innerWidth || this.x <= 0) {
+			this.x = -10;
+			this.y = -10;
+			this.dx = 0;
+			this.dy = 0;
+		};
+		if (this.y >= innerHeight || this.y <= 0) {
+			this.x = -10;
+			this.y = -10;
+			this.dx = 0;
+			this.dy = 0;
+		};
+		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
+			this.x = -10;
+			this.y = -10;
+			this.dx = 0;
+			this.dy = 0;
+			timezoneoffset = timezoneoffset - 0.5;
+		};
+		
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
 };
 
 function animate() {
 	requestAnimationFrame(animate);
 	ctx.clearRect(0,0,innerWidth,innerHeight);
-	ctx.strokeStyle = 'red';
-	ctx.beginPath();
-	ctx.arc(x,y,radius,Math.PI * 2,false);
-	ctx.stroke();
-	
-	if (x + radius > innerWidth || x - radius < 0) {
-		dx = -dx
+	for (var i = 0; i < bullets.length; i++) {
+		bullets[i].update();
 	};
-	if (y + radius > innerHeight || y - radius <0) {
-		dy = -dy
+	if (typeof player !== 'undefined') {player.update()};
+	for (var i = 0; i < enemies.length; i++) {
+		enemies[i].update();
 	};
+	checkchange();
+};
 
-	x += dx;
-	y += dy;
+var lastcheck = 1;
+var check = 0;
+var checkother = 0;
+function checkchange() {
+	if (lastcheck != check) {
+		lastcheck = check;
+		if (playing) {
+			for (var i = 0; i < enemies.length; i++) {
+				enemies[i].shoot();
+			};
+		};
+		checkother++;
+		if (playing) {
+			if (checkother % 3 == 0) {
+				spawnenemy();
+			}
+		}
+	};
+	check = Math.round(new Date().getTime() / 1000);
 };
