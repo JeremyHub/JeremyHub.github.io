@@ -457,12 +457,8 @@ function Player (x,y,dx,dy,radius,color) {
 	}
 
 	this.moving = function() {
-		if (playerdxchangebool) {
-			this.dx = this.dx + playerdxchange;
-		};
-		if (playerdychangebool) {
-			this.dy = this.dy + playerdychange;
-		};
+		this.dx = playerdxchange;
+		this.dy = playerdychange;
 	}
 
 	this.update = function() {
@@ -695,28 +691,27 @@ function checkchange() {
 
 function changemov () {
 	if (pressed.includes('w')) {
-		playerdychange = -0.1;
-		playerdychangebool = true;
-		player.moving();
+		playerdychange = -5;
 	}
-	if (pressed.includes('s')) {
-		playerdychange = 0.1;
-		playerdychangebool = true;
-		player.moving();
+	else if (pressed.includes('s')) {
+		playerdychange = 5;
+	}
+	else {
+		playerdychange = 0;
 	}
 	if (pressed.includes('a')) {
-		playerdxchange = -0.1;
-		playerdxchangebool = true;
-		player.moving();
+		playerdxchange = -5;
 	}
-	if (pressed.includes('d')) {
-		playerdxchange = 0.1;
-		playerdxchangebool = true;
-		player.moving();
+	else if (pressed.includes('d')) {
+		playerdxchange = 5;
+	}
+	else {
+		playerdxchange = 0;
 	};
 	if (pressed.includes('r')) {
 		player.stop();
 	}
-	playerdxchangebool = false;
-	playerdychangebool = false;
+	if (playing) {
+		player.moving();
+	}
 }
