@@ -80,10 +80,6 @@ function switchdate (datewanted) {
 	else if (datewanted == 4) {
 		if (document.getElementById('customdateyear').value == 'play') {
 			startplaying();
-			timezoneoffset = 365;
-			date = new Date();
-			titlemw = "to Play";
-			document.getElementById('canvas').style.zIndex = 1;
 		}
 		else if (document.getElementById('customdateyear').value.length > 0) {
 			date = custom();
@@ -223,7 +219,12 @@ function howlong() {
 	howlongtill = sign*(deadline-now);
 	d = new Date(date);
 	daystillnotimezone = howlongtill/(1000*60*24*60);
-	daystill = daystillnotimezone + ((timezoneoffset - (d.getTimezoneOffset()))/(60*24));
+	if (!playing) {
+		daystill = daystillnotimezone + ((timezoneoffset - (d.getTimezoneOffset()))/(60*24));
+	};
+	if (playing) {
+		daystill = daystillnotimezone + (timezoneoffset/(60*24));
+	};
 	years = roundscale(daystill/(365.25),"years");
 	months = roundscale(daystill/(30.4375),"months");
 	weeks = roundscale(daystill/(7),"weeks");
@@ -360,6 +361,10 @@ function startplaying() {
 	};
 	playing = true;
 	document.getElementById('goaway').style.visibility = 'hidden';
+	timezoneoffset = 5;
+	date = new Date();
+	titlemw = "to Play";
+	document.getElementById('canvas').style.zIndex = 1;
 };
 
 function stopplaying() {
@@ -460,10 +465,22 @@ function Player (x,y,dx,dy,radius,color) {
 
 	this.update = function() {
 		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
-			this.dx = -this.dx
+			this.dx = -this.dx;
+			if (this.x + this.radius > innerWidth) {
+				this.x -= this.x + this.radius - innerWidth;
+			};
+			if (this.x - this.radius < 0) {
+				this.x += this.radius - this.x;
+			};
 		};
 		if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
 			this.dy = -this.dy
+			if (this.y + this.radius > innerHeight) {
+				this.y -= this.y + this.radius - innerHeight;
+			};
+			if (this.y - this.radius < 0) {
+				this.y += this.radius - this.y;
+			};
 		};
 
 		this.x += this.dx;
