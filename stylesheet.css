@@ -38,16 +38,6 @@
 	border-color: blueviolet;
 }
 
-#booton1{
-	background-color: purple;
-	border-color: blueviolet;
-}
-
-#booton2{
-	background-color: purple;
-	border-color: blueviolet;
-}
-
 .label{
 	color: white;
 }
@@ -74,6 +64,16 @@
 	display: block;
 }
 
-#goaway{
-	visibility: visible;
+#gamedisplay{
+	visibility: hidden;
+}
+
+#leveldisplay{
+	color: violet;
+	width: 50%;
+	float: left;
+	margin-right: 50%;
+	font-size: 40px;
+	position: absolute;
+	text-align: center;
 }

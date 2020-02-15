@@ -274,8 +274,7 @@ function howlong() {
 	}
 	else {console.log("Currentask not 0-8")};
 
-	//gamestuff
-	if (document.getElementById('customdateyear').value == 'play' && daystill <= 0) {
+	if (playing && daystill <= 0) {
 		stopplaying();
 	};
 	
@@ -375,10 +374,13 @@ function startplaying() {
 	};
 	playing = true;
 	document.getElementById('goaway').style.visibility = 'hidden';
+	document.getElementById('gamedisplay').style.visibility = 'visible';
+	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
 	timezoneoffset = 10;
 	date = new Date();
-	titlemw = "";
+	titlemw = "Welcome to My Game!";
 	document.getElementById('canvas').style.zIndex = 1;
+	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 };
 
 function stopplaying() {
@@ -387,15 +389,22 @@ function stopplaying() {
 	enemies = [];
 	player = undefined;
 	level = 0;
+	currentlevel = 0;
 	document.getElementById('canvas').style.zIndex = -1;
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	changedate(defaultdatenow);
 	document.getElementById('goaway').style.visibility = 'visible';
+	document.getElementById('gamedisplay').style.visibility = 'hidden';
+	document.getElementById('time').style.visibility = 'visible';
+	document.getElementById('headingthatsaystime').style.visibility = 'visible';
+	timezoneoffset = 480;
 };
 
 function win() {
-	currentlevel = 'You Win!';
-	window.setTimeout(stopplaying(),3000);
+	titlemw = 'You Win!';
+	document.getElementById('leveldisplay').style.visibility = 'hidden';
+	document.getElementById('time').style.visibility = 'hidden';
+	
 };
 
 window.addEventListener('click', function (event) {
@@ -586,7 +595,7 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 		for (var i = 0; i < enemies.length; i++) {
 			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
 				enemies.splice(i,1);
-				timezoneoffset + 0.5;
+				timezoneoffset = timezoneoffset + 0.5;
 			};
 		};
 
@@ -733,6 +742,7 @@ function checkchange() {
 	else if (level > 10) {
 		win();
 	}
+	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
 	if (lastcheck != check) {
 		lastcheck = check;
 		if (playing) {
