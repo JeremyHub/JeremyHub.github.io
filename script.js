@@ -344,6 +344,10 @@ var mousex;
 var mousey;
 var p1bulldirx;
 var p1bulldiry;
+var playerdxchange = 0;
+var playerdychange = 0;
+var playerdxchangebool = false;
+var playerdychangebool = false;
 
 function calcbulldir (){
 	p1bulldirx = -5 * ((player.x-mousex)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
@@ -372,6 +376,28 @@ window.addEventListener('click', function (event) {
 	mousey = event.y;
 	attack();
 });
+
+window.addEventListener('keydown',function(event){Key.onKeydown(event);},false);
+window.addEventListener('keyup',function(event){Key.onKeyup(event);},false);
+
+var pressed = [];
+var Key = {
+	onKeydown: function(event) {
+		this.event = event
+		if (!pressed.includes(this.event.key)) {
+			pressed.push(this.event.key);
+		}
+	},
+	onKeyup: function(event) {
+		this.event = event;
+		for (var i = 0; i < pressed.length; i++) {
+			if (pressed[i] == this.event.key) {
+				pressed.splice(i,1);
+			}
+		}
+		console.log(pressed)
+	}
+};
 
 function attack() {
 	if (playing) {
@@ -407,7 +433,7 @@ function Player (x,y,dx,dy,radius,color) {
 	this.dy = dy;
 	this.radius = radius;
 	this.color = color;
-	this.mass = this.radius*3
+	this.mass = this.radius*3;
 
 	this.draw = function() {
 		ctx.beginPath();
@@ -415,6 +441,20 @@ function Player (x,y,dx,dy,radius,color) {
 		ctx.strokeStyle = this.color;
 		ctx.stroke();
 	};
+
+	this.stop = function() {
+		this.dx = 0;
+		this.dy = 0;
+	}
+
+	this.moving = function() {
+		if (playerdxchangebool) {
+			this.dx = this.dx + playerdxchange;
+		};
+		if (playerdychangebool) {
+			this.dy = this.dy + playerdychange;
+		};
+	}
 
 	this.update = function() {
 		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
@@ -603,6 +643,7 @@ function animate() {
 		enemies[i].update();
 	};
 	checkchange();
+	changemov();
 };
 
 var lastcheck = 1;
@@ -612,16 +653,45 @@ function checkchange() {
 	if (lastcheck != check) {
 		lastcheck = check;
 		if (playing) {
-			for (var i = 0; i < enemies.length; i++) {
-				enemies[i].shoot();
-			};
+			if (checkother % 2 == 0)
+				for (var i = 0; i < enemies.length; i++) {
+					enemies[i].shoot();
+				};
 		};
 		checkother++;
 		if (playing) {
-			if (checkother % 3 == 0) {
+			if (checkother % 5 == 0) {
 				spawnenemy();
 			}
 		}
 	};
 	check = Math.round(new Date().getTime() / 1000);
 };
+
+function changemov () {
+	if (pressed.includes('w')) {
+		playerdychange = -0.1;
+		playerdychangebool = true;
+		player.moving();
+	}
+	if (pressed.includes('s')) {
+		playerdychange = 0.1;
+		playerdychangebool = true;
+		player.moving();
+	}
+	if (pressed.includes('a')) {
+		playerdxchange = -0.1;
+		playerdxchangebool = true;
+		player.moving();
+	}
+	if (pressed.includes('d')) {
+		playerdxchange = 0.1;
+		playerdxchangebool = true;
+		player.moving();
+	};
+	if (pressed.includes('r')) {
+		player.stop();
+	}
+	playerdxchangebool = false;
+	playerdychangebool = false;
+}
