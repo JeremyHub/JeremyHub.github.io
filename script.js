@@ -329,6 +329,20 @@ function addlength(num,n,ismilisec){
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+function canvasstuff() {
+	window.addEventListener('resize', resizeCanvas, false);
+  
+	function resizeCanvas() {
+	  canvas.width = window.innerWidth;
+	  canvas.height = window.innerHeight;
+  	  drawStuff();
+	}
+	resizeCanvas();
+  
+	function drawStuff() {
+	  animate();
+	}
+};
 
 var p1r = 30;
 var p1x = innerHeight/2;
@@ -361,9 +375,9 @@ function startplaying() {
 	};
 	playing = true;
 	document.getElementById('goaway').style.visibility = 'hidden';
-	timezoneoffset = 5;
+	timezoneoffset = 10;
 	date = new Date();
-	titlemw = "to Play";
+	titlemw = "";
 	document.getElementById('canvas').style.zIndex = 1;
 };
 
@@ -372,10 +386,16 @@ function stopplaying() {
 	bullets = [];
 	enemies = [];
 	player = undefined;
+	level = 0;
 	document.getElementById('canvas').style.zIndex = -1;
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	changedate(defaultdatenow);
 	document.getElementById('goaway').style.visibility = 'visible';
+};
+
+function win() {
+	currentlevel = 'You Win!';
+	window.setTimeout(stopplaying(),3000);
 };
 
 window.addEventListener('click', function (event) {
@@ -402,7 +422,6 @@ var Key = {
 				pressed.splice(i,1);
 			}
 		}
-		console.log(pressed)
 	}
 };
 
@@ -415,22 +434,7 @@ function attack() {
 };
 
 function spawnenemy() {
-	enemies.push(new Enemy(Math.random()*(innerWidth-40),Math.random()*(innerHeight-40),(Math.random() - 0.5) * 10,(Math.random() - 0.5) * 10,20,'red'));
-};
-
-function canvasstuff() {
-	window.addEventListener('resize', resizeCanvas, false);
-  
-	function resizeCanvas() {
-	  canvas.width = window.innerWidth;
-	  canvas.height = window.innerHeight;
-  	  drawStuff();
-	}
-	resizeCanvas();
-  
-	function drawStuff() {
-	  animate();
-	}
+	enemies.push(new Enemy(Math.random()*(innerWidth-40),Math.random()*(innerHeight-40),(Math.random() - 0.5) * enemyspeed,(Math.random() - 0.5) * enemyspeed,enemyradius,'red'));
 };
 
 function Player (x,y,dx,dy,radius,color) {
@@ -450,11 +454,6 @@ function Player (x,y,dx,dy,radius,color) {
 		ctx.fillStyle = this.color;
 		ctx.fill();
 	};
-
-	this.stop = function() {
-		this.dx = 0;
-		this.dy = 0;
-	}
 
 	this.moving = function() {
 		this.dx = playerdxchange;
@@ -495,7 +494,6 @@ function Enemy (x,y,dx,dy,radius,color) {
 	this.dy = dy;
 	this.radius = radius;
 	this.color = color;
-	this.shooting = true;
 	this.mass = this.radius*3;
 
 	this.draw = function() {
@@ -508,32 +506,28 @@ function Enemy (x,y,dx,dy,radius,color) {
 	};
 
 	this.shoot = function() {
-		this.bulldx = 2 * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
-		this.bulldy = 2 * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
-		if (this.shooting) {
-		bullets.push(new BadBullet(this.x,this.y,this.bulldx,this.bulldy,5,'red'));
-		};
+		this.bulldx = enemybulletspeed * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
+		this.bulldy = enemybulletspeed * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
+		bullets.push(new BadBullet(this.x,this.y,this.bulldx,this.bulldy,5,'pink'));
 	};
 
 	this.update = function() {
-		if (this.shooting) {
-			if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
-				this.dx = -this.dx;
-				if (this.x + this.radius > innerWidth) {
-					this.x -= this.x + this.radius - innerWidth;
-				};
-				if (this.x - this.radius < 0) {
-					this.x += this.radius - this.x;
-				};
+		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+			this.dx = -this.dx;
+			if (this.x + this.radius > innerWidth) {
+				this.x -= this.x + this.radius - innerWidth;
 			};
-			if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
-				this.dy = -this.dy
-				if (this.y + this.radius > innerHeight) {
-					this.y -= this.y + this.radius - innerHeight;
-				};
-				if (this.y - this.radius < 0) {
-					this.y += this.radius - this.y;
-				};
+			if (this.x - this.radius < 0) {
+				this.x += this.radius - this.x;
+			};
+		};
+		if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+			this.dy = -this.dy
+			if (this.y + this.radius > innerHeight) {
+				this.y -= this.y + this.radius - innerHeight;
+			};
+			if (this.y - this.radius < 0) {
+				this.y += this.radius - this.y;
 			};
 		};
 		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
@@ -571,6 +565,7 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 	this.dy = dy;
 	this.radius = radius;
 	this.color = color;
+	this.exist = true
 
 	this.draw = function() {
 		ctx.beginPath();
@@ -583,25 +578,15 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 
 	this.update = function() {
 		if (this.x >= innerWidth || this.x <= 0) {
-			this.x = -100;
-			this.y = -100;
-			this.dx = 0;
-			this.dy = 0;
+			this.exist = false;
 		};
 		if (this.y >= innerHeight || this.y <= 0) {
-			this.x = -100;
-			this.y = -100;
-			this.dx = 0;
-			this.dy = 0;
+			this.exist = false;
 		};
 		for (var i = 0; i < enemies.length; i++) {
 			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
-				enemies[i].x = -20;
-				enemies[i].y = -20;
-				enemies[i].dx = 0;
-				enemies[i].dy = 0;
-				enemies[i].shooting = false;
-				timezoneoffset = timezoneoffset + 0.5;
+				enemies.splice(i,1);
+				timezoneoffset + 0.5;
 			};
 		};
 
@@ -618,6 +603,7 @@ function BadBullet(x,y,dx,dy,radius,color) {
 	this.dy = dy;
 	this.radius = radius;
 	this.color = color;
+	this.exist = true;
 
 	this.draw = function() {
 		ctx.beginPath();
@@ -628,22 +614,13 @@ function BadBullet(x,y,dx,dy,radius,color) {
 
 	this.update = function() {
 		if (this.x >= innerWidth || this.x <= 0) {
-			this.x = -10;
-			this.y = -10;
-			this.dx = 0;
-			this.dy = 0;
+			this.exist = false;
 		};
 		if (this.y >= innerHeight || this.y <= 0) {
-			this.x = -10;
-			this.y = -10;
-			this.dx = 0;
-			this.dy = 0;
+			this.exist = false;
 		};
 		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
-			this.x = -10;
-			this.y = -10;
-			this.dx = 0;
-			this.dy = 0;
+			this.exist = false;
 			timezoneoffset = timezoneoffset - 0.5;
 		};
 		
@@ -658,33 +635,120 @@ function animate() {
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	for (var i = 0; i < bullets.length; i++) {
 		bullets[i].update();
+		if (!bullets[i].exist) {
+			bullets.splice(i,1);
+		}
 	};
 	if (typeof player !== 'undefined') {player.update()};
 	for (var i = 0; i < enemies.length; i++) {
 		enemies[i].update();
 	};
-	checkchange();
+	if(playing){checkchange()};
 	changemov();
 };
 
 var lastcheck = 1;
 var check = 0;
 var checkother = 0;
+var level = 0;
+var currentlevel = 0;
+var enemyspawnrate = 5;
+var enemyshootrate = 4;
+var enemyradius = 40;
+var enemybulletspeed = 2;
+var enemyspeed = 10;
 function checkchange() {
+	if (level > 1 && level < 2) {
+		currentlevel = 1;
+		enemyradius = 37;
+		enemyspawnrate = 5;
+		enemyshootrate = 3;
+		enemybulletspeed = 2.5;
+		enemyspeed = 12;
+	}
+	else if (level > 2 && level < 3) {
+		currentlevel = 2;
+		enemyradius = 34;
+		enemyspawnrate = 4;
+		enemyshootrate = 3;
+		enemybulletspeed = 3;
+		enemyspeed = 14;
+	}
+	else if (level > 3 && level < 4) {
+		currentlevel = 3;
+		enemyradius = 31;
+		enemyspawnrate = 4;
+		enemyshootrate = 2;
+		enemybulletspeed = 3.5;
+		enemyspeed = 16;
+	}
+	else if (level > 4 && level < 5) {
+		currentlevel = 4;
+		enemyradius = 28;
+		enemyspawnrate = 3;
+		enemyshootrate = 2;
+		enemybulletspeed = 4;
+		enemyspeed = 18;
+	}
+	else if (level > 5 && level < 6) {
+		currentlevel = 5;
+		enemyradius = 25;
+		enemyspawnrate = 3;
+		enemyshootrate = 1;
+		enemybulletspeed = 4.5;
+		enemyspeed = 20;
+	}
+	else if (level > 6 && level < 7) {
+		currentlevel = 6;
+		enemyradius = 22;
+		enemyspawnrate = 2;
+		enemyshootrate = 1;
+		enemybulletspeed = 5;
+		enemyspeed = 22;
+	}
+	else if (level > 7 && level < 8) {
+		currentlevel = 7;
+		enemyradius = 19;
+		enemyspawnrate = 1;
+		enemyshootrate = 1;
+		enemybulletspeed = 5.5;
+		enemyspeed = 24;
+	}
+	else if (level > 8 && level < 9) {
+		currentlevel = 8;
+		enemyradius = 16;
+		enemyspawnrate = 1;
+		enemyshootrate = 1;
+		enemybulletspeed = 6;
+		enemyspeed = 26;
+	}
+	else if (level > 9 && level < 10) {
+		currentlevel = 9;
+		enemyradius = 13;
+		enemyspawnrate = 1;
+		enemyshootrate = 1;
+		enemybulletspeed = 6.5;
+		enemyspeed = 28;
+	}
+	else if (level > 10) {
+		win();
+	}
 	if (lastcheck != check) {
 		lastcheck = check;
 		if (playing) {
-			if (checkother % 2 == 0)
+			if (checkother % enemyshootrate == 0)
 				for (var i = 0; i < enemies.length; i++) {
 					enemies[i].shoot();
 				};
 		};
-		checkother++;
 		if (playing) {
-			if (checkother % 5 == 0) {
+			if (checkother % enemyspawnrate == 0) {
 				spawnenemy();
 			}
-		}
+		};
+		checkother++;
+		level += (1/30);
+		console.log(level)
 	};
 	check = Math.round(new Date().getTime() / 1000);
 };
@@ -708,10 +772,7 @@ function changemov () {
 	else {
 		playerdxchange = 0;
 	};
-	if (pressed.includes('r')) {
-		player.stop();
-	}
 	if (playing) {
 		player.moving();
 	}
-}
+};
