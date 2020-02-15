@@ -447,6 +447,8 @@ function Player (x,y,dx,dy,radius,color) {
 		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
 		ctx.strokeStyle = this.color;
 		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
 	};
 
 	this.stop = function() {
@@ -505,6 +507,8 @@ function Enemy (x,y,dx,dy,radius,color) {
 		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
 		ctx.strokeStyle = this.color;
 		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
 	};
 
 	this.shoot = function() {
@@ -576,7 +580,9 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 		ctx.beginPath();
 		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
 		ctx.strokeStyle = this.color;
+		ctx.lineWidth = 4;
 		ctx.stroke();
+		
 	};
 
 	this.update = function() {
