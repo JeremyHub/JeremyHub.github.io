@@ -350,8 +350,8 @@ var playerdxchangebool = false;
 var playerdychangebool = false;
 
 function calcbulldir (){
-	p1bulldirx = -5 * ((player.x-mousex)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
-	p1bulldiry = -5 * ((player.y-mousey)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
+	p1bulldirx = -7 * ((player.x-mousex)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
+	p1bulldiry = -7 * ((player.y-mousey)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
 };
 
 function startplaying() {
