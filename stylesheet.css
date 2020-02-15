@@ -73,3 +73,7 @@
 	position: absolute;
 	display: block;
 }
+
+#goaway{
+	visibility: visible;
+}

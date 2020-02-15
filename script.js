@@ -359,6 +359,7 @@ function startplaying() {
 		player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
 	};
 	playing = true;
+	document.getElementById('goaway').style.visibility = 'hidden';
 };
 
 function stopplaying() {
@@ -369,6 +370,7 @@ function stopplaying() {
 	document.getElementById('canvas').style.zIndex = -1;
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	changedate(defaultdatenow);
+	document.getElementById('goaway').style.visibility = 'visible';
 };
 
 window.addEventListener('click', function (event) {
