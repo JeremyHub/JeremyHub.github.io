@@ -758,7 +758,6 @@ function checkchange() {
 		};
 		checkother++;
 		level += (1/30);
-		console.log(level)
 	};
 	check = Math.round(new Date().getTime() / 1000);
 };
