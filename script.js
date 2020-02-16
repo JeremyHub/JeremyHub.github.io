@@ -376,6 +376,8 @@ function startplaying() {
 	document.getElementById('goaway').style.visibility = 'hidden';
 	document.getElementById('gamedisplay').style.visibility = 'visible';
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
+	document.getElementById('leveldisplay').style.visibility = 'visible';
+	document.getElementById('ammodisplay').style.visibility = 'visible';
 	timezoneoffset = 10;
 	date = new Date();
 	titlemw = "Welcome to My Game!";
@@ -390,11 +392,14 @@ function stopplaying() {
 	player = undefined;
 	level = 0;
 	currentlevel = 0;
+	ammo = 10;
 	document.getElementById('canvas').style.zIndex = -1;
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	changedate(defaultdatenow);
 	document.getElementById('goaway').style.visibility = 'visible';
 	document.getElementById('gamedisplay').style.visibility = 'hidden';
+	document.getElementById('leveldisplay').style.visibility = 'hidden';
+	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'visible';
 	document.getElementById('headingthatsaystime').style.visibility = 'visible';
 	timezoneoffset = 480;
@@ -403,8 +408,8 @@ function stopplaying() {
 function win() {
 	titlemw = 'You Win!';
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
+	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'hidden';
-	
 };
 
 window.addEventListener('click', function (event) {
@@ -436,8 +441,13 @@ var Key = {
 
 function attack() {
 	if (playing) {
-		calcbulldir();
-		bullets.push(new GoodBullet(player.x,player.y,p1bulldirx,p1bulldiry,5,'white'));
+		if (ammo > 0) {
+			calcbulldir();
+			bullets.push(new GoodBullet(player.x,player.y,p1bulldirx,p1bulldiry,5,'white'));
+			ammo = ammo - 1;
+			document.getElementById('ammodisplay').innerHTML = 'Ammo: ' + ammo;
+		}
+		else {return};
 	}
 	else {return};
 };
@@ -656,6 +666,7 @@ function animate() {
 	changemov();
 };
 
+var ammo = 10;
 var lastcheck = 1;
 var check = 0;
 var checkother = 0;
@@ -758,6 +769,8 @@ function checkchange() {
 		};
 		checkother++;
 		level += (1/30);
+		ammo = ammo + 1;
+		document.getElementById('ammodisplay').innerHTML = 'Ammo: ' + ammo;
 	};
 	check = Math.round(new Date().getTime() / 1000);
 };

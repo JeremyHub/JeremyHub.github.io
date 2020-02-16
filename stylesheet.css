@@ -72,7 +72,16 @@
 	color: violet;
 	width: 50%;
 	float: left;
-	margin-right: 50%;
+	font-size: 40px;
+	position: absolute;
+	text-align: center;
+}
+
+#ammodisplay{
+	color: violet;
+	width: 50%;
+	margin-left: 50%;
+	float: right;
 	font-size: 40px;
 	position: absolute;
 	text-align: center;
