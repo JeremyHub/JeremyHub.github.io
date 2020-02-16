@@ -324,7 +324,7 @@ function addlength(num,n,ismilisec){
 	return (whole + "." + decimalwanted)
 };
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////Game Shit///////////////////////////////////////////////////////////////////////////////////////////
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -378,7 +378,7 @@ function startplaying() {
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
 	document.getElementById('leveldisplay').style.visibility = 'visible';
 	document.getElementById('ammodisplay').style.visibility = 'visible';
-	timezoneoffset = 10;
+	timezoneoffset = 5;
 	date = new Date();
 	titlemw = "Welcome to My Game!";
 	document.getElementById('canvas').style.zIndex = 1;
@@ -427,15 +427,15 @@ var Key = {
 		this.event = event
 		if (!pressed.includes(this.event.key)) {
 			pressed.push(this.event.key);
-		}
+		};
 	},
 	onKeyup: function(event) {
 		this.event = event;
 		for (var i = 0; i < pressed.length; i++) {
 			if (pressed[i] == this.event.key) {
 				pressed.splice(i,1);
-			}
-		}
+			};
+		};
 	}
 };
 
@@ -559,8 +559,8 @@ function Enemy (x,y,dx,dy,radius,color) {
 			this.normaly = (player.y - this.y) / this.distance;
 			this.tangentialvx = -this.normaly;
 			this.tangentialvy = this.normalx;
-			this.tanvector = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
-			this.tanvector2 = (player.dx * this.tangentialvx) + (player.dy * this.tangentialvy)
+			this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+			this.tanvectordot2 = (player.dx * this.tangentialvx) + (player.dy * this.tangentialvy)
 			this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
 			this.normaldot2 = (player.dx * this.normalx) + (player.dy * this.normaly);
 			this.m1 = (this.normaldot * (this.mass - player.mass) + 2 * player.mass * this.normaldot2) / (this.mass + player.mass);
@@ -605,7 +605,7 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 		for (var i = 0; i < enemies.length; i++) {
 			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
 				enemies.splice(i,1);
-				timezoneoffset = timezoneoffset + 0.5;
+				timezoneoffset = timezoneoffset + 0.25;
 			};
 		};
 
@@ -777,22 +777,40 @@ function checkchange() {
 
 function changemov () {
 	if (pressed.includes('w')) {
-		playerdychange = -5;
+		if (playerdychange != -5) {
+			playerdychange = playerdychange - 1;
+		};
 	}
 	else if (pressed.includes('s')) {
-		playerdychange = 5;
+		if (playerdychange != 5) {
+			playerdychange = playerdychange + 1;
+		};
 	}
 	else {
-		playerdychange = 0;
-	}
+		if (playerdychange < 0) {
+			playerdychange = playerdychange + 1;
+		}
+		if (playerdychange > 0) {
+			playerdychange = playerdychange - 1;
+		}
+	};
 	if (pressed.includes('a')) {
-		playerdxchange = -5;
+		if (playerdxchange != -5) {
+			playerdxchange = playerdxchange - 1;
+		}
 	}
 	else if (pressed.includes('d')) {
-		playerdxchange = 5;
+		if (playerdxchange != 5) {
+			playerdxchange = playerdxchange + 1;
+		}
 	}
 	else {
-		playerdxchange = 0;
+		if (playerdxchange < 0) {
+			playerdxchange = playerdxchange + 1;
+		}
+		if (playerdxchange > 0) {
+			playerdxchange = playerdxchange - 1;
+		}
 	};
 	if (playing) {
 		player.moving();
