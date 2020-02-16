@@ -565,12 +565,11 @@ function Enemy (x,y,dx,dy,radius,color) {
 			this.normaldot2 = (player.dx * this.normalx) + (player.dy * this.normaly);
 			this.m1 = (this.normaldot * (this.mass - player.mass) + 2 * player.mass * this.normaldot2) / (this.mass + player.mass);
 			this.m2 = (this.normaldot2 * (player.mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + player.mass);
-			this.dx = this.tangentialvx * this.tanvector + this.normalx * this.m1;
-			this.dy = this.tangentialvy * this.tanvector + this.normaly * this.m1;
-			player.dx = this.tangentialvx * this.tanvector2 + this.normalx * this.m2;
-			player.dy = this.tangentialvy * this.tanvector2 + this.normaly * this.m2;
+			this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+			this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+			player.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+			player.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
 		};
-		
 		this.x += this.dx;
 		this.y += this.dy;
 		this.draw();
