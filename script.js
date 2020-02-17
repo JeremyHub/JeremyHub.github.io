@@ -1202,7 +1202,6 @@ function changemov () {
 			playerdxchange = playerdxchange - playerspeedaccelrate;
 		}
 	};
-	console.log(pressed)
 	if (playing) {
 		if(!playerfreeze){player.moving()};
 	};
