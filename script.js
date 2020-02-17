@@ -217,10 +217,10 @@ function howlong() {
 	deadline = new Date(date).getTime();
 	now = new Date().getTime();
 	howlongtill = sign*(deadline-now);
-	d = new Date(date);
+	d = new Date();
 	daystillnotimezone = howlongtill/(1000*60*24*60);
 	if (!playing) {
-		daystill = daystillnotimezone + ((timezoneoffset - (d.getTimezoneOffset()))/(60*24));
+		daystill = daystillnotimezone + ((timezoneoffset - d.getTimezoneOffset())/(60*24));
 	};
 	if (playing) {
 		daystill = daystillnotimezone + (timezoneoffset/(60*24));
