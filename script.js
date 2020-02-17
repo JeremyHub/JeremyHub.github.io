@@ -385,6 +385,22 @@ function startplaying() {
 	document.getElementById('canvas').style.zIndex = 1;
 	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 	currentask = 7;
+	ammo = 20;
+	bombsleft = 2;
+	lastcheck = 1;
+	check = 0;
+	checkother = 0;
+	level = 0;
+	currentlevel = 0;
+	enemyspawnrate = 5;
+	enemyshootrate = 4;
+	enemyradius = 40;
+	enemybulletspeed = 2;
+	enemyspeed = 10;
+	checklevel = 0;
+	bombenemyspawnrate = 0;
+	bombenemyshootrate = 0;
+	freezecheck = 0;
 };
 
 function stopplaying() {
@@ -394,10 +410,6 @@ function stopplaying() {
 	bombenemies = [];
 	bombs = [];
 	player = undefined;
-	level = 0;
-	currentlevel = 0;
-	ammo = 10;
-	bombsleft = 1;
 	document.getElementById('canvas').style.zIndex = -1;
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	changedate(defaultdatenow);
@@ -410,6 +422,7 @@ function stopplaying() {
 	timezoneoffset = 480;
 	currentask = 8;
 	document.getElementById("mw").style.visibility = 'visible';
+	checklevel = 0;
 };
 
 function win() {
@@ -962,25 +975,25 @@ function animate() {
 	changemov();
 };
 
-var ammo = 10;
-var bombsleft = 2;
-var lastcheck = 1;
-var check = 0;
-var checkother = 0;
-var level = 0;
-var currentlevel = 0;
-var enemyspawnrate = 5;
-var enemyshootrate = 4;
-var enemyradius = 40;
-var enemybulletspeed = 2;
-var enemyspeed = 10;
-var checklevel = 0;
-var bombenemyspawnrate = 0;
-var bombenemyshootrate = 0;
-var freezecheck = 0;
+var ammo;
+var bombsleft;
+var lastcheck;
+var check;
+var checkother;
+var level;
+var currentlevel;
+var enemyspawnrate;
+var enemyshootrate;
+var enemyradius;
+var enemybulletspeed;
+var enemyspeed;
+var checklevel;
+var bombenemyspawn;
+var bombenemyshoot;
+var freezecheck;
 function checkchange() {
 	if (checklevel !== currentlevel) {
-		bombsleft += 2;
+		bombsleft += 1;
 		checklevel = currentlevel;
 	}
 	if (level < 1) {
