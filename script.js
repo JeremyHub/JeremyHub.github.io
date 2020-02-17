@@ -353,6 +353,8 @@ var p1c = 'white';
 var bullets = [];
 var player;
 var enemies = [];
+var bombenemies = [];
+var playerfreeze = false;
 var bombs = [];
 var playing = false;
 var mousex;
@@ -391,6 +393,7 @@ function stopplaying() {
 	playing = false;
 	bullets = [];
 	enemies = [];
+	bombenemies = [];
 	bombs = [];
 	player = undefined;
 	level = 0;
@@ -466,6 +469,10 @@ function spawnenemy() {
 	enemies.push(new Enemy(Math.random()*(innerWidth-40),Math.random()*(innerHeight-40),(Math.random() - 0.5) * enemyspeed,(Math.random() - 0.5) * enemyspeed,enemyradius,'red'));
 };
 
+function spawnbombenemy() {
+	bombenemies.push(new BombEnemy(Math.random()*(innerWidth-40),Math.random()*(innerHeight-40),(Math.random() - 0.5) * enemyspeed,(Math.random() - 0.5) * enemyspeed,enemyradius,'yellow'));
+};
+
 function Player (x,y,dx,dy,radius,color) {
 	this.x = x;
 	this.y = y;
@@ -490,28 +497,29 @@ function Player (x,y,dx,dy,radius,color) {
 	}
 
 	this.update = function() {
-		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
-			this.dx = -this.dx;
-			if (this.x + this.radius > innerWidth) {
-				this.x -= this.x + this.radius - innerWidth;
+		if (!playerfreeze) {
+			if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+				this.dx = -this.dx;
+				if (this.x + this.radius > innerWidth) {
+					this.x -= this.x + this.radius - innerWidth;
+				};
+				if (this.x - this.radius < 0) {
+					this.x += this.radius - this.x;
+				};
 			};
-			if (this.x - this.radius < 0) {
-				this.x += this.radius - this.x;
+			if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+				this.dy = -this.dy
+				if (this.y + this.radius > innerHeight) {
+					this.y -= this.y + this.radius - innerHeight;
+				};
+				if (this.y - this.radius < 0) {
+					this.y += this.radius - this.y;
+				};
 			};
-		};
-		if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
-			this.dy = -this.dy
-			if (this.y + this.radius > innerHeight) {
-				this.y -= this.y + this.radius - innerHeight;
-			};
-			if (this.y - this.radius < 0) {
-				this.y += this.radius - this.y;
-			};
-		};
 
-		this.x += this.dx;
-		this.y += this.dy;
-		
+			this.x += this.dx;
+			this.y += this.dy;
+		};
 		this.draw();
 	};
 };
@@ -538,6 +546,76 @@ function Enemy (x,y,dx,dy,radius,color) {
 		this.bulldx = enemybulletspeed * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
 		this.bulldy = enemybulletspeed * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
 		bullets.push(new BadBullet(this.x,this.y,this.bulldx,this.bulldy,5,'pink'));
+	};
+
+	this.update = function() {
+		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+			this.dx = -this.dx;
+			if (this.x + this.radius > innerWidth) {
+				this.x -= this.x + this.radius - innerWidth;
+			};
+			if (this.x - this.radius < 0) {
+				this.x += this.radius - this.x;
+			};
+		};
+		if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+			this.dy = -this.dy
+			if (this.y + this.radius > innerHeight) {
+				this.y -= this.y + this.radius - innerHeight;
+			};
+			if (this.y - this.radius < 0) {
+				this.y += this.radius - this.y;
+			};
+		};
+		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
+			//bouncing off
+			this.distance = Math.sqrt(Math.pow((this.x-player.x),2)+Math.pow((this.y-player.y),2));
+			this.overlap = this.distance - this.radius - player.radius;
+			this.x -= this.overlap * (this.x - player.x) / this.distance;
+			this.y -= this.overlap * (this.y - player.y) / this.distance;
+			this.normalx = (player.x - this.x) / this.distance;
+			this.normaly = (player.y - this.y) / this.distance;
+			this.tangentialvx = -this.normaly;
+			this.tangentialvy = this.normalx;
+			this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+			this.tanvectordot2 = (player.dx * this.tangentialvx) + (player.dy * this.tangentialvy)
+			this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+			this.normaldot2 = (player.dx * this.normalx) + (player.dy * this.normaly);
+			this.m1 = (this.normaldot * (this.mass - player.mass) + 2 * player.mass * this.normaldot2) / (this.mass + player.mass);
+			this.m2 = (this.normaldot2 * (player.mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + player.mass);
+			this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+			this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+			player.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+			player.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+		};
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
+};
+
+function BombEnemy (x,y,dx,dy,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+	this.mass = this.radius*3;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	};
+
+	this.shoot = function() {
+		this.bulldx = enemybulletspeed * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
+		this.bulldy = enemybulletspeed * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
+		bombs.push(new BadBomb(this.x,this.y,this.bulldx,this.bulldy,10,'pink',1,100));
 	};
 
 	this.update = function() {
@@ -617,6 +695,13 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 				timezoneoffset = timezoneoffset + 0.25;
 			};
 		};
+		for (var i = 0; i < bombenemies.length; i++) {
+			if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
+				bombenemies.splice(i,1);
+				timezoneoffset = timezoneoffset + 0.25;
+				bombsleft += 5;
+			};
+		};
 
 		this.x += this.dx;
 		this.y += this.dy;
@@ -658,7 +743,55 @@ function BadBullet(x,y,dx,dy,radius,color) {
 	};
 };
 
-function Bomb(x,y,dx,dy,radius,color,rate,maxradius) {
+function BadBomb(x,y,dx,dy,radius,color,rate,maxradius) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+	this.exist = true;
+	this.rate = rate;
+	this.maxradius = maxradius;
+	this.hit = false;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	};
+
+	this.explode = function() {
+		if (this.radius < this.maxradius) {
+			this.radius = this.radius + this.rate;
+			this.draw();
+			if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
+				playerfreeze = true;
+			};
+		}
+		else {
+			this.exist = false;
+		};
+		
+	};
+	
+	this.update = function() {
+		if (this.x + this.radius >= innerWidth || this.x - this.radius <= 0 || this.y + this.radius >= innerHeight || this.y - this.radius <= 0) {
+			this.exist = false;
+		};
+		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
+			this.hit = true;
+		};
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
+};
+
+function GoodBomb(x,y,dx,dy,radius,color,rate,maxradius) {
 	this.x = x;
 	this.y = y;
 	this.dx = dx;
@@ -689,6 +822,13 @@ function Bomb(x,y,dx,dy,radius,color,rate,maxradius) {
 					timezoneoffset = timezoneoffset + 0.25;
 				};
 			};
+			for (var i = 0; i < bombenemies.length; i++) {
+				if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
+					bombenemies.splice(i,1);
+					timezoneoffset = timezoneoffset + 0.25;
+					bombsleft += 5;
+				};
+			};
 		}
 		else {
 			this.exist = false;
@@ -703,7 +843,14 @@ function Bomb(x,y,dx,dy,radius,color,rate,maxradius) {
 			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
 				enemies.splice(i,1);
 				timezoneoffset = timezoneoffset + 0.25;
-				this.hit = true
+				this.hit = true;
+			};
+		};
+		for (var i = 0; i < bombenemies.length; i++) {
+			if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
+				bombenemies.splice(i,1);
+				timezoneoffset = timezoneoffset + 0.25;
+				this.hit = true;
 			};
 		};
 
@@ -732,7 +879,10 @@ function animate() {
 	for (var i = 0; i < enemies.length; i++) {
 		enemies[i].update();
 	};
-	if(playing){checkchange()};
+	for (var i = 0; i < bombenemies.length; i++) {
+		bombenemies[i].update();
+	};
+	checkchange();
 	changemov();
 };
 
@@ -749,6 +899,9 @@ var enemyradius = 40;
 var enemybulletspeed = 2;
 var enemyspeed = 10;
 var checklevel = 0;
+var bombenemyspawnrate = 0;
+var bombenemyshootrate = 0;
+var freezecheck = 0;
 function checkchange() {
 	if (checklevel !== currentlevel) {
 		bombsleft += 1;
@@ -761,7 +914,8 @@ function checkchange() {
 		enemyradius = 40;
 		enemybulletspeed = 2;
 		enemyspeed = 10;
-		
+		bombenemyspawnrate = 0;
+		bombenemyshootrate = 0;
 	}
 	if (level > 1 && level < 2) {
 		currentlevel = 1;
@@ -770,6 +924,8 @@ function checkchange() {
 		enemyshootrate = 3;
 		enemybulletspeed = 2.5;
 		enemyspeed = 12;
+		bombenemyspawnrate = 20;
+		bombenemyshootrate = 10;
 	}
 	else if (level > 2 && level < 3) {
 		currentlevel = 2;
@@ -778,6 +934,8 @@ function checkchange() {
 		enemyshootrate = 3;
 		enemybulletspeed = 3;
 		enemyspeed = 14;
+		bombenemyspawnrate = 19;
+		bombenemyshootrate = 10;
 	}
 	else if (level > 3 && level < 4) {
 		currentlevel = 3;
@@ -786,6 +944,8 @@ function checkchange() {
 		enemyshootrate = 2;
 		enemybulletspeed = 3.5;
 		enemyspeed = 16;
+		bombenemyspawnrate = 19;
+		bombenemyshootrate = 9;
 	}
 	else if (level > 4 && level < 5) {
 		currentlevel = 4;
@@ -794,6 +954,8 @@ function checkchange() {
 		enemyshootrate = 2;
 		enemybulletspeed = 4;
 		enemyspeed = 18;
+		bombenemyspawnrate = 18;
+		bombenemyshootrate = 9;
 	}
 	else if (level > 5 && level < 6) {
 		currentlevel = 5;
@@ -802,6 +964,8 @@ function checkchange() {
 		enemyshootrate = 1;
 		enemybulletspeed = 4.5;
 		enemyspeed = 20;
+		bombenemyspawnrate = 18;
+		bombenemyshootrate = 8;
 	}
 	else if (level > 6 && level < 7) {
 		currentlevel = 6;
@@ -810,6 +974,8 @@ function checkchange() {
 		enemyshootrate = 1;
 		enemybulletspeed = 5;
 		enemyspeed = 22;
+		bombenemyspawnrate = 17;
+		bombenemyshootrate = 8;
 	}
 	else if (level > 7 && level < 8) {
 		currentlevel = 7;
@@ -818,6 +984,8 @@ function checkchange() {
 		enemyshootrate = 1;
 		enemybulletspeed = 5.5;
 		enemyspeed = 24;
+		bombenemyspawnrate = 17;
+		bombenemyshootrate = 7;
 	}
 	else if (level > 8 && level < 9) {
 		currentlevel = 8;
@@ -826,6 +994,8 @@ function checkchange() {
 		enemyshootrate = 1;
 		enemybulletspeed = 6;
 		enemyspeed = 26;
+		bombenemyspawnrate = 16;
+		bombenemyshootrate = 6;
 	}
 	else if (level > 9 && level < 10) {
 		currentlevel = 9;
@@ -834,6 +1004,8 @@ function checkchange() {
 		enemyshootrate = 1;
 		enemybulletspeed = 6.5;
 		enemyspeed = 28;
+		bombenemyspawnrate = 16;
+		bombenemyshootrate = 5;
 	}
 	else if (level > 10) {
 		win();
@@ -842,14 +1014,30 @@ function checkchange() {
 	if (lastcheck != check) {
 		lastcheck = check;
 		if (playing) {
-			if (checkother % enemyshootrate == 0)
+			if (checkother % enemyshootrate == 0) {
 				for (var i = 0; i < enemies.length; i++) {
 					enemies[i].shoot();
 				};
-		};
-		if (playing) {
+			};
 			if (checkother % enemyspawnrate == 0) {
 				spawnenemy();
+			};
+			if (checkother % bombenemyspawnrate == 0) {
+				spawnbombenemy();
+			};
+			if (checkother % bombenemyshootrate == 0) {
+				for (var i = 0; i < bombenemies.length; i++) {
+					bombenemies[i].shoot();
+				};
+			};
+			if (playerfreeze) {
+				if (freezecheck == 0) {
+					freezecheck = lastcheck + 1;
+				};
+				if (lastcheck == freezecheck) {
+					playerfreeze = false;
+					freezecheck = 0;
+				};
 			}
 		};
 		checkother++;
@@ -899,12 +1087,12 @@ function changemov () {
 		}
 	};
 	if (playing) {
-		player.moving();
+		if(!playerfreeze){player.moving()};
 	};
 	if (pressed.includes(' ')) {
 		if (!bombing && bombsleft > 0) {
 			calcbulldir();
-			bombs.push(new Bomb(player.x,player.y,p1bulldirx,p1bulldiry,20,'orange',3,200));
+			bombs.push(new GoodBomb(player.x,player.y,p1bulldirx,p1bulldiry,20,'orange',3,200));
 			bombsleft = bombsleft - 1;
 			document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
 		};
