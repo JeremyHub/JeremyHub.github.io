@@ -78,7 +78,7 @@ function switchdate (datewanted) {
 		sign = 1;
 	}
 	else if (datewanted == 4) {
-		if (document.getElementById('customdateyear').value == 'play') {
+		if (document.getElementById('customdateyear').value == '') {
 			startplaying();
 		}
 		else if (document.getElementById('customdateyear').value.length > 0) {
@@ -353,6 +353,7 @@ var p1c = 'white';
 var bullets = [];
 var player;
 var enemies = [];
+var bombs = [];
 var playing = false;
 var mousex;
 var mousey;
@@ -383,16 +384,19 @@ function startplaying() {
 	titlemw = "Welcome to My Game!";
 	document.getElementById('canvas').style.zIndex = 1;
 	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
+	currentask = 7;
 };
 
 function stopplaying() {
 	playing = false;
 	bullets = [];
 	enemies = [];
+	bombs = [];
 	player = undefined;
 	level = 0;
 	currentlevel = 0;
 	ammo = 10;
+	bombs = 1;
 	document.getElementById('canvas').style.zIndex = -1;
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	changedate(defaultdatenow);
@@ -403,6 +407,8 @@ function stopplaying() {
 	document.getElementById('time').style.visibility = 'visible';
 	document.getElementById('headingthatsaystime').style.visibility = 'visible';
 	timezoneoffset = 480;
+	currentask = 8;
+	document.getElementById("mw").style.visibility = 'visible';
 };
 
 function win() {
@@ -410,12 +416,16 @@ function win() {
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'hidden';
+	document.getElementById("mw").style.visibility = 'hidden';
 };
 
-window.addEventListener('click', function (event) {
+window.addEventListener('click', function () {
+	attack();
+});
+
+window.addEventListener('mousemove', function (event) {
 	mousex = event.x;
 	mousey = event.y;
-	attack();
 });
 
 window.addEventListener('keydown',function(event){Key.onKeydown(event);},false);
@@ -445,7 +455,7 @@ function attack() {
 			calcbulldir();
 			bullets.push(new GoodBullet(player.x,player.y,p1bulldirx,p1bulldiry,5,'white'));
 			ammo = ammo - 1;
-			document.getElementById('ammodisplay').innerHTML = 'Ammo: ' + ammo;
+			document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
 		}
 		else {return};
 	}
@@ -648,9 +658,70 @@ function BadBullet(x,y,dx,dy,radius,color) {
 	};
 };
 
+function Bomb(x,y,dx,dy,radius,color,rate,maxradius) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+	this.exist = true;
+	this.rate = rate;
+	this.maxradius = maxradius;
+	this.hit = false;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	};
+
+	this.explode = function() {
+		if (this.radius < this.maxradius) {
+			this.radius = this.radius + this.rate;
+			this.draw();
+			for (var i = 0; i < enemies.length; i++) {
+				if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
+					enemies.splice(i,1);
+					timezoneoffset = timezoneoffset + 0.25;
+				};
+			};
+		}
+		else {
+			this.exist = false;
+		};
+	};
+
+	this.update = function() {
+		if (this.x + this.radius >= innerWidth || this.x - this.radius <= 0 || this.y + this.radius >= innerHeight || this.y - this.radius <= 0) {
+			this.exist = false;
+		};
+		for (var i = 0; i < enemies.length; i++) {
+			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
+				enemies.splice(i,1);
+				timezoneoffset = timezoneoffset + 0.25;
+				this.hit = true
+			};
+		};
+
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
+};
+
 function animate() {
 	requestAnimationFrame(animate);
 	ctx.clearRect(0,0,innerWidth,innerHeight);
+	for (var i = 0; i < bombs.length; i++) {
+		if (bombs[i].x >= innerWidth || bombs[i].x <= 0 || bombs[i].y >= innerHeight || bombs[i].y <= 0 || bombs[i].hit) {
+			bombs[i].explode();
+		}
+		else {bombs[i].update()}
+	}
 	for (var i = 0; i < bullets.length; i++) {
 		bullets[i].update();
 		if (!bullets[i].exist) {
@@ -666,6 +737,7 @@ function animate() {
 };
 
 var ammo = 10;
+var bombsleft = 2;
 var lastcheck = 1;
 var check = 0;
 var checkother = 0;
@@ -676,7 +748,21 @@ var enemyshootrate = 4;
 var enemyradius = 40;
 var enemybulletspeed = 2;
 var enemyspeed = 10;
+var checklevel = 0;
 function checkchange() {
+	if (checklevel !== currentlevel) {
+		bombsleft += 1;
+		checklevel = currentlevel;
+	}
+	if (level < 1) {
+		currentlevel = 0;
+		enemyspawnrate = 5;
+		enemyshootrate = 4;
+		enemyradius = 40;
+		enemybulletspeed = 2;
+		enemyspeed = 10;
+		
+	}
 	if (level > 1 && level < 2) {
 		currentlevel = 1;
 		enemyradius = 37;
@@ -769,11 +855,12 @@ function checkchange() {
 		checkother++;
 		level += (1/30);
 		ammo = ammo + 1;
-		document.getElementById('ammodisplay').innerHTML = 'Ammo: ' + ammo;
+		document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
 	};
 	check = Math.round(new Date().getTime() / 1000);
 };
 
+var bombing = false;
 function changemov () {
 	if (pressed.includes('w')) {
 		if (playerdychange != -5) {
@@ -813,5 +900,15 @@ function changemov () {
 	};
 	if (playing) {
 		player.moving();
+	};
+	if (pressed.includes(' ')) {
+		if (!bombing && bombsleft > 0) {
+			calcbulldir();
+			bombs.push(new Bomb(player.x,player.y,p1bulldirx,p1bulldiry,20,'orange',3,200));
+			bombsleft = bombsleft - 1;
+			document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
+		};
+		bombing = true;
 	}
+	else {bombing = false}
 };
