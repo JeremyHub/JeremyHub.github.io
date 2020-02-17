@@ -1038,12 +1038,14 @@ function checkchange() {
 					playerfreeze = false;
 					freezecheck = 0;
 				};
-			}
+			};
 		};
 		checkother++;
-		level += (1/30);
-		ammo = ammo + 1;
-		document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
+		if (playing) {
+			level += (1/30);
+			ammo = ammo + 1;
+			document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
+		}
 	};
 	check = Math.round(new Date().getTime() / 1000);
 };
