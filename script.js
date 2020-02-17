@@ -220,7 +220,7 @@ function howlong() {
 	d = new Date();
 	daystillnotimezone = howlongtill/(1000*60*24*60);
 	if (!playing) {
-		daystill = daystillnotimezone + (sign*((timezoneoffset - d.getTimezoneOffset())/(60*24)));
+		daystill = daystillnotimezone + (timezoneoffset - (sign*d.getTimezoneOffset())/(60*24)));
 	};
 	if (playing) {
 		daystill = daystillnotimezone + (timezoneoffset/(60*24));
