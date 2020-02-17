@@ -699,7 +699,7 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 			if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
 				bombenemies.splice(i,1);
 				timezoneoffset = timezoneoffset + 0.25;
-				bombsleft += 2;
+				bombsleft += 1;
 			};
 		};
 
@@ -826,7 +826,7 @@ function GoodBomb(x,y,dx,dy,radius,color,rate,maxradius) {
 				if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
 					bombenemies.splice(i,1);
 					timezoneoffset = timezoneoffset + 0.25;
-					bombsleft += 2;
+					bombsleft += 1;
 				};
 			};
 		}
@@ -904,7 +904,7 @@ var bombenemyshootrate = 0;
 var freezecheck = 0;
 function checkchange() {
 	if (checklevel !== currentlevel) {
-		bombsleft += 5;
+		bombsleft += 2;
 		checklevel = currentlevel;
 	}
 	if (level < 1) {
