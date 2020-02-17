@@ -363,8 +363,6 @@ var p1bulldirx;
 var p1bulldiry;
 var playerdxchange = 0;
 var playerdychange = 0;
-var playerdxchangebool = false;
-var playerdychangebool = false;
 
 function calcbulldir (){
 	p1bulldirx = -10 * ((player.x-mousex)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
@@ -399,7 +397,7 @@ function stopplaying() {
 	level = 0;
 	currentlevel = 0;
 	ammo = 10;
-	bombs = 1;
+	bombsleft = 1;
 	document.getElementById('canvas').style.zIndex = -1;
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	changedate(defaultdatenow);
@@ -524,6 +522,7 @@ function Player (x,y,dx,dy,radius,color) {
 	};
 };
 
+var enemiesids = 0;
 function Enemy (x,y,dx,dy,radius,color) {
 	this.x = x;
 	this.y = y;
@@ -532,6 +531,8 @@ function Enemy (x,y,dx,dy,radius,color) {
 	this.radius = radius;
 	this.color = color;
 	this.mass = this.radius*3;
+	this.id = enemiesids;
+	enemiesids += 1;
 
 	this.draw = function() {
 		ctx.beginPath();
@@ -568,7 +569,7 @@ function Enemy (x,y,dx,dy,radius,color) {
 			};
 		};
 		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
-			//bouncing off
+			//bouncing off player
 			this.distance = Math.sqrt(Math.pow((this.x-player.x),2)+Math.pow((this.y-player.y),2));
 			this.overlap = this.distance - this.radius - player.radius;
 			this.x -= this.overlap * (this.x - player.x) / this.distance;
@@ -588,12 +589,73 @@ function Enemy (x,y,dx,dy,radius,color) {
 			player.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
 			player.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
 		};
+		// for (var i = 0; i < enemies.length; i++) {
+		// 	if (enemies[i].id !== this.id) {
+		// 		if (Math.sqrt(Math.pow((this.x-enemies[i].x),2)+Math.pow((this.y-enemies[i].y),2)) < this.radius + enemies[i].radius) {
+		// 			//bouncing off other enemies
+		// 			this.distance = Math.sqrt(Math.pow((this.x-enemies[i].x),2)+Math.pow((this.y-enemies[i].y),2));
+		// 			this.overlap = this.distance - this.radius - enemies[i].radius;
+		// 			this.x -= this.overlap * (this.x - enemies[i].x) / this.distance;
+		// 			this.y -= this.overlap * (this.y - enemies[i].y) / this.distance;
+		// 			this.normalx = (enemies[i].x - this.x) / this.distance;
+		// 			this.normaly = (enemies[i].y - this.y) / this.distance;
+		// 			this.tangentialvx = -this.normaly;
+		// 			this.tangentialvy = this.normalx;
+		// 			this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+		// 			this.tanvectordot2 = (enemies[i].dx * this.tangentialvx) + (enemies[i].dy * this.tangentialvy)
+		// 			this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+		// 			this.normaldot2 = (enemies[i].dx * this.normalx) + (enemies[i].dy * this.normaly);
+		// 			this.m1 = (this.normaldot * (this.mass - enemies[i].mass) + 2 * enemies[i].mass * this.normaldot2) / (this.mass + enemies[i].mass);
+		// 			this.m2 = (this.normaldot2 * (enemies[i].mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + enemies[i].mass);
+		// 			this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+		// 			this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+		// 			enemies[i].dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+		// 			enemies[i].dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+		// 		};
+		// 	};
+		// };
+		// for (var i = 0; i < bombenemies.length; i++) {
+		// 	if (Math.sqrt(Math.pow((this.x-bombenemies[i].x),2)+Math.pow((this.y-bombenemies[i].y),2)) < this.radius + bombenemies[i].radius) {
+		// 		//bouncing off bomb enemies
+		// 		this.distance = Math.sqrt(Math.pow((this.x-bombenemies[i].x),2)+Math.pow((this.y-bombenemies[i].y),2));
+		// 		this.overlap = this.distance - this.radius - bombenemies[i].radius;
+		// 		this.x -= this.overlap * (this.x - bombenemies[i].x) / this.distance;
+		// 		this.y -= this.overlap * (this.y - bombenemies[i].y) / this.distance;
+		// 		this.normalx = (bombenemies[i].x - this.x) / this.distance;
+		// 		this.normaly = (bombenemies[i].y - this.y) / this.distance;
+		// 		this.tangentialvx = -this.normaly;
+		// 		this.tangentialvy = this.normalx;
+		// 		this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+		// 		this.tanvectordot2 = (bombenemies[i].dx * this.tangentialvx) + (bombenemies[i].dy * this.tangentialvy)
+		// 		this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+		// 		this.normaldot2 = (bombenemies[i].dx * this.normalx) + (bombenemies[i].dy * this.normaly);
+		// 		this.m1 = (this.normaldot * (this.mass - bombenemies[i].mass) + 2 * bombenemies[i].mass * this.normaldot2) / (this.mass + bombenemies[i].mass);
+		// 		this.m2 = (this.normaldot2 * (bombenemies[i].mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + bombenemies[i].mass);
+		// 		this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+		// 		this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+		// 		bombenemies[i].dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+		// 		bombenemies[i].dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+		// 	};
+		// };
+		if (this.dx > 30) {
+			this.dx == 30;
+		};
+		if (this.dx < 30) {
+			this.dx == -30
+		};
+		if (this.dy > 30) {
+			this.dy == 30;
+		};
+		if (this.dy < 30) {
+			this.dy == -30
+		};
 		this.x += this.dx;
 		this.y += this.dy;
 		this.draw();
 	};
 };
 
+var bombenemiesids = 0;
 function BombEnemy (x,y,dx,dy,radius,color) {
 	this.x = x;
 	this.y = y;
@@ -602,6 +664,8 @@ function BombEnemy (x,y,dx,dy,radius,color) {
 	this.radius = radius;
 	this.color = color;
 	this.mass = this.radius*3;
+	this.id = bombenemiesids;
+	bombenemiesids += 1;
 
 	this.draw = function() {
 		ctx.beginPath();
@@ -615,7 +679,7 @@ function BombEnemy (x,y,dx,dy,radius,color) {
 	this.shoot = function() {
 		this.bulldx = (enemybulletspeed/2) * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
 		this.bulldy = (enemybulletspeed/2) * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
-		bombs.push(new BadBomb(this.x,this.y,this.bulldx,this.bulldy,15,'yellow',1,100));
+		bombs.push(new BadBomb(this.x,this.y,this.bulldx,this.bulldy,15,'yellow',2.5,100));
 	};
 
 	this.update = function() {
@@ -657,6 +721,18 @@ function BombEnemy (x,y,dx,dy,radius,color) {
 			this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
 			player.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
 			player.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+		};
+		if (this.dx > 30) {
+			this.dx == 30;
+		};
+		if (this.dx < 30) {
+			this.dx == -30
+		};
+		if (this.dy > 30) {
+			this.dy == 30;
+		};
+		if (this.dy < 30) {
+			this.dy == -30
 		};
 		this.x += this.dx;
 		this.y += this.dy;
@@ -1011,41 +1087,37 @@ function checkchange() {
 		win();
 	}
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
-	if (lastcheck != check) {
+	if (lastcheck != check && playing) {
 		lastcheck = check;
-		if (playing) {
-			if (checkother % enemyshootrate == 0) {
-				for (var i = 0; i < enemies.length; i++) {
-					enemies[i].shoot();
-				};
+		if (checkother % enemyshootrate == 0) {
+			for (var i = 0; i < enemies.length; i++) {
+				enemies[i].shoot();
 			};
-			if (checkother % enemyspawnrate == 0) {
-				spawnenemy();
+		};
+		if (checkother % enemyspawnrate == 0) {
+			spawnenemy();
+		};
+		if (checkother % bombenemyspawnrate == 0) {
+			spawnbombenemy();
+		};
+		if (checkother % bombenemyshootrate == 0) {
+			for (var i = 0; i < bombenemies.length; i++) {
+				bombenemies[i].shoot();
 			};
-			if (checkother % bombenemyspawnrate == 0) {
-				spawnbombenemy();
+		};
+		if (playerfreeze) {
+			if (freezecheck == 0) {
+				freezecheck = lastcheck + 1;
 			};
-			if (checkother % bombenemyshootrate == 0) {
-				for (var i = 0; i < bombenemies.length; i++) {
-					bombenemies[i].shoot();
-				};
-			};
-			if (playerfreeze) {
-				if (freezecheck == 0) {
-					freezecheck = lastcheck + 1;
-				};
-				if (lastcheck == freezecheck) {
-					playerfreeze = false;
-					freezecheck = 0;
-				};
+			if (lastcheck == freezecheck) {
+				playerfreeze = false;
+				freezecheck = 0;
 			};
 		};
 		checkother++;
-		if (playing) {
-			level += (1/30);
-			ammo = ammo + 1;
-			document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
-		}
+		level += (1/30);
+		ammo = ammo + 1;
+		document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
 	};
 	check = Math.round(new Date().getTime() / 1000);
 };
