@@ -431,6 +431,7 @@ function win() {
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'hidden';
 	document.getElementById("mw").style.visibility = 'hidden';
+	timesplayed += 1;
 };
 
 window.addEventListener('click', function () {
@@ -449,14 +450,14 @@ var pressed = [];
 var Key = {
 	onKeydown: function(event) {
 		this.event = event
-		if (!pressed.includes(this.event.key)) {
-			pressed.push(this.event.key);
+		if (!pressed.includes(this.event.keyCode)) {
+			pressed.push(this.event.keyCode);
 		};
 	},
 	onKeyup: function(event) {
 		this.event = event;
 		for (var i = 0; i < pressed.length; i++) {
-			if (pressed[i] == this.event.key) {
+			if (pressed[i] == this.event.keyCode) {
 				pressed.splice(i,1);
 			};
 		};
@@ -976,6 +977,7 @@ function animate() {
 };
 
 var ammo;
+var timesplayed = 0;
 var bombsleft;
 var lastcheck;
 var check;
@@ -988,8 +990,8 @@ var enemyradius;
 var enemybulletspeed;
 var enemyspeed;
 var checklevel;
-var bombenemyspawn;
-var bombenemyshoot;
+var bombenemyspawnrate;
+var bombenemyshootrate;
 var freezecheck;
 function checkchange() {
 	if (checklevel !== currentlevel) {
@@ -1099,6 +1101,23 @@ function checkchange() {
 	else if (level > 10) {
 		win();
 	}
+	if (enemyspawnrate - timesplayed > 0) {
+		enemyspawnrate -= timesplayed;
+	};
+	if (enemyshootrate - timesplayed > 0) {
+		enemyshootrate -= timesplayed;
+	};
+	if (bombenemyspawnrate - timesplayed > 0) {
+		bombenemyspawnrate -= timesplayed;
+	};
+	if (bombenemyshootrate - timesplayed > 0) {
+		bombenemyshootrate -= timesplayed;
+	};
+	enemybulletspeed += timesplayed*2;
+	enemyspeed += timesplayed*4;
+	if (enemyradius - timesplayed*2 > 0) {
+		enemyradius -= timesplayed*2;
+	};
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
 	if (lastcheck != check && playing) {
 		lastcheck = check;
@@ -1136,47 +1155,58 @@ function checkchange() {
 };
 
 var bombing = false;
+var playerspeedaccelrate = 1;
+var maxplayerspeed = 5;
 function changemov () {
-	if (pressed.includes('w')) {
-		if (playerdychange != -5) {
-			playerdychange = playerdychange - 1;
-		};
-	}
-	else if (pressed.includes('s')) {
-		if (playerdychange != 5) {
-			playerdychange = playerdychange + 1;
-		};
+	if (pressed.includes(16)) {
+		playerspeedaccelrate = 3;
+		maxplayerspeed = 15;
 	}
 	else {
+		playerspeedaccelrate = 1;
+		maxplayerspeed = 5;
+	};
+	if (pressed.includes(87)) {
+		if (playerdychange > -maxplayerspeed) {
+			playerdychange = playerdychange - playerspeedaccelrate;
+		};
+	}
+	if (pressed.includes(83)) {
+		if (playerdychange < maxplayerspeed) {
+			playerdychange = playerdychange + playerspeedaccelrate;
+		};
+	};
+	if ((!pressed.includes(87) && !pressed.includes(83)) || (pressed.includes(87) && pressed.includes(83))) {
 		if (playerdychange < 0) {
-			playerdychange = playerdychange + 1;
+			playerdychange = playerdychange + playerspeedaccelrate;
 		}
 		if (playerdychange > 0) {
-			playerdychange = playerdychange - 1;
+			playerdychange = playerdychange - playerspeedaccelrate;
 		}
 	};
-	if (pressed.includes('a')) {
-		if (playerdxchange != -5) {
-			playerdxchange = playerdxchange - 1;
+	if (pressed.includes(65)) {
+		if (playerdxchange > -maxplayerspeed) {
+			playerdxchange = playerdxchange - playerspeedaccelrate;
 		}
-	}
-	else if (pressed.includes('d')) {
-		if (playerdxchange != 5) {
-			playerdxchange = playerdxchange + 1;
+	};
+	if (pressed.includes(68)) {
+		if (playerdxchange < maxplayerspeed) {
+			playerdxchange = playerdxchange + playerspeedaccelrate;
 		}
-	}
-	else {
+	};
+	if ((!pressed.includes(65) && !pressed.includes(68)) || (pressed.includes(65) && pressed.includes(68))) {
 		if (playerdxchange < 0) {
-			playerdxchange = playerdxchange + 1;
+			playerdxchange = playerdxchange + playerspeedaccelrate;
 		}
 		if (playerdxchange > 0) {
-			playerdxchange = playerdxchange - 1;
+			playerdxchange = playerdxchange - playerspeedaccelrate;
 		}
 	};
+	console.log(pressed)
 	if (playing) {
 		if(!playerfreeze){player.moving()};
 	};
-	if (pressed.includes(' ')) {
+	if (pressed.includes(32)) {
 		if (!bombing && bombsleft > 0) {
 			calcbulldir();
 			bombs.push(new GoodBomb(player.x,player.y,(p1bulldirx/2),(p1bulldiry/2),25,'orange',3,275));
@@ -1185,5 +1215,5 @@ function changemov () {
 		};
 		bombing = true;
 	}
-	else {bombing = false}
+	else {bombing = false};
 };
