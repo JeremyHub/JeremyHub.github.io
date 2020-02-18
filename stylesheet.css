@@ -15,12 +15,11 @@
 	font-size: 35px;
 	text-align: center;
 	margin-top: 15%;
-	animation: fadein 1.5s ease-in;
+	animation: fadein 1s ease-in;
 }
 
 #heading{
 	font-size: 45px;
-	animation: fadein 0.8s ease-in;
 }
 
 .buttons{
@@ -30,7 +29,17 @@
 	text-align: center;
 	font-size: 35px;
 	text-align: center;
-	animation: fadein 0.8s ease-in;
+	animation: fadein 1.3s ease-in;
+}
+
+.buttons2{
+	display: block;
+	color: white;
+	font-family: 'Muli', sans-serif;
+	text-align: center;
+	font-size: 35px;
+	text-align: center;
+	animation: fadein 1s ease-in;
 }
 
 #booton{
@@ -38,12 +47,34 @@
 	border-color: blueviolet;
 }
 
+#gamebooton1{
+	background-color: tomato;
+	border-color: tomato;
+	margin-left: 20%;
+	margin-right: 20%;
+	width: 10%;
+	float: left;
+	margin-top: 2%;
+	animation: fadein 2.2s ease-in;
+}
+
+#gamebooton2{
+	background-color: tomato;
+	border-color: tomato;
+	margin-left: 20%;
+	margin-right: 20%;
+	width: 10%;
+	float: left;
+	margin-top: 2%;
+	animation: fadein 2.2s ease-in;
+}
+
 .label{
 	color: white;
 }
 
 .textbox{
-	animation: fadein 1.2s ease-in;
+	animation: fadein 1.9s ease-in;
 }
 
 .form-group{

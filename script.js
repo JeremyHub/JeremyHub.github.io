@@ -70,7 +70,7 @@ function switchdate (datewanted) {
 	else if (datewanted == 2) {
 		date = "jan 17 2019";
 		sign = -1;
-		titlemw = "since First Date";
+		titlemw = "Since First Date";
 	}
 	else if (datewanted == 3) {
 		date = "may 12 2020";
@@ -78,10 +78,7 @@ function switchdate (datewanted) {
 		sign = 1;
 	}
 	else if (datewanted == 4) {
-		if (document.getElementById('customdateyear').value == 'shootshoot') {
-			startplayingshootgame();
-		}
-		else if (!isNaN((document.getElementById('customdateyear').value)) && (document.getElementById('customdateyear').value.length !== 0)) {
+		if (!isNaN((document.getElementById('customdateyear').value)) && (document.getElementById('customdateyear').value.length !== 0)) {
 			date = custom();
 			titlemw = document.getElementById('sign').value + " " + date;
 			signinput = document.getElementById('sign').value;
@@ -275,7 +272,7 @@ function howlong() {
 	else {console.log("Currentask not 0-8")};
 
 	if (playing && daystill <= 0) {
-		stopplayingshootgame();
+		stopplayingshootshoot();
 	};
 	
 	window.setInterval(function(){
@@ -334,20 +331,15 @@ function canvasstuff() {
 	function resizeCanvas() {
 	  canvas.width = window.innerWidth;
 	  canvas.height = window.innerHeight;
-  	  drawStuff();
 	}
 	resizeCanvas();
-  
-	function drawStuff() {
-	  animate();
-	}
 };
 
 var p1r = 30;
 var p1x = innerHeight/2;
 var p1y = innerHeight/2;
-var p1dx = 5;
-var p1dy = 5;
+var p1dx = 0;
+var p1dy = 0;
 var p1c = 'white';
 
 var bullets = [];
@@ -369,11 +361,10 @@ function calcbulldir (){
 	p1bulldiry = -10 * ((player.y-mousey)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
 };
 
-function startplayingshootgame() {
-	if (!playing) {
-		player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
-	};
+function startplayingshootshoot() {
+	player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
 	playing = true;
+	animate();
 	document.getElementById('goaway').style.visibility = 'hidden';
 	document.getElementById('gamedisplay').style.visibility = 'visible';
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
@@ -403,7 +394,7 @@ function startplayingshootgame() {
 	freezecheck = 0;
 };
 
-function stopplayingshootgame() {
+function stopplayingshootshoot() {
 	playing = false;
 	bullets = [];
 	enemies = [];
@@ -436,7 +427,7 @@ function win() {
 };
 
 window.addEventListener('click', function () {
-	attack();
+	if (playing) {attack();};
 });
 
 window.addEventListener('mousemove', function (event) {
@@ -604,65 +595,65 @@ function Enemy (x,y,dx,dy,radius,color) {
 			player.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
 			player.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
 		};
-		// for (var i = 0; i < enemies.length; i++) {
-		// 	if (enemies[i].id !== this.id) {
-		// 		if (Math.sqrt(Math.pow((this.x-enemies[i].x),2)+Math.pow((this.y-enemies[i].y),2)) < this.radius + enemies[i].radius) {
-		// 			//bouncing off other enemies
-		// 			this.distance = Math.sqrt(Math.pow((this.x-enemies[i].x),2)+Math.pow((this.y-enemies[i].y),2));
-		// 			this.overlap = this.distance - this.radius - enemies[i].radius;
-		// 			this.x -= this.overlap * (this.x - enemies[i].x) / this.distance;
-		// 			this.y -= this.overlap * (this.y - enemies[i].y) / this.distance;
-		// 			this.normalx = (enemies[i].x - this.x) / this.distance;
-		// 			this.normaly = (enemies[i].y - this.y) / this.distance;
-		// 			this.tangentialvx = -this.normaly;
-		// 			this.tangentialvy = this.normalx;
-		// 			this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
-		// 			this.tanvectordot2 = (enemies[i].dx * this.tangentialvx) + (enemies[i].dy * this.tangentialvy)
-		// 			this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
-		// 			this.normaldot2 = (enemies[i].dx * this.normalx) + (enemies[i].dy * this.normaly);
-		// 			this.m1 = (this.normaldot * (this.mass - enemies[i].mass) + 2 * enemies[i].mass * this.normaldot2) / (this.mass + enemies[i].mass);
-		// 			this.m2 = (this.normaldot2 * (enemies[i].mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + enemies[i].mass);
-		// 			this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
-		// 			this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
-		// 			enemies[i].dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
-		// 			enemies[i].dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
-		// 		};
-		// 	};
-		// };
-		// for (var i = 0; i < bombenemies.length; i++) {
-		// 	if (Math.sqrt(Math.pow((this.x-bombenemies[i].x),2)+Math.pow((this.y-bombenemies[i].y),2)) < this.radius + bombenemies[i].radius) {
-		// 		//bouncing off bomb enemies
-		// 		this.distance = Math.sqrt(Math.pow((this.x-bombenemies[i].x),2)+Math.pow((this.y-bombenemies[i].y),2));
-		// 		this.overlap = this.distance - this.radius - bombenemies[i].radius;
-		// 		this.x -= this.overlap * (this.x - bombenemies[i].x) / this.distance;
-		// 		this.y -= this.overlap * (this.y - bombenemies[i].y) / this.distance;
-		// 		this.normalx = (bombenemies[i].x - this.x) / this.distance;
-		// 		this.normaly = (bombenemies[i].y - this.y) / this.distance;
-		// 		this.tangentialvx = -this.normaly;
-		// 		this.tangentialvy = this.normalx;
-		// 		this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
-		// 		this.tanvectordot2 = (bombenemies[i].dx * this.tangentialvx) + (bombenemies[i].dy * this.tangentialvy)
-		// 		this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
-		// 		this.normaldot2 = (bombenemies[i].dx * this.normalx) + (bombenemies[i].dy * this.normaly);
-		// 		this.m1 = (this.normaldot * (this.mass - bombenemies[i].mass) + 2 * bombenemies[i].mass * this.normaldot2) / (this.mass + bombenemies[i].mass);
-		// 		this.m2 = (this.normaldot2 * (bombenemies[i].mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + bombenemies[i].mass);
-		// 		this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
-		// 		this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
-		// 		bombenemies[i].dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
-		// 		bombenemies[i].dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
-		// 	};
-		// };
-		if (this.dx > 30) {
-			this.dx == 30;
+		for (var i = 0; i < enemies.length; i++) {
+			if (enemies[i].id !== this.id) {
+				if (Math.sqrt(Math.pow((this.x-enemies[i].x),2)+Math.pow((this.y-enemies[i].y),2)) < this.radius + enemies[i].radius) {
+					//bouncing off other enemies
+					this.distance = Math.sqrt(Math.pow((this.x-enemies[i].x),2)+Math.pow((this.y-enemies[i].y),2));
+					this.overlap = this.distance - this.radius - enemies[i].radius;
+					this.x -= this.overlap * (this.x - enemies[i].x) / this.distance;
+					this.y -= this.overlap * (this.y - enemies[i].y) / this.distance;
+					this.normalx = (enemies[i].x - this.x) / this.distance;
+					this.normaly = (enemies[i].y - this.y) / this.distance;
+					this.tangentialvx = -this.normaly;
+					this.tangentialvy = this.normalx;
+					this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+					this.tanvectordot2 = (enemies[i].dx * this.tangentialvx) + (enemies[i].dy * this.tangentialvy)
+					this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+					this.normaldot2 = (enemies[i].dx * this.normalx) + (enemies[i].dy * this.normaly);
+					this.m1 = (this.normaldot * (this.mass - enemies[i].mass) + 2 * enemies[i].mass * this.normaldot2) / (this.mass + enemies[i].mass);
+					this.m2 = (this.normaldot2 * (enemies[i].mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + enemies[i].mass);
+					this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+					this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+					enemies[i].dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+					enemies[i].dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+				};
+			};
 		};
-		if (this.dx < 30) {
-			this.dx == -30
+		for (var i = 0; i < bombenemies.length; i++) {
+			if (Math.sqrt(Math.pow((this.x-bombenemies[i].x),2)+Math.pow((this.y-bombenemies[i].y),2)) < this.radius + bombenemies[i].radius) {
+				//bouncing off bomb enemies
+				this.distance = Math.sqrt(Math.pow((this.x-bombenemies[i].x),2)+Math.pow((this.y-bombenemies[i].y),2));
+				this.overlap = this.distance - this.radius - bombenemies[i].radius;
+				this.x -= this.overlap * (this.x - bombenemies[i].x) / this.distance;
+				this.y -= this.overlap * (this.y - bombenemies[i].y) / this.distance;
+				this.normalx = (bombenemies[i].x - this.x) / this.distance;
+				this.normaly = (bombenemies[i].y - this.y) / this.distance;
+				this.tangentialvx = -this.normaly;
+				this.tangentialvy = this.normalx;
+				this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+				this.tanvectordot2 = (bombenemies[i].dx * this.tangentialvx) + (bombenemies[i].dy * this.tangentialvy)
+				this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+				this.normaldot2 = (bombenemies[i].dx * this.normalx) + (bombenemies[i].dy * this.normaly);
+				this.m1 = (this.normaldot * (this.mass - bombenemies[i].mass) + 2 * bombenemies[i].mass * this.normaldot2) / (this.mass + bombenemies[i].mass);
+				this.m2 = (this.normaldot2 * (bombenemies[i].mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + bombenemies[i].mass);
+				this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+				this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+				bombenemies[i].dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+				bombenemies[i].dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+			};
 		};
-		if (this.dy > 30) {
-			this.dy == 30;
+		if (this.dx > maxenemyspeed) {
+			this.dx = maxenemyspeed;
 		};
-		if (this.dy < 30) {
-			this.dy == -30
+		if (this.dx < -maxenemyspeed) {
+			this.dx = -maxenemyspeed
+		};
+		if (this.dy > maxenemyspeed) {
+			this.dy = maxenemyspeed;
+		};
+		if (this.dy < -maxenemyspeed) {
+			this.dy = -maxenemyspeed
 		};
 		this.x += this.dx;
 		this.y += this.dy;
@@ -717,7 +708,7 @@ function BombEnemy (x,y,dx,dy,radius,color) {
 			};
 		};
 		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
-			//bouncing off
+			//bouncing off player
 			this.distance = Math.sqrt(Math.pow((this.x-player.x),2)+Math.pow((this.y-player.y),2));
 			this.overlap = this.distance - this.radius - player.radius;
 			this.x -= this.overlap * (this.x - player.x) / this.distance;
@@ -737,17 +728,17 @@ function BombEnemy (x,y,dx,dy,radius,color) {
 			player.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
 			player.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
 		};
-		if (this.dx > 30) {
-			this.dx == 30;
+		if (this.dx > maxenemyspeed) {
+			this.dx = maxenemyspeed;
 		};
-		if (this.dx < 30) {
-			this.dx == -30
+		if (this.dx < -maxenemyspeed) {
+			this.dx = -maxenemyspeed
 		};
-		if (this.dy > 30) {
-			this.dy == 30;
+		if (this.dy > maxenemyspeed) {
+			this.dy = maxenemyspeed;
 		};
-		if (this.dy < 30) {
-			this.dy == -30
+		if (this.dy < -maxenemyspeed) {
+			this.dy = -maxenemyspeed
 		};
 		this.x += this.dx;
 		this.y += this.dy;
@@ -994,6 +985,7 @@ var checklevel;
 var bombenemyspawnrate;
 var bombenemyshootrate;
 var freezecheck;
+var maxenemyspeed;
 function checkchange() {
 	if (checklevel !== currentlevel) {
 		bombsleft += 1;
@@ -1008,6 +1000,7 @@ function checkchange() {
 		enemyspeed = 10;
 		bombenemyspawnrate = 0;
 		bombenemyshootrate = 0;
+		maxenemyspeed = 14;
 	}
 	if (level > 1 && level < 2) {
 		currentlevel = 1;
@@ -1018,6 +1011,7 @@ function checkchange() {
 		enemyspeed = 12;
 		bombenemyspawnrate = 18;
 		bombenemyshootrate = 10;
+		maxenemyspeed = 16;
 	}
 	else if (level > 2 && level < 3) {
 		currentlevel = 2;
@@ -1028,6 +1022,7 @@ function checkchange() {
 		enemyspeed = 14;
 		bombenemyspawnrate = 17;
 		bombenemyshootrate = 10;
+		maxenemyspeed = 18;
 	}
 	else if (level > 3 && level < 4) {
 		currentlevel = 3;
@@ -1038,6 +1033,7 @@ function checkchange() {
 		enemyspeed = 16;
 		bombenemyspawnrate = 17;
 		bombenemyshootrate = 9;
+		maxenemyspeed = 20;
 	}
 	else if (level > 4 && level < 5) {
 		currentlevel = 4;
@@ -1048,6 +1044,7 @@ function checkchange() {
 		enemyspeed = 18;
 		bombenemyspawnrate = 16;
 		bombenemyshootrate = 9;
+		maxenemyspeed = 22;
 	}
 	else if (level > 5 && level < 6) {
 		currentlevel = 5;
@@ -1058,6 +1055,7 @@ function checkchange() {
 		enemyspeed = 20;
 		bombenemyspawnrate = 16;
 		bombenemyshootrate = 8;
+		maxenemyspeed = 24;
 	}
 	else if (level > 6 && level < 7) {
 		currentlevel = 6;
@@ -1068,6 +1066,7 @@ function checkchange() {
 		enemyspeed = 22;
 		bombenemyspawnrate = 15;
 		bombenemyshootrate = 8;
+		maxenemyspeed = 26;
 	}
 	else if (level > 7 && level < 8) {
 		currentlevel = 7;
@@ -1078,6 +1077,7 @@ function checkchange() {
 		enemyspeed = 24;
 		bombenemyspawnrate = 15;
 		bombenemyshootrate = 7;
+		maxenemyspeed = 28;
 	}
 	else if (level > 8 && level < 9) {
 		currentlevel = 8;
@@ -1088,6 +1088,7 @@ function checkchange() {
 		enemyspeed = 26;
 		bombenemyspawnrate = 14;
 		bombenemyshootrate = 6;
+		maxenemyspeed = 30;
 	}
 	else if (level > 9 && level < 10) {
 		currentlevel = 9;
@@ -1098,6 +1099,7 @@ function checkchange() {
 		enemyspeed = 28;
 		bombenemyspawnrate = 14;
 		bombenemyshootrate = 5;
+		maxenemyspeed = 32;
 	}
 	else if (level > 10) {
 		win();
@@ -1216,4 +1218,233 @@ function changemov () {
 		bombing = true;
 	}
 	else {bombing = false};
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var poolplayer;
+var playingpool;
+var balls = [];
+var holes = [];
+var poolplayerx;
+var poolplayery;
+var playerballtypeword;
+var maxballspeed;
+
+function startplayingpool() {
+	playerballtypeword = 'Hit in a Ball!';
+	poolplayerx = innerWidth / 5;
+	poolplayery = innerHeight / 2;
+	playingpool = true;
+	poolplayer = new PoolPlayer(poolplayerx,poolplayery,0,0,30,'white');
+	spawnholes();
+	spawnballs();
+	animatepool();
+	document.getElementById('goaway').style.visibility = 'hidden';
+	document.getElementById('gamedisplay').style.visibility = 'visible';
+	document.getElementById('leveldisplay').innerHTML = playerballtypeword;
+	document.getElementById('leveldisplay').style.visibility = 'visible';
+	document.getElementById('ammodisplay').style.visibility = 'visible';
+	titlemw = "Welcome to Pool!";
+	document.getElementById('canvas').style.zIndex = 1;
+	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
+	document.getElementById('time').style.visibility = 'hidden';
+	document.getElementById("mw").style.visibility = 'hidden';
+	currentask = 7;
+};
+
+function stopplayingpool() {
+	playingpool = false;
+	poolplayer = undefined;
+	balls = [];
+	holes = [];
+	document.getElementById('canvas').style.zIndex = -1;
+	ctx.clearRect(0,0,innerWidth,innerHeight);
+	changedate(defaultdatenow);
+	document.getElementById('goaway').style.visibility = 'visible';
+	document.getElementById('gamedisplay').style.visibility = 'hidden';
+	document.getElementById('leveldisplay').style.visibility = 'hidden';
+	document.getElementById('ammodisplay').style.visibility = 'hidden';
+	document.getElementById('time').style.visibility = 'visible';
+	document.getElementById('headingthatsaystime').style.visibility = 'visible';
+	currentask = 8;
+	document.getElementById("mw").style.visibility = 'visible';
+};
+
+function winpool() {
+	titlemw = 'You Win!';
+	document.getElementById('leveldisplay').style.visibility = 'hidden';
+	document.getElementById('ammodisplay').style.visibility = 'hidden';
+};
+
+function animatepool() {
+	requestAnimationFrame(animatepool);
+	ctx.clearRect(0,0,innerWidth,innerHeight);
+	if (typeof poolplayer !== 'undefined') {poolplayer.update()};
+	for (var i = 0; i < balls.length; i++) {
+		balls[i].update();
+		if (!balls.exist) {
+			balls.splice(i,1);
+		};
+	};
+	for (var i = 0; i < holes.length; i++) {
+		holes[i].draw();
+	};
+};
+
+function spawnholes() {
+	holes.push(new Hole(innerWidth/2,50,30,'green'));
+};
+
+function spawnballs() {
+
+};
+
+function PoolPlayer (x,y,dx,dy,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+	this.mass = this.radius*3;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	};
+
+	this.moving = function() {
+		this.dx = playerdxchange;
+		this.dy = playerdychange;
+	}
+
+	this.update = function() {
+		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+			this.dx = -this.dx;
+			if (this.x + this.radius > innerWidth) {
+				this.x -= this.x + this.radius - innerWidth;
+			};
+			if (this.x - this.radius < 0) {
+				this.x += this.radius - this.x;
+			};
+		};
+		if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+			this.dy = -this.dy
+			if (this.y + this.radius > innerHeight) {
+				this.y -= this.y + this.radius - innerHeight;
+			};
+			if (this.y - this.radius < 0) {
+				this.y += this.radius - this.y;
+			};
+		};
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
+};
+
+var ballid = 0;
+function Ball (x,y,dx,dy,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.radius = radius;
+	this.color = color;
+	this.mass = this.radius*3;
+	this.id = ballid;
+	this.exist = true;
+	ballid += 1;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	};
+
+	this.update = function() {
+		if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+			this.dx = -this.dx;
+			if (this.x + this.radius > innerWidth) {
+				this.x -= this.x + this.radius - innerWidth;
+			};
+			if (this.x - this.radius < 0) {
+				this.x += this.radius - this.x;
+			};
+		};
+		if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+			this.dy = -this.dy
+			if (this.y + this.radius > innerHeight) {
+				this.y -= this.y + this.radius - innerHeight;
+			};
+			if (this.y - this.radius < 0) {
+				this.y += this.radius - this.y;
+			};
+		};
+		if (Math.abs(this.x - poolplayer.x) < this.radius + poolplayer.radius && Math.abs(this.y - poolplayer.y) < this.radius + poolplayer.radius) {
+			//bouncing off poolplayer
+			this.distance = Math.sqrt(Math.pow((this.x-poolplayer.x),2)+Math.pow((this.y-poolplayer.y),2));
+			this.overlap = this.distance - this.radius - poolplayer.radius;
+			this.x -= this.overlap * (this.x - poolplayer.x) / this.distance;
+			this.y -= this.overlap * (this.y - poolplayer.y) / this.distance;
+			this.normalx = (poolplayer.x - this.x) / this.distance;
+			this.normaly = (poolplayer.y - this.y) / this.distance;
+			this.tangentialvx = -this.normaly;
+			this.tangentialvy = this.normalx;
+			this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+			this.tanvectordot2 = (poolplayer.dx * this.tangentialvx) + (poolplayer.dy * this.tangentialvy)
+			this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+			this.normaldot2 = (poolplayer.dx * this.normalx) + (poolplayer.dy * this.normaly);
+			this.m1 = (this.normaldot * (this.mass - poolplayer.mass) + 2 * poolplayer.mass * this.normaldot2) / (this.mass + poolplayer.mass);
+			this.m2 = (this.normaldot2 * (poolplayer.mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + poolplayer.mass);
+			this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+			this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+			poolplayer.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+			poolplayer.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+		};
+		for (var i = 0; i < holes.length; i++) {
+			if (Math.abs(this.x - hole[i].x) < this.radius + hole[i].radius && Math.abs(this.y - hole[i].y) < this.radius + hole[i].radius) {
+				this.exist = false;
+			};
+		};
+		if (this.dx > maxballspeed) {
+			this.dx = maxballspeed;
+		};
+		if (this.dx < -maxballspeed) {
+			this.dx = -maxballspeed
+		};
+		if (this.dy > maxballspeed) {
+			this.dy = maxballspeed;
+		};
+		if (this.dy < -maxballspeed) {
+			this.dy = -maxballspeed
+		};
+		this.x += this.dx;
+		this.y += this.dy;
+		this.draw();
+	};
+};
+
+function Hole (x,y,radius,color) {
+	this.x = x;
+	this.y = y;
+	this.radius = radius;
+	this.color = color;
+
+	this.draw = function() {
+		ctx.beginPath();
+		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
+		ctx.strokeStyle = this.color;
+		ctx.stroke();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	};
 };
