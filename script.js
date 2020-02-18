@@ -78,10 +78,10 @@ function switchdate (datewanted) {
 		sign = 1;
 	}
 	else if (datewanted == 4) {
-		if (document.getElementById('customdateyear').value == '') {
-			startplaying();
+		if (document.getElementById('customdateyear').value == 'shootshoot') {
+			startplayingshootgame();
 		}
-		else if (document.getElementById('customdateyear').value.length > 0) {
+		else if (!isNaN((document.getElementById('customdateyear').value)) && (document.getElementById('customdateyear').value.length !== 0)) {
 			date = custom();
 			titlemw = document.getElementById('sign').value + " " + date;
 			signinput = document.getElementById('sign').value;
@@ -97,11 +97,11 @@ function switchdate (datewanted) {
 		}
 		else {
 			console.log(document.getElementById('customdateyear').value)
-		}
+		};
 	}
 	else {
-		console.log("datenow not 1-3");
-	}
+		console.log("datenow not 1-4");
+	};
 };
 
 function custom() {
@@ -275,7 +275,7 @@ function howlong() {
 	else {console.log("Currentask not 0-8")};
 
 	if (playing && daystill <= 0) {
-		stopplaying();
+		stopplayingshootgame();
 	};
 	
 	window.setInterval(function(){
@@ -369,7 +369,7 @@ function calcbulldir (){
 	p1bulldiry = -10 * ((player.y-mousey)/(Math.sqrt(Math.pow((player.x-mousex),2)+(Math.pow((player.y-mousey),2)))));
 };
 
-function startplaying() {
+function startplayingshootgame() {
 	if (!playing) {
 		player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
 	};
@@ -381,7 +381,7 @@ function startplaying() {
 	document.getElementById('ammodisplay').style.visibility = 'visible';
 	timezoneoffset = 5;
 	date = new Date();
-	titlemw = "Welcome to My Game!";
+	titlemw = "Welcome to Shootshoot!";
 	document.getElementById('canvas').style.zIndex = 1;
 	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 	currentask = 7;
@@ -403,7 +403,7 @@ function startplaying() {
 	freezecheck = 0;
 };
 
-function stopplaying() {
+function stopplayingshootgame() {
 	playing = false;
 	bullets = [];
 	enemies = [];
@@ -432,6 +432,7 @@ function win() {
 	document.getElementById('time').style.visibility = 'hidden';
 	document.getElementById("mw").style.visibility = 'hidden';
 	timesplayed += 1;
+	timezoneoffset = 0.2;
 };
 
 window.addEventListener('click', function () {
