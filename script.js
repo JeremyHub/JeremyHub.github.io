@@ -148,7 +148,7 @@ function defualtview() {
 	// dayofweek , month , day , year
 	var strofdatewanted = new String(date);
 	// month , day , year
-	var yearofdatewanted = strofdatewanted[2];
+	var yearofdatewanted = strofdatewanted.split(" ")[2];
 	var monthofdatewanted = getmonthnum(strofdatewanted.split(" ")[0]);
 	var monthofdatenow = getmonthnum(strofdatenow.split(" ")[1]);
 	// var dayofdatewanted = Number(strofdatewanted.split(" ")[1]);
@@ -1283,7 +1283,7 @@ function animatepool() {
 	if (typeof poolplayer !== 'undefined') {poolplayer.update()};
 	for (var i = 0; i < balls.length; i++) {
 		balls[i].update();
-		if (!balls.exist) {
+		if (!balls[i].exist) {
 			balls.splice(i,1);
 		};
 	};
@@ -1293,11 +1293,22 @@ function animatepool() {
 };
 
 function spawnholes() {
-	holes.push(new Hole(innerWidth/2,50,30,'green'));
+	holes.push(new Hole(innerWidth/2,0,40,'green'));
+	holes.push(new Hole(innerWidth,0,60,'green'));
+	holes.push(new Hole(0,0,60,'green'));
+	holes.push(new Hole(innerWidth/2,innerHeight,40,'green'));
+	holes.push(new Hole(innerWidth,innerHeight,60,'green'));
+	holes.push(new Hole(0,innerHeight,60,'green'));
 };
 
 function spawnballs() {
-
+	balls.push(new Ball(innerWidth/1.5,innerHeight/2,0,0,30,'white'));
+	balls.push(new Ball((innerWidth/1.5)-61,(innerHeight/2),0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)-31,(innerHeight/2)+53,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)-31,(innerHeight/2)-53,0,0,30,'red'));
+	// balls.push(new Ball((innerWidth/1.5)+45,(innerHeight/2)+45,0,0,30,'red'));
+	// balls.push(new Ball((innerWidth/1.5)+45,(innerHeight/2)-45,0,0,30,'red'));
+	// balls.push(new Ball((innerWidth/1.5)-45,(innerHeight/2)+45,0,0,30,'red'));
 };
 
 function PoolPlayer (x,y,dx,dy,radius,color) {
@@ -1389,7 +1400,7 @@ function Ball (x,y,dx,dy,radius,color) {
 				this.y += this.radius - this.y;
 			};
 		};
-		if (Math.abs(this.x - poolplayer.x) < this.radius + poolplayer.radius && Math.abs(this.y - poolplayer.y) < this.radius + poolplayer.radius) {
+		if (Math.sqrt(Math.pow((this.x-poolplayer.x),2)+Math.pow((this.y-poolplayer.y),2)) < poolplayer.radius + this.radius) {
 			//bouncing off poolplayer
 			this.distance = Math.sqrt(Math.pow((this.x-poolplayer.x),2)+Math.pow((this.y-poolplayer.y),2));
 			this.overlap = this.distance - this.radius - poolplayer.radius;
@@ -1411,7 +1422,7 @@ function Ball (x,y,dx,dy,radius,color) {
 			poolplayer.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
 		};
 		for (var i = 0; i < holes.length; i++) {
-			if (Math.abs(this.x - hole[i].x) < this.radius + hole[i].radius && Math.abs(this.y - hole[i].y) < this.radius + hole[i].radius) {
+			if (Math.abs(this.x - holes[i].x) < this.radius + holes[i].radius && Math.abs(this.y - holes[i].y) < this.radius + holes[i].radius) {
 				this.exist = false;
 			};
 		};
