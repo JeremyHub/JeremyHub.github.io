@@ -362,19 +362,6 @@ function calcbulldir (){
 };
 
 function startplayingshootshoot() {
-	player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
-	playing = true;
-	animate();
-	document.getElementById('goaway').style.visibility = 'hidden';
-	document.getElementById('gamedisplay').style.visibility = 'visible';
-	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
-	document.getElementById('leveldisplay').style.visibility = 'visible';
-	document.getElementById('ammodisplay').style.visibility = 'visible';
-	timezoneoffset = 5;
-	date = new Date();
-	titlemw = "Welcome to Shootshoot!";
-	document.getElementById('canvas').style.zIndex = 1;
-	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 	currentask = 7;
 	ammo = 20;
 	bombsleft = 2;
@@ -392,6 +379,20 @@ function startplayingshootshoot() {
 	bombenemyspawnrate = 0;
 	bombenemyshootrate = 0;
 	freezecheck = 0;
+	maxenemyspeed = 14;
+	player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
+	playing = true;
+	animate();
+	document.getElementById('goaway').style.visibility = 'hidden';
+	document.getElementById('gamedisplay').style.visibility = 'visible';
+	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
+	document.getElementById('leveldisplay').style.visibility = 'visible';
+	document.getElementById('ammodisplay').style.visibility = 'visible';
+	timezoneoffset = 5;
+	date = new Date();
+	titlemw = "Welcome to Shootshoot!";
+	document.getElementById('canvas').style.zIndex = 1;
+	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 };
 
 function stopplayingshootshoot() {
@@ -413,9 +414,9 @@ function stopplayingshootshoot() {
 	timezoneoffset = 480;
 	currentask = 8;
 	document.getElementById("mw").style.visibility = 'visible';
-	checklevel = 0;
 };
 
+var winning = false;
 function win() {
 	titlemw = 'You Win!';
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
@@ -423,7 +424,18 @@ function win() {
 	document.getElementById('time').style.visibility = 'hidden';
 	document.getElementById("mw").style.visibility = 'hidden';
 	timesplayed += 1;
-	timezoneoffset = 0.2;
+	timezoneoffset = 0.17;
+	checklevel = 0;
+	lastcheck = 1;
+	check = 0;
+	checkother = 0;
+	level = 0;
+	date = new Date();
+	bullets = [];
+	enemies = [];
+	bombenemies = [];
+	bombs = [];
+	winning = true;
 };
 
 window.addEventListener('click', function () {
@@ -552,7 +564,7 @@ function Enemy (x,y,dx,dy,radius,color) {
 	this.shoot = function() {
 		this.bulldx = enemybulletspeed * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
 		this.bulldy = enemybulletspeed * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
-		bullets.push(new BadBullet(this.x,this.y,this.bulldx,this.bulldy,5,'pink'));
+		if(!winning) {bullets.push(new BadBullet(this.x,this.y,this.bulldx,this.bulldy,5,'pink'));}
 	};
 
 	this.update = function() {
@@ -685,7 +697,7 @@ function BombEnemy (x,y,dx,dy,radius,color) {
 	this.shoot = function() {
 		this.bulldx = (enemybulletspeed/2) * ((player.x-this.x)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
 		this.bulldy = (enemybulletspeed/2) * ((player.y-this.y)/(Math.sqrt(Math.pow((player.x-this.x),2)+(Math.pow((player.y-this.y),2)))));
-		bombs.push(new BadBomb(this.x,this.y,this.bulldx,this.bulldy,15,'yellow',2.5,100));
+		if (!winning) {bombs.push(new BadBomb(this.x,this.y,this.bulldx,this.bulldy,15,'yellow',2.5,100));}
 	};
 
 	this.update = function() {
@@ -976,151 +988,75 @@ var check;
 var checkother;
 var level;
 var currentlevel;
-var enemyspawnrate;
-var enemyshootrate;
-var enemyradius;
-var enemybulletspeed;
-var enemyspeed;
+var enemyspawnrate = 5;
+var enemyshootrate = 4;
+var enemyradius = 40;
+var enemybulletspeed = 2;
+var enemyspeed = 10;
 var checklevel;
-var bombenemyspawnrate;
-var bombenemyshootrate;
+var bombenemyspawnrate = 0;
+var bombenemyshootrate = 0;
 var freezecheck;
-var maxenemyspeed;
+var maxenemyspeed = 14;
 function checkchange() {
 	if (checklevel !== currentlevel) {
 		bombsleft += 1;
 		checklevel = currentlevel;
+		if (currentlevel % 2 == 0) {
+			enemyspawnrate -= 1 + timesplayed;
+			bombenemyspawnrate -= 1 + timesplayed;
+		}
+		else {
+			enemyshootrate -= 1 + timesplayed;
+			bombenemyshootrate -= 1 + timesplayed;
+		}
+		enemyradius -= 3 + timesplayed*2;
+		if (enemyradius < 5) {enemyradius = 5};
+		enemybulletspeed += 0.5 + timesplayed/2;
+		enemyspeed += 2 + timesplayed*2;
+		maxenemyspeed += 2;
+		if (currentlevel == 1) {
+			bombenemyspawnrate = 15;
+			bombenemyshootrate = 10;
+		}
+		if (bombenemyshootrate < 1) {bombenemyshootrate = 1};
+		if (bombenemyspawnrate < 1) {bombenemyspawnrate = 1};
+		if (enemyshootrate < 1) {enemyshootrate = 1};
+		if (enemyshootrate < 1) {enemyshootrate = 1};
 	}
 	if (level < 1) {
 		currentlevel = 0;
-		enemyspawnrate = 5;
-		enemyshootrate = 4;
-		enemyradius = 40;
-		enemybulletspeed = 2;
-		enemyspeed = 10;
-		bombenemyspawnrate = 0;
-		bombenemyshootrate = 0;
-		maxenemyspeed = 14;
 	}
 	if (level > 1 && level < 2) {
 		currentlevel = 1;
-		enemyradius = 37;
-		enemyspawnrate = 5;
-		enemyshootrate = 3;
-		enemybulletspeed = 2.5;
-		enemyspeed = 12;
-		bombenemyspawnrate = 18;
-		bombenemyshootrate = 10;
-		maxenemyspeed = 16;
 	}
 	else if (level > 2 && level < 3) {
 		currentlevel = 2;
-		enemyradius = 34;
-		enemyspawnrate = 4;
-		enemyshootrate = 3;
-		enemybulletspeed = 3;
-		enemyspeed = 14;
-		bombenemyspawnrate = 17;
-		bombenemyshootrate = 10;
-		maxenemyspeed = 18;
 	}
 	else if (level > 3 && level < 4) {
 		currentlevel = 3;
-		enemyradius = 31;
-		enemyspawnrate = 4;
-		enemyshootrate = 2;
-		enemybulletspeed = 3.5;
-		enemyspeed = 16;
-		bombenemyspawnrate = 17;
-		bombenemyshootrate = 9;
-		maxenemyspeed = 20;
 	}
 	else if (level > 4 && level < 5) {
 		currentlevel = 4;
-		enemyradius = 28;
-		enemyspawnrate = 3;
-		enemyshootrate = 2;
-		enemybulletspeed = 4;
-		enemyspeed = 18;
-		bombenemyspawnrate = 16;
-		bombenemyshootrate = 9;
-		maxenemyspeed = 22;
 	}
 	else if (level > 5 && level < 6) {
 		currentlevel = 5;
-		enemyradius = 25;
-		enemyspawnrate = 3;
-		enemyshootrate = 1;
-		enemybulletspeed = 4.5;
-		enemyspeed = 20;
-		bombenemyspawnrate = 16;
-		bombenemyshootrate = 8;
-		maxenemyspeed = 24;
 	}
 	else if (level > 6 && level < 7) {
 		currentlevel = 6;
-		enemyradius = 22;
-		enemyspawnrate = 2;
-		enemyshootrate = 1;
-		enemybulletspeed = 5;
-		enemyspeed = 22;
-		bombenemyspawnrate = 15;
-		bombenemyshootrate = 8;
-		maxenemyspeed = 26;
 	}
 	else if (level > 7 && level < 8) {
 		currentlevel = 7;
-		enemyradius = 19;
-		enemyspawnrate = 1;
-		enemyshootrate = 1;
-		enemybulletspeed = 5.5;
-		enemyspeed = 24;
-		bombenemyspawnrate = 15;
-		bombenemyshootrate = 7;
-		maxenemyspeed = 28;
 	}
 	else if (level > 8 && level < 9) {
 		currentlevel = 8;
-		enemyradius = 16;
-		enemyspawnrate = 1;
-		enemyshootrate = 1;
-		enemybulletspeed = 6;
-		enemyspeed = 26;
-		bombenemyspawnrate = 14;
-		bombenemyshootrate = 6;
-		maxenemyspeed = 30;
 	}
 	else if (level > 9 && level < 10) {
 		currentlevel = 9;
-		enemyradius = 13;
-		enemyspawnrate = 1;
-		enemyshootrate = 1;
-		enemybulletspeed = 6.5;
-		enemyspeed = 28;
-		bombenemyspawnrate = 14;
-		bombenemyshootrate = 5;
-		maxenemyspeed = 32;
 	}
-	else if (level > 10) {
+	else if (level > 10 && enemies.length == 0 && bombenemies.length == 0) {
 		win();
 	}
-	if (enemyspawnrate - timesplayed > 0) {
-		enemyspawnrate -= timesplayed;
-	};
-	if (enemyshootrate - timesplayed > 0) {
-		enemyshootrate -= timesplayed;
-	};
-	if (bombenemyspawnrate - timesplayed > 0) {
-		bombenemyspawnrate -= timesplayed;
-	};
-	if (bombenemyshootrate - timesplayed > 0) {
-		bombenemyshootrate -= timesplayed;
-	};
-	enemybulletspeed += timesplayed*2;
-	enemyspeed += timesplayed*4;
-	if (enemyradius - timesplayed*2 > 0) {
-		enemyradius -= timesplayed*2;
-	};
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
 	if (lastcheck != check && playing) {
 		lastcheck = check;
