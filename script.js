@@ -1255,8 +1255,8 @@ window.addEventListener('click', function () {
 
 var poolplayermousedistance;
 var poolplayermaxspeed = 35;
-var distancetospeedconst = 0.1;
-var playerspeedmodifier = 5;
+var distancetospeedconst = 0.05;
+var playerspeedmodifier = 2.5;
 function calcplayermov (){
 	poolplayermousedistance = Math.sqrt(Math.pow((mousex-poolplayer.x),2)+Math.pow((mousey-poolplayer.y),2));
 	poolplayerspeed = poolplayermousedistance*distancetospeedconst;
