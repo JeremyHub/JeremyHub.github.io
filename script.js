@@ -1215,23 +1215,23 @@ function spawnholes() {
 
 function spawnballs() {
 	balls.push(new Ball(innerWidth/1.5,innerHeight/2,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)-61,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)+61,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)-62,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)+62,0,0,30,'red'));
 	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2),0,0,30,'orange'));
 	
 	balls.push(new Ball((innerWidth/1.5)+54,(innerHeight/2)+31,0,0,30,'red'));
 	balls.push(new Ball((innerWidth/1.5)+54,(innerHeight/2)-31,0,0,30,'red'));
 	
-	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+92,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+93,0,0,30,'red'));
 	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+31,0,0,30,'red'));
 	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-31,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-92,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-93,0,0,30,'red'));
 	
-	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+122,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+61,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+124,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+62,0,0,30,'red'));
 	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2),0,0,30,'red'));
 	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-62,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-122,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-124,0,0,30,'red'));
 };
 
 var isballmoving = false;
@@ -1285,6 +1285,7 @@ function animatemouseline() {
 		ctx.moveTo(poolplayer.x,poolplayer.y);
 		ctx.lineTo(mouselinex,mouseliney);
 		ctx.strokeStyle = linecolor;
+		ctx.lineWidth = 2;
 		ctx.stroke();
 	};
 };
