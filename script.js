@@ -1139,7 +1139,7 @@ var playerballtypeword;
 var maxballspeed = 15;
 var poolplayerdxchange;
 var poolplayerdychange;
-var poolfriction = 0.98;
+var poolfriction = 0.987;
 var poolplayerspeed = 10;
 
 function startplayingpool() {
