@@ -117,3 +117,10 @@
 	position: absolute;
 	text-align: center;
 }
+
+#thanks{
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	color: purple;
+}

@@ -1024,37 +1024,8 @@ function checkchange() {
 		if (enemyshootrate < 1) {enemyshootrate = 1};
 		if (enemyshootrate < 1) {enemyshootrate = 1};
 	}
-	if (level < 1) {
-		currentlevel = 0;
-	}
-	if (level > 1 && level < 2) {
-		currentlevel = 1;
-	}
-	else if (level > 2 && level < 3) {
-		currentlevel = 2;
-	}
-	else if (level > 3 && level < 4) {
-		currentlevel = 3;
-	}
-	else if (level > 4 && level < 5) {
-		currentlevel = 4;
-	}
-	else if (level > 5 && level < 6) {
-		currentlevel = 5;
-	}
-	else if (level > 6 && level < 7) {
-		currentlevel = 6;
-	}
-	else if (level > 7 && level < 8) {
-		currentlevel = 7;
-	}
-	else if (level > 8 && level < 9) {
-		currentlevel = 8;
-	}
-	else if (level > 9 && level < 10) {
-		currentlevel = 9;
-	}
-	else if (level > 10 && enemies.length == 0 && bombenemies.length == 0) {
+	currentlevel = Math.floor(level);
+	if (level > 10 && enemies.length == 0 && bombenemies.length == 0) {
 		win();
 	}
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
@@ -1165,7 +1136,11 @@ var holes = [];
 var poolplayerx;
 var poolplayery;
 var playerballtypeword;
-var maxballspeed;
+var maxballspeed = 15;
+var poolplayerdxchange;
+var poolplayerdychange;
+var poolfriction = 0.98;
+var poolplayerspeed = 10;
 
 function startplayingpool() {
 	playerballtypeword = 'Hit in a Ball!';
@@ -1226,6 +1201,7 @@ function animatepool() {
 	for (var i = 0; i < holes.length; i++) {
 		holes[i].draw();
 	};
+	animatemouseline();
 };
 
 function spawnholes() {
@@ -1238,13 +1214,71 @@ function spawnholes() {
 };
 
 function spawnballs() {
-	balls.push(new Ball(innerWidth/1.5,innerHeight/2,0,0,30,'white'));
-	balls.push(new Ball((innerWidth/1.5)-61,(innerHeight/2),0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)-31,(innerHeight/2)+53,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)-31,(innerHeight/2)-53,0,0,30,'red'));
-	// balls.push(new Ball((innerWidth/1.5)+45,(innerHeight/2)+45,0,0,30,'red'));
-	// balls.push(new Ball((innerWidth/1.5)+45,(innerHeight/2)-45,0,0,30,'red'));
-	// balls.push(new Ball((innerWidth/1.5)-45,(innerHeight/2)+45,0,0,30,'red'));
+	balls.push(new Ball(innerWidth/1.5,innerHeight/2,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)-61,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)+61,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2),0,0,30,'orange'));
+	
+	balls.push(new Ball((innerWidth/1.5)+54,(innerHeight/2)+31,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+54,(innerHeight/2)-31,0,0,30,'red'));
+	
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+92,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+31,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-31,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-92,0,0,30,'red'));
+	
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+122,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+61,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2),0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-62,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-122,0,0,30,'red'));
+};
+
+var isballmoving = false;
+window.addEventListener('click', function () {
+	if (playingpool) {
+		isballmoving = false;
+		for (let i = 0; i < balls.length; i++) {
+			if (balls[i].dx !== 0 || balls[i].dy !== 0) {
+				isballmoving = true;
+			};
+		};
+		if (poolplayer.dx !== 0 && poolplayer.dy !== 0) {
+			isballmoving = true;
+		};
+		if (!isballmoving) {
+			calcplayermov();
+			poolplayer.moving();
+		};
+	};
+});
+
+var poolplayermousedistance;
+var poolplayermaxspeed = 35;
+var distancetospeedconst = 0.1;
+var playerspeedmodifier = 5;
+function calcplayermov (){
+	poolplayermousedistance = Math.sqrt(Math.pow((mousex-poolplayer.x),2)+Math.pow((mousey-poolplayer.y),2));
+	poolplayerspeed = poolplayermousedistance*distancetospeedconst;
+	if (poolplayerspeed > poolplayermaxspeed) {poolplayerspeed = poolplayermaxspeed;}
+	poolplayerdxchange = poolplayerspeed * playerspeedmodifier * ((poolplayer.x-mousex)/(Math.sqrt(Math.pow((poolplayer.x-mousex),2)+(Math.pow((poolplayer.y-mousey),2)))));
+	poolplayerdychange = poolplayerspeed * playerspeedmodifier * ((poolplayer.y-mousey)/(Math.sqrt(Math.pow((poolplayer.x-mousex),2)+(Math.pow((poolplayer.y-mousey),2)))));
+};
+
+var poolplayermouselinedistance;
+function animatemouseline() {
+	var mouselinex = mousex;
+	var mouseliney = mousey;
+	var linecolor = "green";
+	if (Math.sqrt(Math.pow((mousex-poolplayer.x),2)+Math.pow((mousey-poolplayer.y),2)) > (poolplayermaxspeed/distancetospeedconst)) {
+		linecolor = "red";
+	};
+	ctx.beginPath();
+	ctx.moveTo(poolplayer.x,poolplayer.y);
+	ctx.lineTo(mouselinex,mouseliney);
+	ctx.strokeStyle = linecolor;
+	
+	ctx.stroke();
 };
 
 function PoolPlayer (x,y,dx,dy,radius,color) {
@@ -1266,8 +1300,8 @@ function PoolPlayer (x,y,dx,dy,radius,color) {
 	};
 
 	this.moving = function() {
-		this.dx = playerdxchange;
-		this.dy = playerdychange;
+		this.dx = poolplayerdxchange;
+		this.dy = poolplayerdychange;
 	}
 
 	this.update = function() {
@@ -1288,6 +1322,24 @@ function PoolPlayer (x,y,dx,dy,radius,color) {
 			if (this.y - this.radius < 0) {
 				this.y += this.radius - this.y;
 			};
+		};
+		this.dx = this.dx*poolfriction;
+		this.dy = this.dy*poolfriction;
+		if (Math.abs(this.dx) <= 0.25 && Math.abs(this.dy) <= 0.25) {
+			this.dx = 0;
+			this.dy = 0;
+		};
+		if (this.dx > poolplayermaxspeed) {
+			this.dx = poolplayermaxspeed;
+		};
+		if (this.dx < -poolplayermaxspeed) {
+			this.dx = -poolplayermaxspeed
+		};
+		if (this.dy > poolplayermaxspeed) {
+			this.dy = poolplayermaxspeed;
+		};
+		if (this.dy < -poolplayermaxspeed) {
+			this.dy = -poolplayermaxspeed
 		};
 		this.x += this.dx;
 		this.y += this.dy;
@@ -1357,8 +1409,33 @@ function Ball (x,y,dx,dy,radius,color) {
 			poolplayer.dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
 			poolplayer.dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
 		};
+		for (var i = 0; i < balls.length; i++) {
+			if (balls[i].id !== this.id) {
+				if (Math.sqrt(Math.pow((this.x-balls[i].x),2)+Math.pow((this.y-balls[i].y),2)) < this.radius + balls[i].radius) {
+					//bouncing off other balls
+					this.distance = Math.sqrt(Math.pow((this.x-balls[i].x),2)+Math.pow((this.y-balls[i].y),2));
+					this.overlap = this.distance - this.radius - balls[i].radius;
+					this.x -= this.overlap * (this.x - balls[i].x) / this.distance;
+					this.y -= this.overlap * (this.y - balls[i].y) / this.distance;
+					this.normalx = (balls[i].x - this.x) / this.distance;
+					this.normaly = (balls[i].y - this.y) / this.distance;
+					this.tangentialvx = -this.normaly;
+					this.tangentialvy = this.normalx;
+					this.tanvectordot = (this.dx * this.tangentialvx) + (this.dy * this.tangentialvy);
+					this.tanvectordot2 = (balls[i].dx * this.tangentialvx) + (balls[i].dy * this.tangentialvy)
+					this.normaldot = (this.dx * this.normalx) + (this.dy * this.normaly);
+					this.normaldot2 = (balls[i].dx * this.normalx) + (balls[i].dy * this.normaly);
+					this.m1 = (this.normaldot * (this.mass - balls[i].mass) + 2 * balls[i].mass * this.normaldot2) / (this.mass + balls[i].mass);
+					this.m2 = (this.normaldot2 * (balls[i].mass - this.mass) + 2 * this.mass * this.normaldot) / (this.mass + balls[i].mass);
+					this.dx = this.tangentialvx * this.tanvectordot + this.normalx * this.m1;
+					this.dy = this.tangentialvy * this.tanvectordot + this.normaly * this.m1;
+					balls[i].dx = this.tangentialvx * this.tanvectordot2 + this.normalx * this.m2;
+					balls[i].dy = this.tangentialvy * this.tanvectordot2 + this.normaly * this.m2;
+				};
+			};
+		};
 		for (var i = 0; i < holes.length; i++) {
-			if (Math.abs(this.x - holes[i].x) < this.radius + holes[i].radius && Math.abs(this.y - holes[i].y) < this.radius + holes[i].radius) {
+			if (Math.sqrt(Math.pow((this.x-holes[i].x),2)+Math.pow((this.y-holes[i].y),2)) < this.radius + holes[i].radius) {
 				this.exist = false;
 			};
 		};
@@ -1373,6 +1450,12 @@ function Ball (x,y,dx,dy,radius,color) {
 		};
 		if (this.dy < -maxballspeed) {
 			this.dy = -maxballspeed
+		};
+		this.dx = this.dx*poolfriction;
+		this.dy = this.dy*poolfriction;
+		if (Math.abs(this.dx) <= 0.25 && Math.abs(this.dy) <= 0.25) {
+			this.dx = 0;
+			this.dy = 0;
 		};
 		this.x += this.dx;
 		this.y += this.dy;
