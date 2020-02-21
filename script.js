@@ -1146,7 +1146,6 @@ function startplayingpool() {
 	playerballtypeword = 'Hit in a Ball!';
 	poolplayerx = innerWidth / 5;
 	poolplayery = innerHeight / 2;
-	playingpool = true;
 	poolplayer = new PoolPlayer(poolplayerx,poolplayery,0,0,30,'white');
 	spawnholes();
 	spawnballs();
@@ -1162,6 +1161,7 @@ function startplayingpool() {
 	document.getElementById('time').style.visibility = 'hidden';
 	document.getElementById("mw").style.visibility = 'hidden';
 	currentask = 7;
+	playingpool = true;
 };
 
 function stopplayingpool() {
@@ -1235,7 +1235,7 @@ function spawnballs() {
 };
 
 var isballmoving = false;
-window.addEventListener('click', function () {
+window.addEventListener('mouseup', function () {
 	if (playingpool) {
 		isballmoving = false;
 		for (let i = 0; i < balls.length; i++) {
@@ -1251,7 +1251,14 @@ window.addEventListener('click', function () {
 			poolplayer.moving();
 		};
 	};
+	mousedown = false
 });
+
+var mousedown = false;
+window.addEventListener('mousedown', function () {
+	mousedown = true;
+});
+
 
 var poolplayermousedistance;
 var poolplayermaxspeed = 35;
@@ -1270,15 +1277,16 @@ function animatemouseline() {
 	var mouselinex = mousex;
 	var mouseliney = mousey;
 	var linecolor = "green";
-	if (Math.sqrt(Math.pow((mousex-poolplayer.x),2)+Math.pow((mousey-poolplayer.y),2)) > (poolplayermaxspeed/distancetospeedconst)) {
-		linecolor = "red";
+	if (mousedown) {
+		if (Math.sqrt(Math.pow((mousex-poolplayer.x),2)+Math.pow((mousey-poolplayer.y),2)) > (poolplayermaxspeed/distancetospeedconst)) {
+			linecolor = "red";
+		};
+		ctx.beginPath();
+		ctx.moveTo(poolplayer.x,poolplayer.y);
+		ctx.lineTo(mouselinex,mouseliney);
+		ctx.strokeStyle = linecolor;
+		ctx.stroke();
 	};
-	ctx.beginPath();
-	ctx.moveTo(poolplayer.x,poolplayer.y);
-	ctx.lineTo(mouselinex,mouseliney);
-	ctx.strokeStyle = linecolor;
-	
-	ctx.stroke();
 };
 
 function PoolPlayer (x,y,dx,dy,radius,color) {
