@@ -1162,6 +1162,7 @@ function startplayingpool() {
 	document.getElementById("mw").style.visibility = 'hidden';
 	currentask = 7;
 	playingpool = true;
+	playerturn = 1;
 };
 
 function stopplayingpool() {
@@ -1192,45 +1193,45 @@ function animatepool() {
 	requestAnimationFrame(animatepool);
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	if (typeof poolplayer !== 'undefined') {poolplayer.update()};
+	for (var i = 0; i < holes.length; i++) {
+		holes[i].draw();
+	};
 	for (var i = 0; i < balls.length; i++) {
 		balls[i].update();
 		if (!balls[i].exist) {
 			balls.splice(i,1);
 		};
 	};
-	for (var i = 0; i < holes.length; i++) {
-		holes[i].draw();
-	};
 	animatemouseline();
 };
 
 function spawnholes() {
-	holes.push(new Hole(innerWidth/2,0,40,'green'));
-	holes.push(new Hole(innerWidth,0,60,'green'));
-	holes.push(new Hole(0,0,60,'green'));
-	holes.push(new Hole(innerWidth/2,innerHeight,40,'green'));
-	holes.push(new Hole(innerWidth,innerHeight,60,'green'));
-	holes.push(new Hole(0,innerHeight,60,'green'));
+	holes.push(new Hole(innerWidth/2,0,60,'green'));
+	holes.push(new Hole(innerWidth,0,80,'green'));
+	holes.push(new Hole(0,0,80,'green'));
+	holes.push(new Hole(innerWidth/2,innerHeight,60,'green'));
+	holes.push(new Hole(innerWidth,innerHeight,80,'green'));
+	holes.push(new Hole(0,innerHeight,80,'green'));
 };
 
 function spawnballs() {
-	balls.push(new Ball(innerWidth/1.5,innerHeight/2,0,0,30,'red'));
+	balls.push(new Ball(innerWidth/1.5,innerHeight/2,0,0,30,'orange'));
 	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)-62,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)+62,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2),0,0,30,'orange'));
+	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2)+62,0,0,30, 'orange'));
+	balls.push(new Ball((innerWidth/1.5)+108,(innerHeight/2),0,0,30,'#706b00'));
 	
 	balls.push(new Ball((innerWidth/1.5)+54,(innerHeight/2)+31,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+54,(innerHeight/2)-31,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+54,(innerHeight/2)-31,0,0,30,'orange'));
 	
 	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+93,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+31,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)+31,0,0,30,'orange'));
 	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-31,0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-93,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+162,(innerHeight/2)-93,0,0,30,'orange'));
 	
-	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+124,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+124,0,0,30,'orange'));
 	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)+62,0,0,30,'red'));
 	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2),0,0,30,'red'));
-	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-62,0,0,30,'red'));
+	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-62,0,0,30,'orange'));
 	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-124,0,0,30,'red'));
 };
 
@@ -1239,7 +1240,7 @@ window.addEventListener('mouseup', function () {
 	if (playingpool) {
 		isballmoving = false;
 		for (let i = 0; i < balls.length; i++) {
-			if (balls[i].dx !== 0 || balls[i].dy !== 0) {
+			if (balls[i].moving) {
 				isballmoving = true;
 			};
 		};
@@ -1249,9 +1250,10 @@ window.addEventListener('mouseup', function () {
 		if (!isballmoving) {
 			calcplayermov();
 			poolplayer.moving();
+			changeplayerturn();
 		};
 	};
-	mousedown = false
+	mousedown = false;
 });
 
 var mousedown = false;
@@ -1261,15 +1263,13 @@ window.addEventListener('mousedown', function () {
 
 
 var poolplayermousedistance;
-var poolplayermaxspeed = 35;
-var distancetospeedconst = 0.05;
-var playerspeedmodifier = 2.5;
+var poolplayermaxspeed = 25;
+var distancetospeedconst = 0.125;
 function calcplayermov (){
 	poolplayermousedistance = Math.sqrt(Math.pow((mousex-poolplayer.x),2)+Math.pow((mousey-poolplayer.y),2));
 	poolplayerspeed = poolplayermousedistance*distancetospeedconst;
-	if (poolplayerspeed > poolplayermaxspeed) {poolplayerspeed = poolplayermaxspeed;}
-	poolplayerdxchange = poolplayerspeed * playerspeedmodifier * ((poolplayer.x-mousex)/(Math.sqrt(Math.pow((poolplayer.x-mousex),2)+(Math.pow((poolplayer.y-mousey),2)))));
-	poolplayerdychange = poolplayerspeed * playerspeedmodifier * ((poolplayer.y-mousey)/(Math.sqrt(Math.pow((poolplayer.x-mousex),2)+(Math.pow((poolplayer.y-mousey),2)))));
+	poolplayerdxchange = poolplayerspeed * ((poolplayer.x-mousex)/(Math.sqrt(Math.pow((poolplayer.x-mousex),2)+(Math.pow((poolplayer.y-mousey),2)))));
+	poolplayerdychange = poolplayerspeed * ((poolplayer.y-mousey)/(Math.sqrt(Math.pow((poolplayer.x-mousex),2)+(Math.pow((poolplayer.y-mousey),2)))));
 };
 
 var poolplayermouselinedistance;
@@ -1290,6 +1290,46 @@ function animatemouseline() {
 	};
 };
 
+var playerturn;
+function changeplayerturn() {
+	if (playerturn == 1) {
+		playerturn = 2;
+		poolplayer.color = 'purple';
+	}
+	else if (playerturn == 2) {
+		playerturn = 1;
+		poolplayer.color = 'blue';
+	};
+};
+
+function losegame() {
+
+};
+
+function pickorange(whichplayer) {
+
+};
+
+function pickred(whichplayer) {
+
+};
+
+function playerscratch() {
+
+}
+
+function ballhitin(color) {
+	if (color == 'red') {
+
+	}
+	if (color == 'orange') {
+
+	}
+	if (color == '#706b00') {
+
+	}
+};
+
 function PoolPlayer (x,y,dx,dy,radius,color) {
 	this.x = x;
 	this.y = y;
@@ -1303,9 +1343,11 @@ function PoolPlayer (x,y,dx,dy,radius,color) {
 		ctx.beginPath();
 		ctx.arc(this.x,this.y,this.radius,0,Math.PI * 2,false);
 		ctx.strokeStyle = this.color;
+		ctx.lineWidth = 10;
 		ctx.stroke();
-		ctx.fillStyle = this.color;
+		ctx.fillStyle = 'white';
 		ctx.fill();
+		ctx.lineWidth = 2;
 	};
 
 	this.moving = function() {
@@ -1330,6 +1372,12 @@ function PoolPlayer (x,y,dx,dy,radius,color) {
 			};
 			if (this.y - this.radius < 0) {
 				this.y += this.radius - this.y;
+			};
+		};
+		for (var i = 0; i < holes.length; i++) {
+			if (Math.sqrt(Math.pow((this.x-holes[i].x),2)+Math.pow((this.y-holes[i].y),2)) < holes[i].radius) {
+				this.exist = false;
+				playerscratch(this.color);
 			};
 		};
 		this.dx = this.dx*poolfriction;
@@ -1368,6 +1416,7 @@ function Ball (x,y,dx,dy,radius,color) {
 	this.id = ballid;
 	this.exist = true;
 	ballid += 1;
+	this.moving = false;
 
 	this.draw = function() {
 		ctx.beginPath();
@@ -1444,8 +1493,9 @@ function Ball (x,y,dx,dy,radius,color) {
 			};
 		};
 		for (var i = 0; i < holes.length; i++) {
-			if (Math.sqrt(Math.pow((this.x-holes[i].x),2)+Math.pow((this.y-holes[i].y),2)) < this.radius + holes[i].radius) {
+			if (Math.sqrt(Math.pow((this.x-holes[i].x),2)+Math.pow((this.y-holes[i].y),2)) < holes[i].radius) {
 				this.exist = false;
+				ballhitin(this.color);
 			};
 		};
 		if (this.dx > maxballspeed) {
@@ -1468,6 +1518,12 @@ function Ball (x,y,dx,dy,radius,color) {
 		};
 		this.x += this.dx;
 		this.y += this.dy;
+		if (this.lastx == this.x && this.lasty == this.y) {
+			this.moving = false
+		}
+		else {this.moving = true;};
+		this.lastx = this.x;
+		this.lasty = this.y;
 		this.draw();
 	};
 };
