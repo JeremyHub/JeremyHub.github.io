@@ -1195,14 +1195,18 @@ function animatepool() {
 	for (var i = 0; i < holes.length; i++) {
 		holes[i].draw();
 	};
-	if (typeof poolplayer !== 'undefined') {poolplayer.update()};
 	for (var i = 0; i < balls.length; i++) {
 		balls[i].update();
 		if (!balls[i].exist) {
 			balls.splice(i,1);
 		};
 	};
+	if (typeof poolplayer !== 'undefined') {poolplayer.update()};
 	animatemouseline();
+	if (isfollowingmouse) {
+		poolplayer.x = mousex;
+		poolplayer.y = mousey;
+	}
 };
 
 function spawnholes() {
@@ -1237,22 +1241,25 @@ function spawnballs() {
 
 var isballmoving = false;
 window.addEventListener('mouseup', function () {
-	if (playingpool) {
-		isballmoving = false;
-		for (let i = 0; i < balls.length; i++) {
-			if (balls[i].moving) {
+	if (!isfollowingmouse) {
+		if (playingpool) {
+			isballmoving = false;
+			for (let i = 0; i < balls.length; i++) {
+				if (balls[i].moving) {
+					isballmoving = true;
+				};
+			};
+			if (poolplayer.dx !== 0 && poolplayer.dy !== 0) {
 				isballmoving = true;
 			};
-		};
-		if (poolplayer.dx !== 0 && poolplayer.dy !== 0) {
-			isballmoving = true;
-		};
-		if (!isballmoving) {
-			calcplayermov();
-			poolplayer.moving();
-			changeplayerturn();
+			if (!isballmoving) {
+				calcplayermov();
+				poolplayer.moving();
+				changeplayerturn();
+			};
 		};
 	};
+	isfollowingmouse = false;
 	mousedown = false;
 });
 
@@ -1306,6 +1313,10 @@ function losegame() {
 
 };
 
+function firstballhitin(whichplayer) {
+
+};
+
 function pickorange(whichplayer) {
 
 };
@@ -1314,9 +1325,13 @@ function pickred(whichplayer) {
 
 };
 
+var isfollowingmouse = false;
 function playerscratch() {
-
-}
+	isfollowingmouse = true;
+	poolplayer.dx = 0;
+	poolplayer.dy = 0;
+	changeplayerturn();
+};
 
 function ballhitin(color) {
 	if (color == 'red') {
@@ -1326,7 +1341,7 @@ function ballhitin(color) {
 
 	}
 	if (color == '#706b00') {
-
+		
 	}
 };
 
@@ -1375,9 +1390,8 @@ function PoolPlayer (x,y,dx,dy,radius,color) {
 			};
 		};
 		for (var i = 0; i < holes.length; i++) {
-			if (Math.sqrt(Math.pow((this.x-holes[i].x),2)+Math.pow((this.y-holes[i].y),2)) < holes[i].radius) {
-				this.exist = false;
-				playerscratch(this.color);
+			if (Math.sqrt(Math.pow((this.x-holes[i].x),2)+Math.pow((this.y-holes[i].y),2)) < holes[i].radius && !isfollowingmouse) {
+				playerscratch()
 			};
 		};
 		this.dx = this.dx*poolfriction;
@@ -1446,7 +1460,7 @@ function Ball (x,y,dx,dy,radius,color) {
 				this.y += this.radius - this.y;
 			};
 		};
-		if (Math.sqrt(Math.pow((this.x-poolplayer.x),2)+Math.pow((this.y-poolplayer.y),2)) < poolplayer.radius + this.radius) {
+		if (Math.sqrt(Math.pow((this.x-poolplayer.x),2)+Math.pow((this.y-poolplayer.y),2)) < poolplayer.radius + this.radius && !isfollowingmouse) {
 			//bouncing off poolplayer
 			this.distance = Math.sqrt(Math.pow((this.x-poolplayer.x),2)+Math.pow((this.y-poolplayer.y),2));
 			this.overlap = this.distance - this.radius - poolplayer.radius;
