@@ -1192,10 +1192,10 @@ function winpool() {
 function animatepool() {
 	requestAnimationFrame(animatepool);
 	ctx.clearRect(0,0,innerWidth,innerHeight);
-	if (typeof poolplayer !== 'undefined') {poolplayer.update()};
 	for (var i = 0; i < holes.length; i++) {
 		holes[i].draw();
 	};
+	if (typeof poolplayer !== 'undefined') {poolplayer.update()};
 	for (var i = 0; i < balls.length; i++) {
 		balls[i].update();
 		if (!balls[i].exist) {
