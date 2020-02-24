@@ -272,7 +272,7 @@ function howlong() {
 	else {console.log("Currentask not 0-8")};
 
 	if (playing && daystill <= 0) {
-		stopplayingshootshoot();
+		losegame();
 	};
 	
 	window.setInterval(function(){
@@ -424,7 +424,6 @@ function win() {
 	document.getElementById('time').style.visibility = 'hidden';
 	document.getElementById("mw").style.visibility = 'hidden';
 	timesplayed += 1;
-	timezoneoffset = 0.17;
 	checklevel = 0;
 	lastcheck = 1;
 	check = 0;
@@ -436,6 +435,27 @@ function win() {
 	bombenemies = [];
 	bombs = [];
 	winning = true;
+	window.setTimeout(stopplayingshootshoot,100);
+};
+
+function losegame() {
+	titlemw = 'Sorry, game over.';
+	document.getElementById('leveldisplay').style.visibility = 'hidden';
+	document.getElementById('ammodisplay').style.visibility = 'hidden';
+	document.getElementById('time').style.visibility = 'hidden';
+	document.getElementById("mw").style.visibility = 'hidden';
+	checklevel = 0;
+	lastcheck = 1;
+	check = 0;
+	checkother = 0;
+	level = 0;
+	date = new Date();
+	bullets = [];
+	enemies = [];
+	bombenemies = [];
+	bombs = [];
+	winning = true;
+	window.setTimeout(stopplayingshootshoot,100);
 };
 
 window.addEventListener('click', function () {
@@ -1127,7 +1147,7 @@ function changemov () {
 	else {bombing = false};
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////Pool/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var poolplayer;
 var playingpool;
@@ -1186,13 +1206,21 @@ function stopplayingpool() {
 };
 
 function winpool() {
-	titlemw = 'You Win!';
+	titlemw = playerturnstr + ' Wins!';
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
+	window.setTimeout(stopplayingpool,100);
+};
+
+function losepool() {
+	titlemw = playerturnstr + ' Loses!';
+	document.getElementById('leveldisplay').style.visibility = 'hidden';
+	document.getElementById('ammodisplay').style.visibility = 'hidden';
+	window.setTimeout(stopplayingpool,100);
 };
 
 function animatepool() {
-	requestAnimationFrame(animatepool);
+	if (playingpool) {requestAnimationFrame(animatepool);}
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	for (var i = 0; i < holes.length; i++) {
 		holes[i].draw();
@@ -1310,6 +1338,7 @@ function animatemouseline() {
 };
 
 var playerturn;
+var playerturnstr;
 function changeplayerturn() {
 	if (playerturn == 1) {
 		playerturn = 2;
@@ -1319,10 +1348,7 @@ function changeplayerturn() {
 		playerturn = 1;
 		poolplayer.color = 'blue';
 	};
-};
-
-function losepool(whichplayer) {
-
+	playerturn == 1 ? playerturnstr = 'Purple' : playerturnstr = 'Blue';
 };
 
 function firstballhitin(whichplayer) {
@@ -1334,10 +1360,6 @@ function pickorange(whichplayer) {
 };
 
 function pickred(whichplayer) {
-
-};
-
-function winpool(whichplayer) {
 
 };
 
