@@ -1140,7 +1140,7 @@ var maxballspeed = 15;
 var poolplayerdxchange;
 var poolplayerdychange;
 var poolfriction = 0.9865;
-var poolplayerspeed = 10;
+var poolplayerspeed;
 
 function startplayingpool() {
 	playerballtypeword = 'Hit in a Ball!';
