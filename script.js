@@ -1139,7 +1139,7 @@ var playerballtypeword;
 var maxballspeed = 15;
 var poolplayerdxchange;
 var poolplayerdychange;
-var poolfriction = 0.987;
+var poolfriction = 0.9865;
 var poolplayerspeed = 10;
 
 function startplayingpool() {
@@ -1149,6 +1149,7 @@ function startplayingpool() {
 	poolplayer = new PoolPlayer(poolplayerx,poolplayery,0,0,30,'white');
 	spawnholes();
 	spawnballs();
+	lastamountofballs = balls.length;
 	animatepool();
 	document.getElementById('goaway').style.visibility = 'hidden';
 	document.getElementById('gamedisplay').style.visibility = 'visible';
@@ -1163,6 +1164,7 @@ function startplayingpool() {
 	currentask = 7;
 	playingpool = true;
 	playerturn = 1;
+	changeplayerturn();
 };
 
 function stopplayingpool() {
@@ -1206,7 +1208,25 @@ function animatepool() {
 	if (isfollowingmouse) {
 		poolplayer.x = mousex;
 		poolplayer.y = mousey;
-	}
+	};
+	isballmoving = false;
+	for (let i = 0; i < balls.length; i++) {
+		if (balls[i].moving) {
+			isballmoving = true;
+		};
+	};
+	if (poolplayer.dx !== 0 && poolplayer.dy !== 0) {
+		isballmoving = true;
+	};
+	if (!isballmoving) {
+		if (mouseups) {
+		if (lastamountofballs == balls.length) {
+			changeplayerturn();
+		};
+		mouseups = false;
+		lastamountofballs = balls.length;
+		};
+	};
 };
 
 function spawnholes() {
@@ -1239,24 +1259,16 @@ function spawnballs() {
 	balls.push(new Ball((innerWidth/1.5)+216,(innerHeight/2)-124,0,0,30,'red'));
 };
 
-var isballmoving = false;
+var isballmoving;
+var mouseups;
 window.addEventListener('mouseup', function () {
 	if (!isfollowingmouse) {
 		if (playingpool) {
-			isballmoving = false;
-			for (let i = 0; i < balls.length; i++) {
-				if (balls[i].moving) {
-					isballmoving = true;
-				};
-			};
-			if (poolplayer.dx !== 0 && poolplayer.dy !== 0) {
-				isballmoving = true;
-			};
 			if (!isballmoving) {
 				calcplayermov();
 				poolplayer.moving();
-				changeplayerturn();
 			};
+			mouseups = true;
 		};
 	};
 	isfollowingmouse = false;
@@ -1309,7 +1321,7 @@ function changeplayerturn() {
 	};
 };
 
-function losegame() {
+function losepool(whichplayer) {
 
 };
 
@@ -1325,25 +1337,37 @@ function pickred(whichplayer) {
 
 };
 
+function winpool(whichplayer) {
+
+};
+
+function ballhitin(color) {
+	if (color == 'red') {
+
+	};
+	if (color == 'orange') {
+
+	};
+	if (color == '#706b00') {
+		if (balls.length !== 0) {
+			losepool(playerturn);
+		}
+		else {
+			winpool(whichplayer)
+		};
+	};
+};
+
 var isfollowingmouse = false;
 function playerscratch() {
 	isfollowingmouse = true;
 	poolplayer.dx = 0;
 	poolplayer.dy = 0;
 	changeplayerturn();
+	mouseups = false;
 };
 
-function ballhitin(color) {
-	if (color == 'red') {
 
-	}
-	if (color == 'orange') {
-
-	}
-	if (color == '#706b00') {
-		
-	}
-};
 
 function PoolPlayer (x,y,dx,dy,radius,color) {
 	this.x = x;
