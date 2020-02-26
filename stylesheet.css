@@ -124,4 +124,6 @@
 	bottom: 0;
 	color: purple;
 	animation: fadein 2.5s ease-in;
+	text-align: center;
+	padding: 0%;
 }

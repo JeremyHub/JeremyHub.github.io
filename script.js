@@ -1156,7 +1156,7 @@ var holes = [];
 var poolplayerx;
 var poolplayery;
 var playerballtypeword;
-var maxballspeed = 15;
+var maxballspeed = 17;
 var poolplayerdxchange;
 var poolplayerdychange;
 var poolfriction = 0.9865;
@@ -1184,7 +1184,10 @@ function startplayingpool() {
 	currentask = 7;
 	playingpool = true;
 	playerturn = 1;
+	noballshitin = true;
+	isfirstshot = true;
 	changeplayerturn();
+	if (playingpool) {requestAnimationFrame(animatepool);}
 };
 
 function stopplayingpool() {
@@ -1203,10 +1206,15 @@ function stopplayingpool() {
 	document.getElementById('headingthatsaystime').style.visibility = 'visible';
 	currentask = 8;
 	document.getElementById("mw").style.visibility = 'visible';
+	isfollowingmouse = false;
+	document.getElementById('leveldisplay').innerHTML = 'Hit in a ball!';
+	document.getElementById('ammodisplay').innerHTML = '';
 };
 
-function winpool() {
-	titlemw = playerturnstr + ' Wins!';
+function winpool(playerinput) {
+	var playerturnstrforwin;
+	
+	titlemw = playerturnstrforwin + ' Wins!';
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	window.setTimeout(stopplayingpool,100);
@@ -1220,7 +1228,6 @@ function losepool() {
 };
 
 function animatepool() {
-	if (playingpool) {requestAnimationFrame(animatepool);}
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	for (var i = 0; i < holes.length; i++) {
 		holes[i].draw();
@@ -1236,6 +1243,9 @@ function animatepool() {
 	if (isfollowingmouse) {
 		poolplayer.x = mousex;
 		poolplayer.y = mousey;
+		if (isfollowingmouse && poolplayer.x > innerWidth/3) {
+			poolplayer.x = innerWidth/3;
+		}
 	};
 	isballmoving = false;
 	for (let i = 0; i < balls.length; i++) {
@@ -1248,13 +1258,45 @@ function animatepool() {
 	};
 	if (!isballmoving) {
 		if (mouseups) {
-		if (lastamountofballs == balls.length) {
-			changeplayerturn();
-		};
-		mouseups = false;
-		lastamountofballs = balls.length;
+			var redballsrightnow2;
+			var orangeballsrightnow2;
+			var redballsrightnow2 = 0;
+			var orangeballsrightnow2 = 0;
+			for (var i = 0; i < balls.length; i++) {
+				balls[i].color == 'red' ? redballsrightnow2++ : orangeballsrightnow2++;
+			}
+			if (playerturnstr == playerone && playertwocolor == 'red' && redballsrightnow2 !== lastredballsrightnow2) {
+				//changeplayerturn();
+			}
+			else if (playerturnstr == playerone && playertwocolor == 'orange' && orangeballsrightnow2 !== lastorangeballsrightnow2) {
+				//changeplayerturn();
+			}
+			if (playerturnstr == playertwo && playeronecolor == 'red' && redballsrightnow2 !== lastredballsrightnow2) {
+				//changeplayerturn();
+			}
+			else if (playerturnstr == playertwo && playeronecolor == 'orange' && orangeballsrightnow2 !== lastorangeballsrightnow2) {
+				//changeplayerturn();
+			}
+			else if (lastamountofballs == balls.length) {
+				changeplayerturn();
+			}
+			else {
+				changeplayerturn();
+			}
+			mouseups = false;
+			lastredballsrightnow2 = 0;
+			lastorangeballsrightnow2 = 0;
+			for (var i = 0; i < balls.length; i++) {
+				balls[i].color == 'red' ? lastredballsrightnow2++ : lastorangeballsrightnow2++;
+			};
+			lastamountofballs = balls.length;
+			isfirstshot = false;
 		};
 	};
+	if (tryingtoassignplayers) {
+		firstballhitin(tryingtoassignplayersplayer)
+	}
+	if (playingpool) {requestAnimationFrame(animatepool);}
 };
 
 function spawnholes() {
@@ -1289,6 +1331,7 @@ function spawnballs() {
 
 var isballmoving;
 var mouseups;
+var isfirstshot;
 window.addEventListener('mouseup', function () {
 	if (!isfollowingmouse) {
 		if (playingpool) {
@@ -1299,7 +1342,7 @@ window.addEventListener('mouseup', function () {
 			mouseups = true;
 		};
 	};
-	isfollowingmouse = false;
+	if (!isballmoving) {isfollowingmouse = false;}
 	mousedown = false;
 });
 
@@ -1310,7 +1353,7 @@ window.addEventListener('mousedown', function () {
 
 
 var poolplayermousedistance;
-var poolplayermaxspeed = 25;
+var poolplayermaxspeed = 30;
 var distancetospeedconst = 0.125;
 function calcplayermov (){
 	poolplayermousedistance = Math.sqrt(Math.pow((mousex-poolplayer.x),2)+Math.pow((mousey-poolplayer.y),2));
@@ -1351,45 +1394,108 @@ function changeplayerturn() {
 	playerturn == 1 ? playerturnstr = 'Purple' : playerturnstr = 'Blue';
 };
 
-function firstballhitin(whichplayer) {
-
-};
-
-function pickorange(whichplayer) {
-
-};
-
-function pickred(whichplayer) {
-
-};
-
-function ballhitin(color) {
-	if (color == 'red') {
-
+var tryingtoassignplayers = false;
+var tryingtoassignplayersplayer;
+function firstballhitin(player) {
+	if (!isballmoving) {
+		pickcolor(player);
+		changeplayerturn();
+		tryingtoassignplayers = false;
+	}
+	else {
+		tryingtoassignplayers = true;
+		tryingtoassignplayersplayer = player;
 	};
-	if (color == 'orange') {
+};
 
+var playeronecolor;
+var playertwocolor;
+var playerone;
+var playertwo;
+function pickcolor(playerinput) {
+	var orangeballs = 0;
+	var redballs = 0;
+	playerone = playerinput;
+	playerone == 'Purple' ? playertwo = 'Blue' : playertwo = 'Purple';
+	for (var i = 0; i < balls.length; i++) {
+		if (balls[i].color == 'orange') orangeballs++;
+		if (balls[i].color == 'red') redballs++;
 	};
-	if (color == '#706b00') {
-		if (balls.length !== 0) {
-			losepool(playerturn);
+	if (redballs > orangeballs) {
+		playeronecolor = 'red';
+		playertwocolor = 'orange';
+	}
+	else if (orangeballs > redballs) {
+		playertwocolor = 'red';
+		playeronecolor = 'orange';
+	}
+	else {
+		if (Math.random > 0.5) {
+			playeronecolor = 'red';
+			playertwocolor = 'orange';
 		}
 		else {
-			winpool(whichplayer)
+			playertwocolor = 'red';
+			playeronecolor = 'orange';
+		}
+	};
+	if (playerone == 'Blue') {
+		document.getElementById('leveldisplay').innerHTML = playerone + ' is hitting in ' + playeronecolor + '.';
+		document.getElementById('ammodisplay').innerHTML = playertwo + ' is hitting in ' + playertwocolor + '.';
+	};
+	if (playerone == 'Purple') {
+		document.getElementById('ammodisplay').innerHTML = playerone + ' is hitting in ' + playeronecolor + '.';
+		document.getElementById('leveldisplay').innerHTML = playertwo + ' is hitting in ' + playertwocolor + '.';
+	};
+};
+
+var noballshitin;
+var redballsrightnow;
+var orangeballsrightnow;
+function ballhitin(color) {
+	if (color == '#706b00') {
+		for (var i = 0; i < balls.length; i++) {
+			balls[i].color == 'red' ? redballsrightnow++ : orangeballsrightnow++;
+		}
+		if (playerturnstr == playerone && playeronecolor == 'red' && redballsrightnow == 0) {
+			changeplayerturn();
+			winpool();
+		}
+		else if (playerturnstr == playerone && playeronecolor == 'orange' && orangeballsrightnow == 0) {
+			changeplayerturn();
+			winpool();
+		}
+		else if (playerturnstr == playertwo && playertwocolor == 'red' && redballsrightnow == 0) {
+			changeplayerturn();
+			winpool();
+		}
+		else if (playerturnstr == playertwo && playertwocolor == 'orange' && orangeballsrightnow == 0) {
+			changeplayerturn();
+			winpool();
+		}
+		else {
+			changeplayerturn();
+			losepool()
 		};
 	};
+	if (noballshitin) {
+		firstballhitin (playerturnstr);
+	}
+	noballshitin = false;
 };
 
 var isfollowingmouse = false;
 function playerscratch() {
+	if (isfirstshot) {
+		changeplayerturn();
+		losepool();
+	}
 	isfollowingmouse = true;
 	poolplayer.dx = 0;
 	poolplayer.dy = 0;
 	changeplayerturn();
 	mouseups = false;
 };
-
-
 
 function PoolPlayer (x,y,dx,dy,radius,color) {
 	this.x = x;
