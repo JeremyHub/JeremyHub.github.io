@@ -1252,7 +1252,7 @@ function animatepool() {
 		}
 	};
 	isballmoving = false;
-	for (let i = 0; i < balls.length; i++) {
+	for (var i = 0; i < balls.length; i++) {
 		if (balls[i].moving) {
 			isballmoving = true;
 		};
