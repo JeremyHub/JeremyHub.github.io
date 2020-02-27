@@ -1209,6 +1209,10 @@ function stopplayingpool() {
 	isfollowingmouse = false;
 	document.getElementById('leveldisplay').innerHTML = 'Hit in a ball!';
 	document.getElementById('ammodisplay').innerHTML = '';
+	playeronecolor = undefined;
+	playertwocolor = undefined;
+	playerone = undefined;
+	playertwo = undefined;
 };
 
 function winpool(playerinput) {
