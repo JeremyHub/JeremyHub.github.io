@@ -1280,9 +1280,11 @@ function animatepool() {
 				//changeplayerturn();
 			}
 			else if (lastamountofballs == balls.length) {
+				//dontchangeplayerturn
 				changeplayerturn();
 			}
 			else {
+				//dontchangeplayerturn
 				changeplayerturn();
 			}
 			mouseups = false;
