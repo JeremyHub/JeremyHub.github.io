@@ -1215,10 +1215,8 @@ function stopplayingpool() {
 	playertwo = undefined;
 };
 
-function winpool(playerinput) {
-	var playerturnstrforwin;
-	
-	titlemw = playerturnstrforwin + ' Wins!';
+function winpool() {
+	titlemw = playerturnstr + ' Wins!';
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	window.setTimeout(stopplayingpool,100);
