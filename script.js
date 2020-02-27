@@ -1227,6 +1227,10 @@ function losepool() {
 	window.setTimeout(stopplayingpool,100);
 };
 
+var lastredballsrightnow2;
+var lastorangeballsrightnow2;
+var redballsrightnow2;
+var orangeballsrightnow2;
 function animatepool() {
 	ctx.clearRect(0,0,innerWidth,innerHeight);
 	for (var i = 0; i < holes.length; i++) {
@@ -1258,10 +1262,8 @@ function animatepool() {
 	};
 	if (!isballmoving) {
 		if (mouseups) {
-			var redballsrightnow2;
-			var orangeballsrightnow2;
-			var redballsrightnow2 = 0;
-			var orangeballsrightnow2 = 0;
+			redballsrightnow2 = 0;
+			orangeballsrightnow2 = 0;
 			for (var i = 0; i < balls.length; i++) {
 				balls[i].color == 'red' ? redballsrightnow2++ : orangeballsrightnow2++;
 			}
@@ -1271,7 +1273,7 @@ function animatepool() {
 			else if (playerturnstr == playerone && playertwocolor == 'orange' && orangeballsrightnow2 !== lastorangeballsrightnow2) {
 				//changeplayerturn();
 			}
-			if (playerturnstr == playertwo && playeronecolor == 'red' && redballsrightnow2 !== lastredballsrightnow2) {
+			else if (playerturnstr == playertwo && playeronecolor == 'red' && redballsrightnow2 !== lastredballsrightnow2) {
 				//changeplayerturn();
 			}
 			else if (playerturnstr == playertwo && playeronecolor == 'orange' && orangeballsrightnow2 !== lastorangeballsrightnow2) {
