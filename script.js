@@ -272,7 +272,8 @@ function howlong() {
 	else {console.log("Currentask not 0-8")};
 
 	if (playing && daystill <= 0) {
-		losegame();
+		if (!winning) losegame();
+		if (winning) stopplayingshootshoot();
 	};
 	
 	window.setInterval(function(){
@@ -393,6 +394,7 @@ function startplayingshootshoot() {
 	titlemw = "Welcome to Shootshoot!";
 	document.getElementById('canvas').style.zIndex = 1;
 	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
+	winning = false;
 };
 
 function stopplayingshootshoot() {
@@ -435,7 +437,7 @@ function win() {
 	bombenemies = [];
 	bombs = [];
 	winning = true;
-	window.setTimeout(stopplayingshootshoot,100);
+	timezoneoffset = 0.2;
 };
 
 function losegame() {
@@ -455,7 +457,7 @@ function losegame() {
 	bombenemies = [];
 	bombs = [];
 	winning = true;
-	window.setTimeout(stopplayingshootshoot,100);
+	timezoneoffset = 0.2;
 };
 
 window.addEventListener('click', function () {
@@ -806,13 +808,13 @@ function GoodBullet(x,y,dx,dy,radius,color) {
 		for (var i = 0; i < enemies.length; i++) {
 			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
 				enemies.splice(i,1);
-				timezoneoffset = timezoneoffset + 0.25;
+				if (!winning) timezoneoffset = timezoneoffset + 0.25;
 			};
 		};
 		for (var i = 0; i < bombenemies.length; i++) {
 			if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
 				bombenemies.splice(i,1);
-				timezoneoffset = timezoneoffset + 0.25;
+				if (!winning) timezoneoffset = timezoneoffset + 0.25;
 				bombsleft += 1;
 			};
 		};
@@ -933,13 +935,13 @@ function GoodBomb(x,y,dx,dy,radius,color,rate,maxradius) {
 			for (var i = 0; i < enemies.length; i++) {
 				if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
 					enemies.splice(i,1);
-					timezoneoffset = timezoneoffset + 0.25;
+					if (!winning) timezoneoffset = timezoneoffset + 0.25;
 				};
 			};
 			for (var i = 0; i < bombenemies.length; i++) {
 				if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
 					bombenemies.splice(i,1);
-					timezoneoffset = timezoneoffset + 0.25;
+					if (!winning) timezoneoffset = timezoneoffset + 0.25;
 					bombsleft += 1;
 				};
 			};
@@ -956,14 +958,14 @@ function GoodBomb(x,y,dx,dy,radius,color,rate,maxradius) {
 		for (var i = 0; i < enemies.length; i++) {
 			if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
 				enemies.splice(i,1);
-				timezoneoffset = timezoneoffset + 0.25;
+				if (!winning) timezoneoffset = timezoneoffset + 0.25;
 				this.hit = true;
 			};
 		};
 		for (var i = 0; i < bombenemies.length; i++) {
 			if (Math.abs(bombenemies[i].x - this.x) < bombenemies[i].radius + this.radius && Math.abs(bombenemies[i].y - this.y) < bombenemies[i].radius + this.radius) {
 				bombenemies.splice(i,1);
-				timezoneoffset = timezoneoffset + 0.25;
+				if (!winning) timezoneoffset = timezoneoffset + 0.25;
 				this.hit = true;
 			};
 		};
