@@ -1157,7 +1157,7 @@ var balls = [];
 var holes = [];
 var poolplayerx;
 var poolplayery;
-var playerballtypeword;
+var playerballtypeword = 'Hit in a ball!';
 var maxballspeed = 17;
 var poolplayerdxchange;
 var poolplayerdychange;
@@ -1165,8 +1165,12 @@ var poolfriction = 0.9865;
 var poolplayerspeed;
 
 function startplayingpool() {
-	playerballtypeword = 'Hit in a Ball!';
 	poolplayerx = innerWidth / 5;
+	currentask = 7;
+	playingpool = true;
+	playerturn = 1;
+	noballshitin = true;
+	isfirstshot = true;
 	poolplayery = innerHeight / 2;
 	poolplayer = new PoolPlayer(poolplayerx,poolplayery,0,0,30,'white');
 	spawnholes();
@@ -1183,11 +1187,7 @@ function startplayingpool() {
 	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'hidden';
 	document.getElementById("mw").style.visibility = 'hidden';
-	currentask = 7;
-	playingpool = true;
-	playerturn = 1;
-	noballshitin = true;
-	isfirstshot = true;
+	
 	changeplayerturn();
 	if (playingpool) {requestAnimationFrame(animatepool);}
 };
