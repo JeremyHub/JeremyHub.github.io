@@ -1462,6 +1462,8 @@ var redballsrightnow;
 var orangeballsrightnow;
 function ballhitin(color) {
 	if (color == '#706b00') {
+		redballsrightnow = 0;
+		orangeballsrightnow = 0;
 		for (var i = 0; i < balls.length; i++) {
 			balls[i].color == 'red' ? redballsrightnow++ : orangeballsrightnow++;
 		}
@@ -1485,6 +1487,7 @@ function ballhitin(color) {
 			changeplayerturn();
 			losepool()
 		};
+		console.log(playerturnstr,playerone,playertwo,playertwocolor,playeronecolor,redballsrightnow,orangeballsrightnow);
 	};
 	if (noballshitin) {
 		firstballhitin (playerturnstr);
