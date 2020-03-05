@@ -1040,16 +1040,16 @@ function checkchange() {
 		if (currentlevel == 1) {
 			bombenemyspawnrate = 15;
 			bombenemyshootrate = 10;
-		}
+		};
 		if (bombenemyshootrate < 1) {bombenemyshootrate = 1};
 		if (bombenemyspawnrate < 1) {bombenemyspawnrate = 1};
 		if (enemyshootrate < 1) {enemyshootrate = 1};
-		if (enemyshootrate < 1) {enemyshootrate = 1};
-	}
+		if (enemyspawnrate < 1) {enemyspawnrate = 1};
+	};
 	currentlevel = Math.floor(level);
 	if (level > 10 && enemies.length == 0 && bombenemies.length == 0) {
 		win();
-	}
+	};
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
 	if (lastcheck != check && playing) {
 		lastcheck = check;
