@@ -850,7 +850,7 @@ function BadBullet(x,y,dx,dy,radius,color) {
 		};
 		if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
 			this.exist = false;
-			timezoneoffset = timezoneoffset - 0.5;
+			if (!godmode) timezoneoffset = timezoneoffset - 0.5;
 		};
 		
 		this.x += this.dx;
@@ -1089,6 +1089,8 @@ function checkchange() {
 var bombing = false;
 var playerspeedaccelrate = 1;
 var maxplayerspeed = 5;
+var godmode = false;
+var goding = false;
 function changemov () {
 	if (pressed.includes(16)) {
 		playerspeedaccelrate = 3;
@@ -1102,7 +1104,7 @@ function changemov () {
 		if (playerdychange > -maxplayerspeed) {
 			playerdychange = playerdychange - playerspeedaccelrate;
 		};
-	}
+	};
 	if (pressed.includes(83)) {
 		if (playerdychange < maxplayerspeed) {
 			playerdychange = playerdychange + playerspeedaccelrate;
@@ -1134,9 +1136,6 @@ function changemov () {
 			playerdxchange = playerdxchange - playerspeedaccelrate;
 		}
 	};
-	if (playing) {
-		if(!playerfreeze){player.moving()};
-	};
 	if (pressed.includes(32)) {
 		if (!bombing && bombsleft > 0) {
 			calcbulldir();
@@ -1147,6 +1146,25 @@ function changemov () {
 		bombing = true;
 	}
 	else {bombing = false};
+	if (playing) {
+		if(!playerfreeze) {player.moving()};
+	};
+	if (pressed.includes(17) && pressed.includes(18) && pressed.includes(71)) {
+		if (!goding) {
+			godmode? godmode = false : godmode = true;
+		};
+		goding = true;
+	}
+	else {goding = false;};
+	if (pressed.includes(17) && pressed.includes(18) && pressed.includes(65)) {
+		ammo += 10;
+	};
+	if (pressed.includes(17) && pressed.includes(18) && pressed.includes(66)) {
+		bombsleft += 5;
+	};
+	if (pressed.includes(17) && pressed.includes(18) && pressed.includes(39)) {
+		level += 0.5;
+	};
 };
 
 /////////////////////////////////////Pool/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
