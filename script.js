@@ -1050,6 +1050,10 @@ function checkchange() {
 	if (level > 10 && enemies.length == 0 && bombenemies.length == 0) {
 		win();
 	};
+	if (level > 10) {
+		enemyspawnrate = 0;
+		bombenemyspawnrate = 0;
+	}
 	document.getElementById('leveldisplay').innerHTML = 'Level: ' + currentlevel;
 	if (lastcheck != check && playing) {
 		lastcheck = check;
