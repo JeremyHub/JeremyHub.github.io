@@ -26,7 +26,7 @@ var monthofdatewanted;
 var monthofdatenow;
 var strofdatenow;
 var strofdatewanted;
-var timezoneoffset = 480;
+var timezoneoffset = 420;
 
 function daysinmonth (monthfordays) {
 	if (((currentyear % 4 == 0) && (currentyear % 100 != 0)) || (currentyear % 400 == 0)) {
@@ -413,7 +413,7 @@ function stopplayingshootshoot() {
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'visible';
 	document.getElementById('headingthatsaystime').style.visibility = 'visible';
-	timezoneoffset = 480;
+	timezoneoffset = 420;
 	currentask = 8;
 	document.getElementById("mw").style.visibility = 'visible';
 };
