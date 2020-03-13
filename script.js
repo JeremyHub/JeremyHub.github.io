@@ -1487,7 +1487,12 @@ function ballhitin(color) {
 		redballsrightnow = 0;
 		orangeballsrightnow = 0;
 		for (var i = 0; i < balls.length; i++) {
-			balls[i].color == 'red' ? redballsrightnow++ : orangeballsrightnow++;
+			if (balls[i].color == 'red') {
+				redballsrightnow++;
+			};
+			if (balls[i].color == 'orange') {
+				orangeballsrightnow++;
+			};
 		}
 		if (playerturnstr == playerone && playeronecolor == 'red' && redballsrightnow == 0) {
 			changeplayerturn();
