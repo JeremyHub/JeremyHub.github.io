@@ -1,9 +1,9 @@
 var currentask = 8;
-var date = "mar 13 2020 21:00:00";
+var date = "may 12 2020";
 var defaultsign = 1;
 var sign = defaultsign;
-var titlemw = "to Spring Break";
-var defaultdatenow = 1;
+var titlemw = "to Summer Break";
+var defaultdatenow = 3;
 var datenow = defaultdatenow;
 var deadline;
 var now;
@@ -61,13 +61,8 @@ function changedate (whichdate) {
 	howlong();
 };
 
-function switchdate (datewanted) {	
-	if (datewanted == 1) {
-		date = "mar 13 2020 21:00:00";
-		titlemw = "to Spring Break";
-		sign = 1;
-	}
-	else if (datewanted == 2) {
+function switchdate (datewanted) {
+	if (datewanted == 2) {
 		date = "jan 17 2019";
 		sign = -1;
 		titlemw = "Since First Date";
@@ -1283,7 +1278,7 @@ function animatepool() {
 			isballmoving = true;
 		};
 	};
-	if (poolplayer.dx !== 0 && poolplayer.dy !== 0) {
+	if (poolplayer.dx !== 0 && poolplayer.dy !== 0 && playingpool) {
 		isballmoving = true;
 	};
 	if (!isballmoving) {
@@ -1483,17 +1478,17 @@ var noballshitin;
 var redballsrightnow;
 var orangeballsrightnow;
 function ballhitin(color) {
+	redballsrightnow = 0;
+	orangeballsrightnow = 0;
+	for (var i = 0; i < balls.length; i++) {
+		if (balls[i].color == 'red') {
+			redballsrightnow++;
+		};
+		if (balls[i].color == 'orange') {
+			orangeballsrightnow++;
+		};
+	};
 	if (color == '#706b00') {
-		redballsrightnow = 0;
-		orangeballsrightnow = 0;
-		for (var i = 0; i < balls.length; i++) {
-			if (balls[i].color == 'red') {
-				redballsrightnow++;
-			};
-			if (balls[i].color == 'orange') {
-				orangeballsrightnow++;
-			};
-		}
 		if (playerturnstr == playerone && playeronecolor == 'red' && redballsrightnow == 0) {
 			changeplayerturn();
 			winpool();
