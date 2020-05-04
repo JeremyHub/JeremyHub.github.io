@@ -72,6 +72,11 @@ function switchdate (datewanted) {
 		titlemw = "to Summer Break";
 		sign = 1;
 	}
+	else if (datewanted == 5) {
+		date = "may 17 2020";
+		titlemw = "to Jeremy Coming to Washington";
+		sign = 1;
+	}
 	else if (datewanted == 4) {
 		if (!isNaN((document.getElementById('customdateyear').value)) && (document.getElementById('customdateyear').value.length !== 0)) {
 			date = custom();
