@@ -1,9 +1,9 @@
 var currentask = 8;
-var date = "may 12 2020";
+var date;
 var defaultsign = 1;
 var sign = defaultsign;
-var titlemw = "to Summer Break";
-var defaultdatenow = 3;
+var titlemw;
+var defaultdatenow = 5;
 var datenow = defaultdatenow;
 var deadline;
 var now;
@@ -55,6 +55,10 @@ function settask (val) {
 	howlong();
 };
 
+function changedatetodefault () {
+	changedate(defaultdatenow);
+};
+
 function changedate (whichdate) {
 	datenow = whichdate;
 	switchdate(datenow);
@@ -66,11 +70,6 @@ function switchdate (datewanted) {
 		date = "jan 17 2019";
 		sign = -1;
 		titlemw = "Since First Date";
-	}
-	else if (datewanted == 3) {
-		date = "may 12 2020";
-		titlemw = "to Summer Break";
-		sign = 1;
 	}
 	else if (datewanted == 5) {
 		date = "may 17 2020";

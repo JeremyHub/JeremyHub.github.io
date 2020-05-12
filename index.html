@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
     
-    <body onload="howlong(); canvasstuff()" style="background-color: black">
+    <body onload="changedatetodefault(); howlong(); canvasstuff()" style="background-color: black">
         <canvas id="canvas"></canvas>
         <div class="textdiv">
             <p id="heading"><span id='headingthatsaystime'>Time</span> <span id="titlemw"></span> <3</p>
@@ -49,9 +49,6 @@
             <div class="buttons2">
                 <button class="btn btn-warning" id="booton" onclick="changedate(2)">
                     Since First Date
-                </button>
-                <button class="btn btn-warning" id="booton" onclick="changedate(3)">
-                    To Summer Break
                 </button>
                 <button class="btn btn-warning" id="booton" onclick="changedate(5)">
                     To Jeremy Coming to Washington
