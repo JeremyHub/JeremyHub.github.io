@@ -45,13 +45,15 @@
 #booton{
 	background-color: purple;
 	border-color: blueviolet;
+	margin-left: 0.5%;
+	margin-right: 0.5%;
 }
 
 #gamebooton1{
 	background-color: tomato;
 	border-color: tomato;
-	margin-left: 20%;
-	margin-right: 20%;
+	margin-left: 11.5%;
+	margin-right: 11.5%;
 	width: 10%;
 	float: left;
 	margin-top: 2%;
@@ -61,8 +63,19 @@
 #gamebooton2{
 	background-color: tomato;
 	border-color: tomato;
-	margin-left: 20%;
-	margin-right: 20%;
+	margin-left: 11.5%;
+	margin-right: 11.5%;
+	width: 10%;
+	float: left;
+	margin-top: 2%;
+	animation: fadein 2.2s ease-in;
+}
+
+#gamebooton3{
+	background-color: tomato;
+	border-color: tomato;
+	margin-left: 11.5%;
+	margin-right: 11.5%;
 	width: 10%;
 	float: left;
 	margin-top: 2%;

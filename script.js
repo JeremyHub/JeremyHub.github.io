@@ -232,43 +232,47 @@ function howlong() {
 
 	document.getElementById("titlemw").innerHTML = titlemw;
 	
-	if (currentask == 0) {
-		document.getElementById("time").innerHTML = milisec;
-		document.getElementById("mw").innerHTML = "Miliseconds";
+	switch (currentask) {
+		case 0:
+			document.getElementById("time").innerHTML = milisec;
+			document.getElementById("mw").innerHTML = "Miliseconds";
+			break;
+		case 1:
+			document.getElementById("time").innerHTML = years;
+			document.getElementById("mw").innerHTML = "Years";
+			break;
+		case 2:
+			document.getElementById("time").innerHTML = months;
+			document.getElementById("mw").innerHTML = "Months";
+			break;
+		case 3:
+			document.getElementById("time").innerHTML = weeks;
+			document.getElementById("mw").innerHTML = "Weeks";
+			break;
+		case 4:
+			document.getElementById("time").innerHTML = days;
+			document.getElementById("mw").innerHTML = "Days";
+			break;
+		case 5:
+			document.getElementById("time").innerHTML = hours;
+			document.getElementById("mw").innerHTML = "Hours";
+			break;
+		case 6:
+			document.getElementById("time").innerHTML = minutes;
+			document.getElementById("mw").innerHTML = "Minutes";
+			break;
+		case 7:
+			document.getElementById("time").innerHTML = seconds;
+			document.getElementById("mw").innerHTML = "Seconds";
+			break;
+		case 8:
+			document.getElementById("time").innerHTML = defualtview();
+			document.getElementById("mw").innerHTML = "";
+			break;
+		default:
+			console.log(currentask);
+			break;
 	}
-	else if (currentask == 1) {
-		document.getElementById("time").innerHTML = years;
-		document.getElementById("mw").innerHTML = "Years";
-	}
-	else if (currentask == 2) {
-		document.getElementById("time").innerHTML = months;
-		document.getElementById("mw").innerHTML = "Months";
-	}
-	else if (currentask == 3) {
-		document.getElementById("time").innerHTML = weeks;
-		document.getElementById("mw").innerHTML = "Weeks";
-	}
-	else if (currentask == 4) {
-		document.getElementById("time").innerHTML = days;
-		document.getElementById("mw").innerHTML = "Days";
-	}
-	else if (currentask == 5) {
-		document.getElementById("time").innerHTML = hours;
-		document.getElementById("mw").innerHTML = "Hours";
-	}
-	else if (currentask == 6) {
-		document.getElementById("time").innerHTML = minutes;
-		document.getElementById("mw").innerHTML = "Minutes";
-	}
-	else if (currentask == 7) {
-		document.getElementById("time").innerHTML = seconds;
-		document.getElementById("mw").innerHTML = "Seconds";
-	}
-	else if (currentask == 8) {
-		document.getElementById("time").innerHTML = defualtview();
-		document.getElementById("mw").innerHTML = "";
-	}
-	else {console.log("Currentask not 0-8")};
 
 	if (playing && daystill <= 0) {
 		if (!winning) losegame();
@@ -277,8 +281,9 @@ function howlong() {
 	
 	window.setInterval(function(){
 		howlong();
-		}, 180);
+		}, updateinterval);
 };
+var updateinterval = 180;
 
 function roundscale (num,thing) {
 	switch (thing) {
@@ -1170,7 +1175,7 @@ function changemov () {
 	};
 };
 
-/////////////////////////////////////Pool/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////Pool Shit/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var poolplayer;
 var playingpool;
