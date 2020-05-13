@@ -1,6 +1,7 @@
 function start() {
     canvasStuff();
     animate();
+    setSliders();
 };
 
 var canvas = document.getElementById('canvas');
@@ -104,6 +105,27 @@ function clearButtonClicked() {
     toClear = true;
 };
 
+
+var rangeSlider = {min:50,max:200,step:5,avg:125};
+var bulletSpeedSlider = {min:1,max:6,step:0.1,avg:3.5};
+var fireRateSlider = {min:0.5,max:6,step:0.05,avg:3.25};
+function setSliders() {
+    document.getElementById('rangeSlider').min = rangeSlider.min;
+    document.getElementById('rangeSlider').max = rangeSlider.max;
+    document.getElementById('rangeSlider').step = rangeSlider.step;
+    document.getElementById('rangeSlider').value = rangeSlider.avg;
+
+    document.getElementById('bulletSpeedSlider').min = bulletSpeedSlider.min;
+    document.getElementById('bulletSpeedSlider').max = bulletSpeedSlider.max;
+    document.getElementById('bulletSpeedSlider').step = bulletSpeedSlider.step;
+    document.getElementById('bulletSpeedSlider').value = bulletSpeedSlider.avg;
+
+    document.getElementById('fireRateSlider').min = fireRateSlider.min;
+    document.getElementById('fireRateSlider').max = fireRateSlider.max;
+    document.getElementById('fireRateSlider').step = fireRateSlider.step;
+    document.getElementById('fireRateSlider').value = fireRateSlider.avg;
+}
+
 var baseX;
 function drawBase() {
     ctx.beginPath();
@@ -179,19 +201,20 @@ window.addEventListener('mousemove', function (event) {
 
 function defenderPurchased() {
     if (buttonCount >= defenderCost) {
-        defenders.push(new Defender(10,sliderDefenderBulletSpeed,sliderDefenderRange,sliderFireRate));
+        defenders.push(new Defender(10,sliderDefenderBulletSpeedValue,sliderDefenderRangeValue,sliderFireRateValue));
         buttonCount -= defenderCost;
     };
 };
 
-var sliderDefenderBulletSpeed;
-var sliderDefenderRange;
+var sliderDefenderBulletSpeedValue;
+var sliderDefenderRangeValue;
+var sliderFireRateValue;
 var defenderCost;
 function setDefenderCostText() {
-    sliderDefenderBulletSpeed = document.getElementById('bulletSpeedSlider').value;
-    sliderDefenderRange = document.getElementById('rangeSlider').value;
-    sliderFireRate = document.getElementById('fireRateSlider').value;
-    defenderCost = Math.round(75 * (sliderDefenderBulletSpeed/3.5) * (sliderDefenderRange/125) * ((sliderFireRate/3.25)*2));
+    sliderDefenderBulletSpeedValue = document.getElementById('bulletSpeedSlider').value;
+    sliderDefenderRangeValue = document.getElementById('rangeSlider').value;
+    sliderFireRateValue = document.getElementById('fireRateSlider').value;
+    defenderCost = Math.round(300 * (sliderDefenderBulletSpeedValue/(bulletSpeedSlider.avg)) * (sliderDefenderRangeValue/rangeSlider.avg) * ((sliderFireRateValue/fireRateSlider.avg)*2));
     document.getElementById('costOfDefender').innerHTML = defenderCost;
 };
 
@@ -282,6 +305,7 @@ function drawDefenderBullet(inputDefenderBullet) {
 		if (Math.abs(enemies[i].x - inputDefenderBullet.x) < enemies[i].radius + inputDefenderBullet.radius && Math.abs(enemies[i].y - inputDefenderBullet.y) < enemies[i].radius + inputDefenderBullet.radius) {
              enemies.splice(i,1);
              killedStartingEnemy();
+             defenderBullets.splice(defenderBullets.indexOf(inputDefenderBullet),1)
 		};
 	};
 	
