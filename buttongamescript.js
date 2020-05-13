@@ -65,7 +65,7 @@ function addButton() {
 
 function getCurrentData() {
     buttonCount = Number(window.localStorage.getItem('buttonCount'));
-    //JSON.parse(window.localStorage.getItem('defenders')) == null || '[]' ? defenders = [] : defenders = JSON.parse(window.localStorage.getItem('defenders'));
+    //JSON.parse(window.localStorage.getItem('defenders')) == null ? defenders = [] : defenders = JSON.parse(window.localStorage.getItem('defenders'));
 };
 
 function storeCurrentData() {
