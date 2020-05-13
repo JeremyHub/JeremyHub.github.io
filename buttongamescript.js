@@ -26,8 +26,10 @@ function animate() {
     timer();
     drawBase();
     drawEnemies();
+    checkEnemyInBase()
     drawTowers();
     drawBullets();
+    checkUnlocks();
 };
 
 var buttonCount = -1;
@@ -39,12 +41,14 @@ var check;
 var lastCheckForButtons = 0;
 var lastCheckForEnemies = 0;
 var lastCheckForDefenderShoot = 0;
+var defaultTimeToEnemySpawn = 1800
+var timeToEnemySpawn = defaultTimeToEnemySpawn;
 function timer() {
     if (check > (lastCheckForButtons + 1000)) {
         lastCheckForButtons = check;
         addButton();
     };
-    if (check > (lastCheckForEnemies + 1200)) {
+    if (check > (lastCheckForEnemies + timeToEnemySpawn)) {
         lastCheckForEnemies = check;
         addStartingEnemy();
     };
@@ -66,12 +70,14 @@ function addButton() {
 
 var haveStored = false
 function doStorageStuff() {
-    if (haveStored) {storeCurrentData();}
+    if (haveStored) {
+        storeCurrentData();
+    }
     haveStored = true;
     if (toClear) {
         window.localStorage.clear();
         toClear= false;
-    }
+    };
     setCurrentData();
 }
 
@@ -81,11 +87,16 @@ function setCurrentData() {
     if (defenders == null) {
         defenders = [];
     };
+    timeToEnemySpawn = Number(window.localStorage.getItem('timeToEnemySpawn'));
+    if (timeToEnemySpawn == 0) {
+        timeToEnemySpawn = defaultTimeToEnemySpawn;
+    };
 };
 
 function storeCurrentData() {
     window.localStorage.setItem('buttonCount',JSON.stringify(buttonCount));
     window.localStorage.setItem('defenders',JSON.stringify(defenders));
+    window.localStorage.setItem('timeToEnemySpawn',JSON.stringify(timeToEnemySpawn));
 };
 
 var toClear = false;
@@ -102,20 +113,21 @@ function drawBase() {
     ctx.fill();
 };
 
-var startingEnemies = [];
+var enemies = [];
 function StartingEnemy(x,y,dx,dy,radius) {
     this.x = x;
     this.y = y;
     this.dx = dx;
     this.dy = dy;
-    this.exists = true;
+    this.inBase = false;
     this.radius = radius;
+    this.type = 'startingEnemy'
 };
 
 function drawStartingEnemy(inputStartingEnemy) {
     inputStartingEnemy.y += inputStartingEnemy.dy;
     if (inputStartingEnemy.x > baseX) {
-        inputStartingEnemy.exists = false;
+        inputStartingEnemy.inBase = true;
     };
     if (inputStartingEnemy.y + inputStartingEnemy.radius > canvas.height || inputStartingEnemy.y - inputStartingEnemy.radius < 0) {
         inputStartingEnemy.dy *= -1;
@@ -128,17 +140,25 @@ function drawStartingEnemy(inputStartingEnemy) {
 };
 
 function drawEnemies() {
-    for (var i=0; i < startingEnemies.length; i++) {
-        drawStartingEnemy(startingEnemies[i]);
-        if (!startingEnemies[i].exists) {
-            startingEnemies.splice(i,1);
-            startingEnemyHitBase();
-        };
+    for (var i=0; i < enemies.length; i++) {
+        drawStartingEnemy(enemies[i]);
     };
 };
 
-function startingEnemyHitBase() {
-    buttonCount -= 10;
+function checkEnemyInBase() {
+    for (var i=0; i < enemies.length; i++) {
+        if (enemies[i].inBase) {
+            enemies.splice(i,1);
+            enemyHitBase(enemies[i]);
+        };
+    };
+}
+
+function enemyHitBase(enemyInput) {
+    if (enemyInput.type == 'startingEnemy') {
+        buttonCount -= 10;
+        timeToEnemySpawn *= 1.1;
+    };
 };
 
 function addStartingEnemy() {
@@ -147,7 +167,7 @@ function addStartingEnemy() {
     var y = Math.round((Math.random()*(canvas.height - 2*radius) + radius));
     var dx = Math.random()+0.5;
     var dy = Math.random()*2 - 1;
-    startingEnemies.push(new StartingEnemy(x,y,dx,dy,radius));
+    enemies.push(new StartingEnemy(x,y,dx,dy,radius));
 };
 
 var mouseX;
@@ -209,12 +229,12 @@ var defenderBullets = [];
 var enemyToGoToX;
 var enemyToGoToY;
 function defenderShoot(inputDefender) {
-    var distanceToShootEnemy = 0;
-    for (var i = 0; i < startingEnemies.length; i++) {
-        var thisEnemiesDistance = Math.sqrt(Math.pow((startingEnemies[i].x-inputDefender.x),2)+(Math.pow((startingEnemies[i].y-inputDefender.y),2)));
-        if (thisEnemiesDistance <= inputDefender.range && thisEnemiesDistance > distanceToShootEnemy) {
-            enemyToGoToX = startingEnemies[i].x;
-            enemyToGoToY = startingEnemies[i].y;
+    var distanceToShootEnemy = inputDefender.range;
+    for (var i = 0; i < enemies.length; i++) {
+        var thisEnemiesDistance = Math.sqrt(Math.pow((enemies[i].x-inputDefender.x),2)+(Math.pow((enemies[i].y-inputDefender.y),2)));
+        if (thisEnemiesDistance < distanceToShootEnemy) {
+            enemyToGoToX = enemies[i].x;
+            enemyToGoToY = enemies[i].y;
         };
     };
     
@@ -258,9 +278,9 @@ function drawDefenderBullet(inputDefenderBullet) {
 	if (inputDefenderBullet.y + inputDefenderBullet.radius > canvas.height || inputDefenderBullet.y - inputDefenderBullet.radius < 0) {
 		inputDefenderBullet.exists = false;
 	};
-	for (var i = 0; i < startingEnemies.length; i++) {
-		if (Math.abs(startingEnemies[i].x - inputDefenderBullet.x) < startingEnemies[i].radius + inputDefenderBullet.radius && Math.abs(startingEnemies[i].y - inputDefenderBullet.y) < startingEnemies[i].radius + inputDefenderBullet.radius) {
-             startingEnemies.splice(i,1);
+	for (var i = 0; i < enemies.length; i++) {
+		if (Math.abs(enemies[i].x - inputDefenderBullet.x) < enemies[i].radius + inputDefenderBullet.radius && Math.abs(enemies[i].y - inputDefenderBullet.y) < enemies[i].radius + inputDefenderBullet.radius) {
+             enemies.splice(i,1);
              killedStartingEnemy();
 		};
 	};
@@ -285,4 +305,9 @@ function drawBullets() {
 
 function killedStartingEnemy() {
     buttonCount += 10;
+    timeToEnemySpawn /= 1.1;
+};
+
+function checkUnlocks() {
+    //basically if the time between spawns is small ie if you killed a lot of buttons then stuff happens, prob upgrade thing on the right
 };
