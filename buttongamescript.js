@@ -48,10 +48,14 @@ function timer() {
         lastCheckForEnemies = check;
         addStartingEnemy();
     };
-    if (check > (lastCheckForDefenderShoot + 700)) {
+    if (check > (lastCheckForDefenderShoot + 50)) {
         lastCheckForDefenderShoot = check;
         for (var i = 0; i < defenders.length; i++) {
-            defenderShoot(defenders[i]);
+            defenders[i].cooldown -= 0.05;
+            if (defenders[i].cooldown <= 0){
+                defenderShoot(defenders[i]);
+                defenders[i].cooldown = 1/defenders[i].fireRate;
+            };
         };
     };
     check = new Date().getTime();
@@ -156,7 +160,7 @@ window.addEventListener('mousemove', function (event) {
 
 function defenderPurchased() {
     if (buttonCount >= defenderCost) {
-        defenders.push(new Defender(10,sliderDefenderBulletSpeed,sliderDefenderRange));
+        defenders.push(new Defender(10,sliderDefenderBulletSpeed,sliderDefenderRange,sliderFireRate));
         buttonCount -= defenderCost;
     };
 };
@@ -167,18 +171,21 @@ var defenderCost;
 function setDefenderCostText() {
     sliderDefenderBulletSpeed = document.getElementById('bulletSpeedSlider').value;
     sliderDefenderRange = document.getElementById('rangeSlider').value;
-    defenderCost = Math.round(75 * (sliderDefenderBulletSpeed/3.5) * (sliderDefenderRange/125));
+    sliderFireRate = document.getElementById('fireRateSlider').value;
+    defenderCost = Math.round(75 * (sliderDefenderBulletSpeed/3.5) * (sliderDefenderRange/125) * ((sliderFireRate/3.25)*2));
     document.getElementById('costOfDefender').innerHTML = defenderCost;
 };
 
 var defenders = [];
-function Defender(radius,defenderBulletSpeed,range) {
+function Defender(radius,defenderBulletSpeed,range,fireRate) {
     this.x;
     this.y;
     this.placed = false;
     this.radius = radius;
     this.defenderBulletSpeed = defenderBulletSpeed;
     this.range = range;
+    this.fireRate = fireRate;
+    this.cooldown = 0;
 };
 
 function drawDefender(inputDefender) {
