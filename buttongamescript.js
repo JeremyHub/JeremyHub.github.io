@@ -18,9 +18,9 @@ function canvasStuff() {
 function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0,0,innerWidth,innerHeight);
+
+    doStorageStuff();
    
-    getCurrentData();
-    
     setButtonCountText();
     setDefenderCostText();
     timer();
@@ -28,8 +28,6 @@ function animate() {
     drawEnemies();
     drawTowers();
     drawBullets();
-
-    storeCurrentData();
 };
 
 var buttonCount = -1;
@@ -63,18 +61,33 @@ function addButton() {
     buttonCount++;
 };
 
-function getCurrentData() {
+var haveStored = false
+function doStorageStuff() {
+    if (haveStored) {storeCurrentData();}
+    haveStored = true;
+    if (toClear) {
+        window.localStorage.clear();
+        toClear= false;
+    }
+    setCurrentData();
+}
+
+function setCurrentData() {
     buttonCount = Number(window.localStorage.getItem('buttonCount'));
-    //JSON.parse(window.localStorage.getItem('defenders')) == null ? defenders = [] : defenders = JSON.parse(window.localStorage.getItem('defenders'));
+    defenders = JSON.parse(window.localStorage.getItem('defenders'));
+    if (defenders == null) {
+        defenders = [];
+    };
 };
 
 function storeCurrentData() {
     window.localStorage.setItem('buttonCount',JSON.stringify(buttonCount));
-    //window.localStorage.setItem('defenders',JSON.stringify(defenders));
+    window.localStorage.setItem('defenders',JSON.stringify(defenders));
 };
 
+var toClear = false;
 function clearButtonClicked() {
-    window.localStorage.clear();
+    toClear = true;
 };
 
 var baseX;
