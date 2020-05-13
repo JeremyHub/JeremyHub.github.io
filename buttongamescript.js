@@ -54,7 +54,6 @@ function timer() {
             defenders[i].cooldown -= 0.05;
             if (defenders[i].cooldown <= 0){
                 defenderShoot(defenders[i]);
-                defenders[i].cooldown = 1/defenders[i].fireRate;
             };
         };
     };
@@ -217,6 +216,10 @@ function defenderShoot(inputDefender) {
             enemyToGoToX = startingEnemies[i].x;
             enemyToGoToY = startingEnemies[i].y;
         };
+    };
+    
+    if(!isNaN(enemyToGoToX) & !isNaN(enemyToGoToY)) {
+        inputDefender.cooldown = 1/inputDefender.fireRate;
     };
     
     var bulletdx = inputDefender.defenderBulletSpeed * ((enemyToGoToX-inputDefender.x)/(Math.sqrt(Math.pow((enemyToGoToX-inputDefender.x),2)+(Math.pow((enemyToGoToY-inputDefender.y),2)))));
