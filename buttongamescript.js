@@ -269,7 +269,6 @@ function drawBullets() {
         drawDefenderBullet(defenderBullets[i]);
         if (!defenderBullets[i].exists) {
             defenderBullets.splice(i,1);
-            startingEnemyHitBase();
         };
     };
 }
