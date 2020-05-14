@@ -7,14 +7,18 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Button Game</title>
 </head>
-<body onload="start()" style="background-color: white">
+<body onload="start()">
     <div class="grid">
-        <div id="buttondisplay">
+        <div class='gridbox'>
             <div class="itemInButtonDisplay">Buttons: <span id="buttonCount"></span></div>
         </div>
-        <div id=""></div>
-        <div id=""></div>
-        <div id="towerShop">
+        <div class='gridbox' id=""></div>
+        <div class='gridbox' id="achievements">
+            <ul class="list-group list-group-flush" id="ul">
+                <!-- Achievements go here once gotten (but only in js) -->
+            </ul>
+        </div>
+        <div class='gridbox' id="towerShop">
             <div class="itemInButtonDisplay">
                 <span class="btn btn-primary" onclick="defenderPurchased()">Buy Defender</span>
                 <span id="costSpan">Cost: <span id="costOfDefender"></span></span>
@@ -28,11 +32,11 @@
                     <input type="range" class="custom-range" id="fireRateSlider">
             </div>
         </div>
-        <canvas id="canvas"></canvas>
-        <div id=""></div>
-        <div id=""></div>
-        <div id=""></div>
-        <div id="clearButtonDisplay">
+        <canvas class='gridbox' id="canvas"></canvas>
+        <div class='gridbox' id=""></div>
+        <div class='gridbox' id=""></div>
+        <div class='gridbox' id=""></div>
+        <div class='gridbox' id="clearButtonDisplay">
             <div id="clearButton"><div class="btn btn-primary" onclick="clearButtonClicked()">Clear</div></div>
         </div>
     </div>
