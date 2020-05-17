@@ -221,7 +221,7 @@ function setDefenderCostText() {
     sliderDefenderBulletSpeedValue = document.getElementById('bulletSpeedSlider').value;
     sliderDefenderRangeValue = document.getElementById('rangeSlider').value;
     sliderFireRateValue = document.getElementById('fireRateSlider').value;
-    defenderCost = Math.round(300 * (sliderDefenderBulletSpeedValue/(bulletSpeedSlider.avg)) * (sliderDefenderRangeValue/rangeSlider.avg) * ((sliderFireRateValue/fireRateSlider.avg)*10));
+    defenderCost = Math.round(150 * (sliderDefenderBulletSpeedValue/(bulletSpeedSlider.avg)) * (sliderDefenderRangeValue/rangeSlider.avg/3) * ((sliderFireRateValue/fireRateSlider.avg)*100));
     document.getElementById('costOfDefender').innerHTML = defenderCost;
 };
 

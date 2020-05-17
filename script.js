@@ -3,7 +3,7 @@ var date;
 var defaultsign = 1;
 var sign = defaultsign;
 var titlemw;
-var defaultdatenow = 5;
+var defaultdatenow = 2;
 var datenow = defaultdatenow;
 var deadline;
 var now;
@@ -70,11 +70,6 @@ function switchdate (datewanted) {
 		date = "jan 17 2019";
 		sign = -1;
 		titlemw = "Since First Date";
-	}
-	else if (datewanted == 5) {
-		date = "may 17 2020";
-		titlemw = "to Jeremy Coming to Washington";
-		sign = 1;
 	}
 	else if (datewanted == 4) {
 		if (!isNaN((document.getElementById('customdateyear').value)) && (document.getElementById('customdateyear').value.length !== 0)) {
