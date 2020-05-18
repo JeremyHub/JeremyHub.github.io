@@ -93,6 +93,7 @@ function switchdate (datewanted) {
 	else {
 		console.log("datenow not 1-4");
 	};
+	document.getElementById("titlemw").innerHTML = titlemw;
 };
 
 function custom() {
@@ -204,6 +205,7 @@ function isleap(input) {
 	else return input;
 };
 
+var lastseconds;
 function howlong() {
 	deadline = new Date(date).getTime();
 	now = new Date().getTime();
@@ -224,8 +226,6 @@ function howlong() {
 	minutes = roundscale((daystill*60*24),"minutes");
 	seconds = roundscale((daystill*60*60*24),"seconds");
 	milisec = roundscale((daystill*60*60*24*1000),'milisec');
-
-	document.getElementById("titlemw").innerHTML = titlemw;
 	
 	switch (currentask) {
 		case 0:
@@ -257,7 +257,12 @@ function howlong() {
 			document.getElementById("mw").innerHTML = "Minutes";
 			break;
 		case 7:
-			document.getElementById("time").innerHTML = seconds;
+			if (!playing) {document.getElementById("time").innerHTML = seconds;};
+			if (playing) {
+				if (Math.round(seconds) !== Math.round(lastseconds)) {
+					document.getElementById("time").innerHTML = Math.round(seconds);
+				};
+			};
 			document.getElementById("mw").innerHTML = "Seconds";
 			break;
 		case 8:
@@ -267,7 +272,7 @@ function howlong() {
 		default:
 			console.log(currentask);
 			break;
-	}
+	};
 
 	if (playing && daystill <= 0) {
 		if (!winning) losegame();
@@ -380,6 +385,7 @@ function startplayingshootshoot() {
 	bombenemyshootrate = 0;
 	freezecheck = 0;
 	maxenemyspeed = 14;
+	sign = 1;
 	player = new Player(p1x,p1y,p1dx,p1dy,p1r,p1c);
 	playing = true;
 	animate();
@@ -391,6 +397,7 @@ function startplayingshootshoot() {
 	timezoneoffset = 5;
 	date = new Date();
 	titlemw = "Welcome to Shootshoot!";
+	document.getElementById("titlemw").innerHTML = titlemw;
 	document.getElementById('canvas').style.zIndex = 1;
 	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 	winning = false;
@@ -414,12 +421,14 @@ function stopplayingshootshoot() {
 	document.getElementById('headingthatsaystime').style.visibility = 'visible';
 	timezoneoffset = 420;
 	currentask = 8;
+	sign = defaultsign;
 	document.getElementById("mw").style.visibility = 'visible';
 };
 
 var winning = false;
 function win() {
 	titlemw = 'You Win!';
+	document.getElementById("titlemw").innerHTML = titlemw;
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'hidden';
@@ -441,6 +450,7 @@ function win() {
 
 function losegame() {
 	titlemw = 'Sorry, game over.';
+	document.getElementById("titlemw").innerHTML = titlemw;
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'hidden';
@@ -1204,6 +1214,7 @@ function startplayingpool() {
 	document.getElementById('leveldisplay').style.visibility = 'visible';
 	document.getElementById('ammodisplay').style.visibility = 'visible';
 	titlemw = "Welcome to Pool!";
+	document.getElementById("titlemw").innerHTML = titlemw;
 	document.getElementById('canvas').style.zIndex = 1;
 	document.getElementById('headingthatsaystime').style.visibility = 'hidden';
 	document.getElementById('time').style.visibility = 'hidden';
@@ -1240,6 +1251,7 @@ function stopplayingpool() {
 
 function winpool() {
 	titlemw = playerturnstr + ' Wins!';
+	document.getElementById("titlemw").innerHTML = titlemw;
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	window.setTimeout(stopplayingpool,100);
@@ -1247,6 +1259,7 @@ function winpool() {
 
 function losepool() {
 	titlemw = playerturnstr + ' Loses!';
+	document.getElementById("titlemw").innerHTML = titlemw;
 	document.getElementById('leveldisplay').style.visibility = 'hidden';
 	document.getElementById('ammodisplay').style.visibility = 'hidden';
 	window.setTimeout(stopplayingpool,100);

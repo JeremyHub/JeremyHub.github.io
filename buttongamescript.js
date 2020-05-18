@@ -30,8 +30,9 @@ function animate() {
     checkEnemyInBase()
     drawTowers();
     drawBullets();
-    checkUnlocks();
     achievementCheck();
+    upgradeUnlockCheck();
+    upgradeCheck();
 };
 
 var buttonCount = -1;
@@ -43,7 +44,7 @@ var check;
 var lastCheckForButtons = 0;
 var lastCheckForEnemies = 0;
 var lastCheckForDefenderShoot = 0;
-var defaultTimeToEnemySpawn = 5000
+var defaultTimeToEnemySpawn = 5000;
 var timeToEnemySpawn = defaultTimeToEnemySpawn;
 function timer() {
     if (check > (lastCheckForButtons + 1000)) {
@@ -88,12 +89,7 @@ function setCurrentData() {
         defenders = [];
     };
     if (Unlocks == null) {
-        Unlocks = new Object();
-        Unlocks.defenderUnlocked = false;
-        Unlocks.defenderBulletSpeedUnlocked = false;
-        Unlocks.defenderRangeUnlocked = false;
-        Unlocks.defenderFireRateUnlocked = false;
-        Unlocks.refreshed = false;
+        setUnlock();
     };
     timeToEnemySpawn = Number(window.localStorage.getItem('timeToEnemySpawn'));
     if (timeToEnemySpawn == 0) {
@@ -111,6 +107,23 @@ function storeCurrentData() {
 var toClear = false;
 function clearButtonClicked() {
     toClear = true;
+    doStorageStuff();
+    window.location.reload();
+};
+
+function setUnlock() {
+    Unlocks = new Object();
+        Unlocks.defenderUnlocked = false;
+        Unlocks.defenderBulletSpeedUnlocked = false;
+        Unlocks.defenderRangeUnlocked = false;
+        Unlocks.defenderFireRateUnlocked = false;
+        Unlocks.refreshed = false;
+        Unlocks.startingEnemiesUnlocked = false;
+        Unlocks.defenderPurchased = false;
+        Unlocks.enemiesUpgradeUnlocked = false;
+        Unlocks.defenderUpgradeUnlocked = false;
+        Unlocks.enemyRampingUnlocked = false;
+        Unlocks.enemyRampingUpgradeUnlocked = false;
 };
 
 var rangeSlider = {min:50,max:200,step:5,avg:125};
@@ -186,30 +199,45 @@ function checkEnemyInBase() {
 function enemyHitBase(enemyInput) {
     if (enemyInput.type == 'startingEnemy') {
         buttonCount -= 10;
-        timeToEnemySpawn *= 1.1;
+        if (Unlocks.enemyRampingUnlocked) {
+            timeToEnemySpawn *= 1.1;
+        };
     };
 };
 
 function addStartingEnemy() {
-    var x = -20;
-    var radius = 10;
-    var y = Math.round((Math.random()*(canvas.height - 2*radius) + radius));
-    var dx = Math.random()+0.5;
-    var dy = Math.random()*2 - 1;
-    enemies.push(new StartingEnemy(x,y,dx,dy,radius));
+    if (Unlocks.startingEnemiesUnlocked) {
+        var x = -20;
+        var radius = 10;
+        var y = Math.round((Math.random()*(canvas.height - 2*radius) + radius));
+        var dx = Math.random()+0.5;
+        var dy = Math.random()*2 - 1;
+        enemies.push(new StartingEnemy(x,y,dx,dy,radius));
+    };
 };
 
 var mouseX;
 var mouseY;
+var mouseInCanvas = false;
 window.addEventListener('mousemove', function (event) {
 	mouseX = event.x - innerWidth/4;
-	mouseY = event.y - innerHeight/4;
+    mouseY = event.y - innerHeight/4;
+    if (mouseX > 0 && mouseX < canvas.width && mouseY > 0 && mouseY < canvas.height) {
+        mouseInCanvas = true;
+    }
+    else {
+        mouseInCanvas = false;
+    };
 });
 
 function defenderPurchased() {
     if (buttonCount >= defenderCost) {
         defenders.push(new Defender(10,sliderDefenderBulletSpeedValue,sliderDefenderRangeValue,sliderFireRateValue));
         buttonCount -= defenderCost;
+        if (Unlocks.defenderPurchased == false) {
+            Unlocks.defenderPurchased = true;
+            addAchievement("Achievement Get: Purchase a Defender!");
+        }
     };
 };
 
@@ -227,8 +255,8 @@ function setDefenderCostText() {
 
 var defenders = [];
 function Defender(radius,defenderBulletSpeed,range,fireRate) {
-    this.x;
-    this.y;
+    this.x = canvas.width/2;
+    this.y = canvas.height/2;
     this.placed = false;
     this.radius = radius;
     this.defenderBulletSpeed = defenderBulletSpeed;
@@ -238,7 +266,7 @@ function Defender(radius,defenderBulletSpeed,range,fireRate) {
 };
 
 function drawDefender(inputDefender) {
-    if (!inputDefender.placed) {
+    if (!inputDefender.placed && mouseInCanvas) {
         inputDefender.x = mouseX;
         inputDefender.y = mouseY;
     };
@@ -284,7 +312,7 @@ function defenderShoot(inputDefender) {
 
 window.addEventListener('mousedown', function () {
     for (var i=0; i < defenders.length; i++) {
-        defenders[i].placed = true;
+        if (mouseInCanvas) {defenders[i].placed = true;};
     };
 });
 
@@ -306,13 +334,15 @@ function DefenderBullet(x,y,dx,dy,radius,color,) {
 
 function drawDefenderBullet(inputDefenderBullet) {
 	if (inputDefenderBullet.y + inputDefenderBullet.radius > canvas.height || inputDefenderBullet.y - inputDefenderBullet.radius < 0) {
-		inputDefenderBullet.exists = false;
+        inputDefenderBullet.exists = false;
+        return;
 	};
 	for (var i = 0; i < enemies.length; i++) {
 		if (Math.abs(enemies[i].x - inputDefenderBullet.x) < enemies[i].radius + inputDefenderBullet.radius && Math.abs(enemies[i].y - inputDefenderBullet.y) < enemies[i].radius + inputDefenderBullet.radius) {
             enemies.splice(i,1);
             killedStartingEnemy();
             inputDefenderBullet.exists = false;
+            return;
 		};
 	};
 	
@@ -336,12 +366,8 @@ function drawBullets() {
 
 function killedStartingEnemy() {
     buttonCount += 10;
-    timeToEnemySpawn /= 1.1;
-};
-
-function checkUnlocks() {
-    if (buttonCount >= 25) {
-        Unlocks.defenderUnlocked = true;
+    if (Unlocks.enemyRampingUnlocked) {
+        timeToEnemySpawn /= 1.1;
     };
 };
 
@@ -353,17 +379,80 @@ window.addEventListener("beforeunload", function(event) {
 var refreshedAchievementShown = false;
 function achievementCheck() {
     if (Unlocks.refreshed && !refreshedAchievementShown) {
-        addAchievement('refreshed');
+        addAchievement('Achievement Get: Refresh the Page!');
         refreshedAchievementShown = true;
     };
 };
 
-var achievementList = document.createElement("LI");
-var achievementRefreshed = document.createTextNode("Achievement Get: Refresh the Page!");
 function addAchievement(achievement) {
-    if (achievement == 'refreshed') {
-        achievementList.appendChild(achievementRefreshed);
-        document.getElementById("ul").appendChild(achievementList);
-        achievementList.className = "list-group-item";
+    var achievementList = document.createElement("LI");
+    var achievement = document.createTextNode(achievement);
+    achievementList.appendChild(achievement);
+    document.getElementById("ul").appendChild(achievementList);
+    achievementList.className = "list-group-item";
+};
+
+function addUpgrade(upgradeInput,onClickAction) {
+    var upgradeList = document.createElement("button");
+    var upgrade = document.createTextNode(upgradeInput);
+    upgradeList.appendChild(upgrade);
+    document.getElementById("upgradeList").appendChild(upgradeList);
+    upgradeList.className = "list-group-item list-group-item-action";
+    upgradeList.onclick = onClickAction;
+};
+
+function unlockDefender() {
+    if (buttonCount >= 100) {
+        Unlocks.defenderUnlocked = true;
+        buttonCount -= 100;    
+    };
+};
+
+function unlockStartingEnemies() {
+    if (buttonCount >= 50) {
+        Unlocks.startingEnemiesUnlocked = true;
+        buttonCount -= 50;
+    };
+};
+
+function enableEnemySpawnRamping() {
+    if (buttonCount >= 500) {
+        Unlocks.enemyRampingUnlocked = true;
+        buttonCount -= 500;
+    }
+};
+
+function upgradeUnlockCheck() {
+    if (Unlocks.refreshed) {
+        Unlocks.defenderUpgradeUnlocked = true;
+    };
+    if (defenders.length >= 1 && defenders[0].placed) {
+        Unlocks.enemiesUpgradeUnlocked = true;
+    };
+    if (buttonCount >= 200) {
+        Unlocks.enemyRampingUpgradeUnlocked = true;
+    };
+};
+
+var defenderButtonEnabled = false;
+var startingEnemiesUpgradeUnlocked = false;
+var enemyRampingUpgradeUnlocked = false;
+var defenderDisplayEnabled = false;
+function upgradeCheck() {
+    if (Unlocks.defenderUpgradeUnlocked && !defenderButtonEnabled) {
+        addUpgrade('Unlock Defender: 100 Buttons',unlockDefender);
+        defenderButtonEnabled = true;
+    };
+    if (Unlocks.defenderUnlocked && !defenderDisplayEnabled) {
+        document.getElementById('defenderDisplay').style.visibility = 'visible';
+        defenderDisplayEnabled = true;
+    };
+    if (Unlocks.enemiesUpgradeUnlocked && !startingEnemiesUpgradeUnlocked) {
+        addUpgrade('Start Spawning Enemies: 50 Buttons',unlockStartingEnemies);
+        startingEnemiesUpgradeUnlocked = true;
+    };
+    if (Unlocks.enemyRampingUpgradeUnlocked && !enemyRampingUpgradeUnlocked) {
+        addUpgrade('Enable Enemy Spawn Ramping: 500 Buttons',enableEnemySpawnRamping);
+        enemyRampingUpgradeUnlocked = true;
     };
 };

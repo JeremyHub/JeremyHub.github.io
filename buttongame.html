@@ -19,21 +19,30 @@
             </ul>
         </div>
         <div class='gridbox' id="towerShop">
-            <div class="itemInButtonDisplay">
-                <span class="btn btn-primary" onclick="defenderPurchased()">Buy Defender</span>
-                <span id="costSpan">Cost: <span id="costOfDefender"></span></span>
-            </div>
-            <div class="itemInButtonDisplay">
-                <label for="rangeLabel">Defender Range</label>
-                    <input type="range" class="custom-range" id="rangeSlider">
-                <label for="bulletSpeedLabel">Defender Bullet Speed</label>
-                    <input type="range" class="custom-range" id="bulletSpeedSlider">
-                <label for="fireRateLabel">Defender Fire Rate</label>
-                    <input type="range" class="custom-range" id="fireRateSlider">
+            <p id="towerShopText">Tower Shop: </p>
+            <div id="defenderDisplay">
+                <div class="itemInButtonDisplay">
+                    <span class="btn btn-primary" onclick="defenderPurchased()">Buy Defender</span>
+                    <span id="costSpan">Cost: <span id="costOfDefender"></span></span>
+                </div>
+                <div class="itemInButtonDisplay">
+                    <label for="rangeLabel">Defender Range</label>
+                        <input type="range" class="custom-range" id="rangeSlider">
+                    <label for="bulletSpeedLabel">Defender Bullet Speed</label>
+                        <input type="range" class="custom-range" id="bulletSpeedSlider">
+                    <label for="fireRateLabel">Defender Fire Rate</label>
+                        <input type="range" class="custom-range" id="fireRateSlider">
+                </div>
             </div>
         </div>
         <canvas class='gridbox' id="canvas"></canvas>
-        <div class='gridbox' id=""></div>
+        <div class='gridbox' id="upgrades">
+            <div class="list-group" id="upgradeList">
+                <button type="button" class="list-group-item list-group-item-action active">
+                    Avalible Upgrades:
+                </button>
+              </div>
+        </div>
         <div class='gridbox' id=""></div>
         <div class='gridbox' id=""></div>
         <div class='gridbox' id="clearButtonDisplay">
