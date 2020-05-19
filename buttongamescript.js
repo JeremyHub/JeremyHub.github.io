@@ -237,7 +237,7 @@ function defenderPurchased() {
         if (Unlocks.defenderPurchased == false) {
             Unlocks.defenderPurchased = true;
             addAchievement("Achievement Get: Purchase a Defender!");
-        }
+        };
     };
 };
 

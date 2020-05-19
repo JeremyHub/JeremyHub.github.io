@@ -892,6 +892,10 @@ function BadBomb(x,y,dx,dy,radius,color,rate,maxradius) {
 	this.explode = function() {
 		if (this.radius < this.maxradius) {
 			this.radius = this.radius + this.rate;
+			var gradient = ctx.createRadialGradient(this.x, this.y, this.radius/2, this.x, this.y, this.radius);
+			gradient.addColorStop(0, 'white');
+			gradient.addColorStop(1, this.color);
+			this.color = gradient;
 			this.draw();
 			if (Math.abs(this.x - player.x) < this.radius + player.radius && Math.abs(this.y - player.y) < this.radius + player.radius) {
 				playerfreeze = true;
@@ -916,7 +920,7 @@ function BadBomb(x,y,dx,dy,radius,color,rate,maxradius) {
 	};
 };
 
-function GoodBomb(x,y,dx,dy,radius,color,rate,maxradius) {
+function GoodBomb(x,y,dx,dy,radius,rate,maxradius,color) {
 	this.x = x;
 	this.y = y;
 	this.dx = dx;
@@ -940,7 +944,12 @@ function GoodBomb(x,y,dx,dy,radius,color,rate,maxradius) {
 	this.explode = function() {
 		if (this.radius < this.maxradius) {
 			this.radius = this.radius + this.rate;
+			var gradient = ctx.createRadialGradient(this.x, this.y, this.radius/2, this.x, this.y, this.radius);
+			gradient.addColorStop(0, 'white');
+			gradient.addColorStop(1, 'orange');
+			this.color = gradient;
 			this.draw();
+
 			for (var i = 0; i < enemies.length; i++) {
 				if (Math.abs(enemies[i].x - this.x) < enemies[i].radius + this.radius && Math.abs(enemies[i].y - this.y) < enemies[i].radius + this.radius) {
 					enemies.splice(i,1);
@@ -1152,7 +1161,7 @@ function changemov () {
 	if (pressed.includes(32)) {
 		if (!bombing && bombsleft > 0) {
 			calcbulldir();
-			bombs.push(new GoodBomb(player.x,player.y,(p1bulldirx/2),(p1bulldiry/2),25,'orange',3,275));
+			bombs.push(new GoodBomb(player.x,player.y,(p1bulldirx/2),(p1bulldiry/2),25,3,275,'orange'));
 			bombsleft = bombsleft - 1;
 			document.getElementById('ammodisplay').innerHTML = 'Bullets: ' + ammo + '  Bombs: ' + bombsleft;
 		};
