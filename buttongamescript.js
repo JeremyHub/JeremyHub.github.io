@@ -1,7 +1,7 @@
 function start() {
     canvasStuff();
-    animate();
     setSliders();
+    animate();
 };
 
 var canvas = document.getElementById('canvas');
@@ -12,7 +12,7 @@ function canvasStuff() {
 	  canvas.width = window.innerWidth/2;
       canvas.height = window.innerHeight/2;
       baseX = (innerWidth/2)-40;
-	}
+	};
     resizeCanvas();
 };
 
@@ -21,7 +21,6 @@ function animate() {
     ctx.clearRect(0,0,innerWidth,innerHeight);
 
     doStorageStuff();
-
     setButtonCountText();
     setDefenderCostText();
     timer();
@@ -67,17 +66,21 @@ function timer() {
     check = new Date().getTime();
 };
 
-var haveStored = false
+var haveStored = false;
+var previousBulletSpeedSliderValue;
+var previousFireRateSliderValue;
+var previousRangeSliderValue;
+var sliderValues;
 function doStorageStuff() {
     if (haveStored) {
         storeCurrentData();
-    }
-    haveStored = true;
+    };
     if (toClear) {
         window.localStorage.clear();
         toClear= false;
     };
     setCurrentData();
+    haveStored = true;
 };
 
 var Unlocks;
@@ -85,12 +88,24 @@ function setCurrentData() {
     buttonCount = Number(window.localStorage.getItem('buttonCount'));
     defenders = JSON.parse(window.localStorage.getItem('defenders'));
     Unlocks = JSON.parse(window.localStorage.getItem('unlocks'));
+    sliderValues = JSON.parse(window.localStorage.getItem('sliderValues'));
     if (defenders == null) {
         defenders = [];
     };
     if (Unlocks == null) {
         setUnlock();
     };
+    if (sliderValues == null) {
+        setSliderValues();
+    };
+    if (!haveStored) {
+        document.getElementById('bulletSpeedSlider').value = sliderValues.previousBulletSpeedSliderValue;
+        document.getElementById('rangeSlider').value = sliderValues.previousRangeSliderValue;
+        document.getElementById('fireRateSlider').value = sliderValues.previousFireRateSliderValue;
+    };
+    sliderValues.previousBulletSpeedSliderValue = document.getElementById('bulletSpeedSlider').value;
+    sliderValues.previousRangeSliderValue = document.getElementById('rangeSlider').value;
+    sliderValues.previousFireRateSliderValue = document.getElementById('fireRateSlider').value;
     timeToEnemySpawn = Number(window.localStorage.getItem('timeToEnemySpawn'));
     if (timeToEnemySpawn == 0) {
         timeToEnemySpawn = defaultTimeToEnemySpawn;
@@ -102,6 +117,7 @@ function storeCurrentData() {
     window.localStorage.setItem('defenders',JSON.stringify(defenders));
     window.localStorage.setItem('timeToEnemySpawn',JSON.stringify(timeToEnemySpawn));
     window.localStorage.setItem('unlocks',JSON.stringify(Unlocks));
+    window.localStorage.setItem('sliderValues',JSON.stringify(sliderValues));
 };
 
 var toClear = false;
@@ -133,17 +149,24 @@ function setSliders() {
     document.getElementById('rangeSlider').min = rangeSlider.min;
     document.getElementById('rangeSlider').max = rangeSlider.max;
     document.getElementById('rangeSlider').step = rangeSlider.step;
-    document.getElementById('rangeSlider').value = rangeSlider.min;
 
     document.getElementById('bulletSpeedSlider').min = bulletSpeedSlider.min;
     document.getElementById('bulletSpeedSlider').max = bulletSpeedSlider.max;
     document.getElementById('bulletSpeedSlider').step = bulletSpeedSlider.step;
-    document.getElementById('bulletSpeedSlider').value = bulletSpeedSlider.min;
 
     document.getElementById('fireRateSlider').min = fireRateSlider.min;
     document.getElementById('fireRateSlider').max = fireRateSlider.max;
     document.getElementById('fireRateSlider').step = fireRateSlider.step;
-    document.getElementById('fireRateSlider').value = fireRateSlider.min;
+};
+
+function setSliderValues() {
+    sliderValues = new Object();
+        sliderValues.previousFireRateSliderValue = fireRateSlider.min;
+        sliderValues.previousBulletSpeedSliderValue = bulletSpeedSlider.min;
+        sliderValues.previousRangeSliderValue = rangeSlider.min;
+    document.getElementById('bulletSpeedSlider').value = sliderValues.previousBulletSpeedSliderValue;
+    document.getElementById('rangeSlider').value = sliderValues.previousRangeSliderValue;
+    document.getElementById('fireRateSlider').value = sliderValues.previousFireRateSliderValue;
 }
 
 var baseX;
