@@ -206,6 +206,12 @@ function isleap(input) {
 };
 
 var lastseconds;
+var Gdaysalive;
+var Jdaysalive;
+var Gpercentage;
+var Jpercentage;
+var Gbirthday = new Date("jul 7 2001");
+var Jbirthday = new Date("jul 12 2001");
 function howlong() {
 	deadline = new Date(date).getTime();
 	now = new Date().getTime();
@@ -218,6 +224,8 @@ function howlong() {
 	if (playing) {
 		daystill = daystillnotimezone + (timezoneoffset/(60*24));
 	};
+	Gdaysalive = (now - Gbirthday.getTime())/(1000*60*24*60);
+	Jdaysalive = (now - Jbirthday.getTime())/(1000*60*24*60);
 	years = roundscale(daystill/(365.25),"years");
 	months = roundscale(daystill/(30.4375),"months");
 	weeks = roundscale(daystill/(7),"weeks");
@@ -226,6 +234,8 @@ function howlong() {
 	minutes = roundscale((daystill*60*24),"minutes");
 	seconds = roundscale((daystill*60*60*24),"seconds");
 	milisec = roundscale((daystill*60*60*24*1000),'milisec');
+	Gpercentage = roundscale(((daystill/Gdaysalive)*100),"percentage");
+	Jpercentage = roundscale(((daystill/Jdaysalive)*100),"percentage");
 	
 	switch (currentask) {
 		case 0:
@@ -269,6 +279,14 @@ function howlong() {
 			document.getElementById("time").innerHTML = defualtview();
 			document.getElementById("mw").innerHTML = "";
 			break;
+		case 9:
+			document.getElementById("time").innerHTML = Gpercentage;
+			document.getElementById("mw").innerHTML = "Percent of Grace's Life";
+			break;
+		case 10:
+			document.getElementById("time").innerHTML = Jpercentage;
+			document.getElementById("mw").innerHTML = "Percent of Jeremy's Life";
+			break;
 		default:
 			console.log(currentask);
 			break;
@@ -303,8 +321,10 @@ function roundscale (num,thing) {
 			return addlength(num,10,false)
 		case "years":
 			return addlength(num,10,false)
+		case "percentage":
+			return (addlength(num,9,false))+"%"
 		default: console.log("thing not recognized in roundscale");
-	}
+	};
 };
 
 function addlength(num,n,ismilisec){
