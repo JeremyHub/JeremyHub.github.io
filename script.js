@@ -71,11 +71,6 @@ function switchdate (datewanted) {
 		sign = -1;
 		titlemw = "Since First Date";
 	}
-	else if (datewanted == 1) {
-		date = 'aug 7 2020';
-		sign = 1;
-		titlemw = "To Horizons Release"
-	}
 	else if (datewanted == 4) {
 		if (!isNaN((document.getElementById('customdateyear').value)) && (document.getElementById('customdateyear').value.length !== 0)) {
 			date = custom();
