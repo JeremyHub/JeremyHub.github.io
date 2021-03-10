@@ -71,6 +71,11 @@ function switchdate (datewanted) {
 		sign = -1;
 		titlemw = "Since First Date";
 	}
+	else if (datewanted == 3) {
+		date = "mar 19 2021 16:00";
+		sign = 1;
+		titlemw = "To Going to WA";
+	}
 	else if (datewanted == 4) {
 		if (!isNaN((document.getElementById('customdateyear').value)) && (document.getElementById('customdateyear').value.length !== 0)) {
 			date = custom();
